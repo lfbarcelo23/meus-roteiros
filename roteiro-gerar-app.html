@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcelona 2027 - Caderno de Viagem & Dossiê Executivo</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Leaflet JS CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        :root {
+            --bg-paper: #F4EFEB;
+            --bg-card: #FAF6F0;
+            --bg-card-alt: #FFFDF9;
+            --primary-navy: #1B365D;
+            --accent-terracotta: #C85A32;
+            --accent-gold: #D99B26;
+            --accent-green: #4A7C59;
+            --text-main: #2C3E50;
+            --text-muted: #6C7A89;
+            --text-hand: 'Caveat', cursive;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --border-paper: #E2D9CE;
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-polaroid: 3px 6px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-paper);
+            background-image: 
+                radial-gradient(#d3c7b8 0.75px, transparent 0.75px),
+                linear-gradient(to right, rgba(200, 90, 50, 0.05) 1px, transparent 1px);
+            background-size: 16px 16px, 100% 100%;
+            font-family: var(--font-sans);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Scrapbook Container */
+        .scrapbook-container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* Top Header & Binder Tabs */
+        header.notebook-header {
+            text-align: center;
+            padding: 30px 20px 10px;
+            position: relative;
+        }
+
+        .header-title-box {
+            background: var(--bg-card-alt);
+            display: inline-block;
+            padding: 20px 40px;
+            border: 2px dashed var(--accent-terracotta);
+            border-radius: 8px;
+            box-shadow: var(--shadow-soft);
+            transform: rotate(-0.5deg);
+            position: relative;
+        }
+
+        .header-title-box h1 {
+            font-size: 2.2rem;
+            color: var(--primary-navy);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            font-family: var(--text-hand);
+            font-size: 1.6rem;
+            color: var(--accent-terracotta);
+            margin-top: 5px;
+        }
+
+        /* Washi Tape Effect */
+        .washi-tape {
+            position: absolute;
+            width: 120px;
+            height: 28px;
+            background: rgba(217, 155, 38, 0.45);
+            backdrop-filter: blur(1px);
+            border-left: 2px dashed rgba(255, 255, 255, 0.5);
+            border-right: 2px dashed rgba(255, 255, 255, 0.5);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .washi-tape.top-left { top: -12px; left: -20px; transform: rotate(-8deg); }
+        .washi-tape.top-right { top: -10px; right: -20px; transform: rotate(6deg); }
+        .washi-tape.center-top { top: -14px; left: 45%; transform: rotate(-2deg); background: rgba(200, 90, 50, 0.35); }
+
+        /* Retro Stamp */
+        .stamp {
+            display: inline-block;
+            padding: 6px 14px;
+            text-transform: uppercase;
+            font-family: var(--text-hand);
+            font-size: 1.3rem;
+            font-weight: 700;
+            border: 3px double var(--accent-terracotta);
+            color: var(--accent-terracotta);
+            border-radius: 6px;
+            transform: rotate(-12deg);
+            opacity: 0.88;
+            mask-image: radial-gradient(circle, rgba(0,0,0,1) 70%, rgba(0,0,0,0.6) 100%);
+            user-select: none;
+        }
+        .stamp.green { border-color: var(--accent-green); color: var(--accent-green); transform: rotate(8deg); }
+        .stamp.navy { border-color: var(--primary-navy); color: var(--primary-navy); transform: rotate(-5deg); }
+
+        /* Navigation Binder Tabs */
+        .binder-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+            border-bottom: 3px solid var(--primary-navy);
+            padding-bottom: 0;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: #E6DFD5;
+            border: 2px solid var(--border-paper);
+            border-bottom: none;
+            padding: 12px 24px;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: inset 0 -3px 5px rgba(0,0,0,0.05);
+        }
+
+        .tab-button:hover {
+            background: var(--bg-card-alt);
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background: var(--primary-navy);
+            color: #ffffff;
+            border-color: var(--primary-navy);
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Tab Content Sections */
+        .tab-content {
+            display: none;
+            padding-top: 25px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* TAB 1: HERO & SPOTIFY */
+        .hero-scrapbook {
+            background: var(--bg-card-alt);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-paper);
+            box-shadow: var(--shadow-soft);
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 25px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        @media (max-width: 850px) {
+            .hero-scrapbook { grid-template-columns: 1fr; }
+        }
+
+        .hero-text h2 {
+            font-size: 1.8rem;
+            color: var(--primary-navy);
+            margin-bottom: 10px;
+        }
+
+        .hero-text p {
+            color: var(--text-main);
+            font-size: 0.98rem;
+            margin-bottom: 15px;
+        }
+
+        .polaroid-frame {
+            background: #ffffff;
+            padding: 12px 12px 30px 12px;
+            box-shadow: var(--shadow-polaroid);
+            border: 1px solid #eaeaea;
+            transform: rotate(1.5deg);
+            text-align: center;
+            position: relative;
+        }
+
+        .polaroid-frame img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        .polaroid-caption {
+            font-family: var(--text-hand);
+            font-size: 1.4rem;
+            color: #333;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .spotify-widget {
+            background: #121212;
+            border-radius: 12px;
+            padding: 12px;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            margin-top: 15px;
+        }
+
+        /* Progress Bar for Checklist */
+        .checklist-progress-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-paper);
+            border-left: 5px solid var(--accent-green);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .progress-bar-bg {
+            flex-grow: 1;
+            height: 12px;
+            background: #e0d8cc;
+            border-radius: 6px;
+            overflow: hidden;
+            min-width: 180px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent-green);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Day Cards (Scrapbook style) */
+        .day-card {
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border-paper);
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .day-card:nth-child(even) { transform: rotate(-0.3deg); }
+        .day-card:nth-child(odd) { transform: rotate(0.4deg); }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px dashed var(--border-paper);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .day-title {
+            font-size: 1.35rem;
+            color: var(--primary-navy);
+            font-weight: 700;
+        }
+
+        .day-location {
+            font-size: 0.88rem;
+            color: var(--accent-terracotta);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .attractions-list {
+            list-style: none;
+            margin-bottom: 18px;
+        }
+
+        .attraction-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            font-size: 0.95rem;
+        }
+
+        .attraction-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-terracotta);
+            cursor: pointer;
+        }
+
+        .attraction-item.completed span {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        /* Post-it Notes */
+        .post-it-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .post-it {
+            background: #FFF9A6;
+            padding: 15px 18px;
+            border-radius: 2px;
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.08);
+            position: relative;
+            transform: rotate(-1deg);
+            font-size: 0.92rem;
+        }
+
+        .post-it.pink { background: #FFDEE9; transform: rotate(1.2deg); }
+        .post-it.green { background: #E2F0D9; transform: rotate(-0.8deg); }
+
+        .post-it-title {
+            font-family: var(--text-hand);
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .post-it p {
+            line-height: 1.4;
+            color: #444;
+        }
+
+        /* TAB 2: MAP & TRANSIT */
+        .map-section {
+            background: var(--bg-card-alt);
+            border-radius: 12px;
+            border: 1px solid var(--border-paper);
+            padding: 20px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 25px;
+        }
+
+        #map {
+            height: 480px;
+            width: 100%;
+            border-radius: 8px;
+            border: 2px solid var(--border-paper);
+            z-index: 1;
+        }
+
+        .transit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .transit-card {
+            background: var(--bg-card);
+            border: 1px dashed var(--primary-navy);
+            border-radius: 10px;
+            padding: 18px;
+            position: relative;
+        }
+
+        .transit-card h3 {
+            color: var(--primary-navy);
+            font-size: 1.15rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* TAB 3: DOSSIÊ & TABLES */
+        .dossier-card {
+            background: var(--bg-card-alt);
+            border-radius: 12px;
+            border: 1px solid var(--border-paper);
+            padding: 22px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .dossier-card h2 {
+            font-size: 1.3rem;
+            color: var(--primary-navy);
+            border-bottom: 2px dotted var(--accent-terracotta);
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .retro-table-wrapper {
+            overflow-x: auto;
+        }
+
+        table.retro-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            background: #fff;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        table.retro-table th {
+            background: var(--primary-navy);
+            color: #ffffff;
+            text-align: left;
+            padding: 12px 14px;
+            font-weight: 600;
+        }
+
+        table.retro-table td {
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--border-paper);
+            color: var(--text-main);
+        }
+
+        table.retro-table tr:nth-child(even) {
+            background-color: #FBF8F3;
+        }
+
+        table.retro-table tr:hover {
+            background-color: #F3ECE1;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-success { background: #e6f4ea; color: #137333; }
+        .badge-warning { background: #fef7e0; color: #b06000; }
+        .badge-info { background: #e8f0fe; color: #1a73e8; }
+
+        .callout-box {
+            background: #EBF3FA;
+            border-left: 4px solid var(--primary-navy);
+            padding: 14px 18px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.92rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .header-title-box { padding: 15px 20px; }
+            .header-title-box h1 { font-size: 1.6rem; }
+            .tab-button { padding: 8px 14px; font-size: 0.85rem; }
+            #map { height: 350px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="scrapbook-container">
+
+    <!-- Header SECTION -->
+    <header class="notebook-header">
+        <div class="header-title-box">
+            <div class="washi-tape top-left"></div>
+            <div class="washi-tape top-right"></div>
+            <h1>BARCELONA 2027</h1>
+            <div class="header-subtitle">Caderno de Viagem & Dossiê Estratégico</div>
+            <div style="margin-top: 10px;">
+                <span class="stamp">JUNHO 2027</span>
+                <span class="stamp green" style="margin-left: 10px;">10 DIAS</span>
+            </div>
+        </div>
+
+        <!-- BINDER TABS -->
+        <nav class="binder-tabs">
+            <button class="tab-button active" onclick="switchTab('roteiro')">
+                📖 ROTEIRO & DIÁRIO
+            </button>
+            <button class="tab-button" onclick="switchTab('mapa')">
+                🗺️ MAPA & ROTAS
+            </button>
+            <button class="tab-button" onclick="switchTab('dossie')">
+                📊 DOSSIÊ & LOGÍSTICA
+            </button>
+        </nav>
+    </header>
+
+    <!-- TAB 1: ROTEIRO & DIÁRIO DE VIAGEM -->
+    <section id="roteiro" class="tab-content active">
+        
+        <!-- Hero Section -->
+        <div class="hero-scrapbook">
+            <div class="washi-tape center-top"></div>
+            <div class="hero-text">
+                <h2>¡Bienvenidos a Barcelona!</h2>
+                <p>
+                    Planejamento tático de alta temporada para 2 passageiros. Uma jornada combinando o esplendor arquitetônico de Antoni Gaudí, ruelas medievais do Bairro Gótico, alta gastronomia catalã e a vibração única das festas de verão do Mediterrâneo.
+                </p>
+                <div class="callout-box">
+                    <strong>💡 Dica de Ouro:</strong> Saturação extrema em Junho (Primavera Sound, Sónar e Nit de Sant Joan). Mantenha ingressos comprados antecedência prévia e aproveite as manhãs!
+                </div>
+            </div>
+            
+            <div class="hero-media">
+                <div class="polaroid-frame">
+                    <img src="https://images.unsplash.com/photo-1583422409516-2895a771deda?auto=format&fit=crop&w=600&q=80" alt="Sagrada Família">
+                    <span class="polaroid-caption">Sagrada Família, BCN '27</span>
+                </div>
+                <!-- Spotify Embed Placeholder / Widget -->
+                <div class="spotify-widget">
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX1X73311N21Z?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="checklist-progress-card">
+            <div>
+                <strong style="color: var(--primary-navy); font-size: 1.05rem;">Progresso das Atrações:</strong>
+                <span id="checklist-count" style="font-family: var(--text-hand); font-size: 1.3rem; margin-left: 8px; font-weight: bold; color: var(--accent-terracotta);">0 de 30 concluídas</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="checklist-bar"></div>
+            </div>
+        </div>
+
+        <!-- DIA A DIA CARDS -->
+        
+        <!-- DIA 1 -->
+        <article class="day-card">
+            <div class="washi-tape top-left"></div>
+            <div class="day-header">
+                <div>
+                    <span class="stamp navy" style="font-size: 0.9rem; padding: 2px 8px;">DIA 01</span>
+                    <h3 class="day-title" style="display: inline-block; margin-left: 8px;">Ícones do Modernismo & Eixample</h3>
+                </div>
+                <div class="day-location">📍 Passeig de Gràcia / Eixample</div>
+            </div>
+            <ul class="attractions-list">
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Casa Batlló</strong> (2h00m) - Arquitetura orgânica de Gaudí</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Casa Milà (La Pedrera)</strong> (2h00m) - Terraço das chaminés guerreiras</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Caminhada pela Passeig de Gràcia</strong> (1h30m) - Lojas e arquitetura</span></li>
+            </ul>
+            <div class="post-it-grid">
+                <div class="post-it">
+                    <div class="post-it-title">🍷 Dica Gastronômica</div>
+                    <p>Tapas clássicas de frutos do mar e montaditos na <em>Cerveseria Catalana</em> ou <em>Ciudad Condal</em>.</p>
+                </div>
+                <div class="post-it pink">
+                    <div class="post-it-title">💡 Dica Tática</div>
+                    <p>Compre ingresso 'Blue' ou 'Gold' com horário reservado para a 1ª hora da manhã na Casa Batlló; filas sob 28°C superam 2h.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 2 -->
+        <article class="day-card">
+            <div class="washi-tape top-right"></div>
+            <div class="day-header">
+                <div>
+                    <span class="stamp navy" style="font-size: 0.9rem; padding: 2px 8px;">DIA 02</span>
+                    <h3 class="day-title" style="display: inline-block; margin-left: 8px;">O Triunfo de Gaudí & Sagrada Família</h3>
+                </div>
+                <div class="day-location">📍 Sagrada Família / Eixample Dret</div>
+            </div>
+            <ul class="attractions-list">
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Basílica da Sagrada Família</strong> (3h00m) - Inclui subida à Torre da Natividade</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Hospital de Sant Pau</strong> (2h00m) - Complexo Modernista de Domènech i Montaner</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Avinguda Gaudí</strong> (1h00m) - Boulevard charmoso conectando os monumentos</span></li>
+            </ul>
+            <div class="post-it-grid">
+                <div class="post-it green">
+                    <div class="post-it-title">🍷 Dica Gastronômica</div>
+                    <p>Paella de frutos do mar tradicional no restaurante <em>El Glop de la Gaudí</em> ou <em>Can Solé</em>.</p>
+                </div>
+                <div class="post-it">
+                    <div class="post-it-title">📸 Fotografia Espetacular</div>
+                    <p>Horário das 09h é o melhor: a luz matutina incide diretamente nos vitrais frios (azuis e verdes) da nave.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 3 -->
+        <article class="day-card">
+            <div class="day-header">
+                <div>
+                    <span class="stamp navy" style="font-size: 0.9rem; padding: 2px 8px;">DIA 03</span>
+                    <h3 class="day-title" style="display: inline-block; margin-left: 8px;">Labirinto Histórico: Gótico & El Born</h3>
+                </div>
+                <div class="day-location">📍 Barri Gòtic & El Born</div>
+            </div>
+            <ul class="attractions-list">
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Catedral de Barcelona</strong> (1h30m) - Visita ao Claustro das Gansas</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Plaça del Rei & MUHBA</strong> (2h00m) - Escavações romanas subterrâneas</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Basílica de Santa Maria del Mar</strong> (1h00m) - Obra-prima do gótico catalão</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Mercat de Santa Caterina</strong> (1h00m) - Mercado com teto ondulado colorido</span></li>
+            </ul>
+            <div class="post-it-grid">
+                <div class="post-it pink">
+                    <div class="post-it-title">🍷 Dica Gastronômica</div>
+                    <p>Cava da casa e anchovas temperadas no mítico bar de tapas <em>El Xampanyet</em>, no El Born.</p>
+                </div>
+                <div class="post-it green">
+                    <div class="post-it-title">⚠️ Segurança & Furtos</div>
+                    <p>Mantenha mochilas viradas para a frente nas ruelas do Gótico; junho é pico de atuação de batedores de carteira.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 4 -->
+        <article class="day-card">
+            <div class="washi-tape top-left"></div>
+            <div class="day-header">
+                <div>
+                    <span class="stamp navy" style="font-size: 0.9rem; padding: 2px 8px;">DIA 04</span>
+                    <h3 class="day-title" style="display: inline-block; margin-left: 8px;">Arquitetura Orgânica & Vistas de Gràcia</h3>
+                </div>
+                <div class="day-location">📍 Park Güell & Gràcia</div>
+            </div>
+            <ul class="attractions-list">
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Park Güell (Zona Monumental)</strong> (2h30m) - Mosaicos e Salamandra Trencadís</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Bunkers del Carmel</strong> (2h00m) - Mirante 360° espetacular da cidade</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Praças do Bairro de Gràcia</strong> (2h00m) - Plaça del Sol & Plaça de la Virreina</span></li>
+            </ul>
+            <div class="post-it-grid">
+                <div class="post-it">
+                    <div class="post-it-title">🍷 Dica Gastronômica</div>
+                    <p>Vermut de torneira com bombas de batata recheadas no <em>Bar Calders</em> ou na <em>Bodega Cal Pep</em>.</p>
+                </div>
+                <div class="post-it pink">
+                    <div class="post-it-title">🚌 Dica de Acesso Park Güell</div>
+                    <p>Para evitar subida íngreme a pé, pegue o ônibus 24 na Plaça Catalunya até a entrada superior (Carretera del Carmel).</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 5 -->
+        <article class="day-card">
+            <div class="day-header">
+                <div>
+                    <span class="stamp navy" style="font-size: 0.9rem; padding: 2px 8px;">DIA 05</span>
+                    <h3 class="day-title" style="display: inline-block; margin-left: 8px;">A Colina Cultural de Montjuïc</h3>
+                </div>
+                <div class="day-location">📍 Montjuïc & Poble Sec</div>
+            </div>
+            <ul class="attractions-list">
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>MNAC - Museu Nacional d'Art de Catalunya</strong> (3h00m) - Arte românica e vista</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Fundació Joan Miró</strong> (2h00m) - Arte vanguardista surrealista</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Castelo de Montjuïc & Telefèric</strong> (2h00m) - Fortaleza histórica e teleférico</span></li>
+            </ul>
+            <div class="post-it-grid">
+                <div class="post-it green">
+                    <div class="post-it-title">🍷 Dica Gastronômica</div>
+                    <p>Rota de pintxos por €1,50 a €2,00 na agitada <em>Carrer de Blai</em> no bairro de Poble Sec.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 6 -->
+        <article class="day-card">
+            <div class="washi-tape top-right"></div>
+            <div class="day-header">
+                <div>
+                    <span class="stamp green" style="font-size: 0.9rem; padding: 2px 8px;">DIA 06</span>
+                    <h3 class="day-title" style="display: inline-block; margin-left: 8px;">Bate-Volta: Cidade Medieval de Girona</h3>
+                </div>
+                <div class="day-location">🚆 Bate-volta via Trem AVE (38 min)</div>
+            </div>
+            <ul class="attractions-list">
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Bairro Judeu de Girona (El Call)</strong> (2h00m) - Conservação medieval impressionante</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Catedral de Santa Maria de Girona</strong> (1h30m) - Cenário de Game of Thrones</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Muralhas Medievais & Casas do Rio Onyar</strong> (2h00m) - Pontes e fachadas coloridas</span></li>
+            </ul>
+            <div class="post-it-grid">
+                <div class="post-it">
+                    <div class="post-it-title">🍦 Sobremesa Imperdível</div>
+                    <p>Sorvetes criativos na <em>Rocambolesc</em> (dos renomados irmãos Roca) no centro histórico.</p>
+                </div>
+                <div class="post-it pink">
+                    <div class="post-it-title">🎟️ Trem AVE Antecipado</div>
+                    <p>Reserve os bilhetes AVANT/AVE com 60 dias de antecedência para obter tarifa de cerca de €15 por trecho.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 7 -->
+        <article class="day-card">
+            <div class="day-header">
+                <div>
+                    <span class="stamp navy" style="font-size: 0.9rem; padding: 2px 8px;">DIA 07</span>
+                    <h3 class="day-title" style="display: inline-block; margin-left: 8px;">Orla Marítima & Festa de Sant Joan</h3>
+                </div>
+                <div class="day-location">📍 Barceloneta & Port Vell</div>
+            </div>
+            <ul class="attractions-list">
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Praia de Barceloneta</strong> (2h30m) - Calçadão e brisa do Mediterrâneo</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Museu d'Història de Catalunya</strong> (2h00m) - Terraço panorâmico incrível</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Nit de Sant Joan (23 Junho)</strong> - Fogueiras na praia, fogueiras e Cava</span></li>
+            </ul>
+            <div class="post-it-grid">
+                <div class="post-it green">
+                    <div class="post-it-title">🍷 Dica Gastronômica</div>
+                    <p>Arroz negro com lulas e alioli no tradicional <em>Can Majó</em> ou <em>La Mar Salada</em>.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 8 -->
+        <article class="day-card">
+            <div class="day-header">
+                <div>
+                    <span class="stamp navy" style="font-size: 0.9rem; padding: 2px 8px;">DIA 08</span>
+                    <h3 class="day-title" style="display: inline-block; margin-left: 8px;">Cultura Subversiva do Raval & Boqueria</h3>
+                </div>
+                <div class="day-location">📍 El Raval & La Rambla</div>
+            </div>
+            <ul class="attractions-list">
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Mercat de la Boqueria</strong> (1h30m) - Balcões e sabores típicos</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Palau Güell</strong> (1h30m) - Palácio urbano de Antoni Gaudí</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>MACBA & Gran Teatre del Liceu</strong> (3h00m) - Arte contemporânea e ópera</span></li>
+            </ul>
+            <div class="post-it-grid">
+                <div class="post-it pink">
+                    <div class="post-it-title">🍷 Dica Gastronômica</div>
+                    <p>Tapas frescas no balcão do lendário <em>El Quim de la Boqueria</em> antes das 09h30 para evitar multidões.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 9 -->
+        <article class="day-card">
+            <div class="washi-tape top-left"></div>
+            <div class="day-header">
+                <div>
+                    <span class="stamp green" style="font-size: 0.9rem; padding: 2px 8px;">DIA 09</span>
+                    <h3 class="day-title" style="display: inline-block; margin-left: 8px;">Bate-Volta Costeiro: Sitges</h3>
+                </div>
+                <div class="day-location">🚆 Trem Rodalies R2 Sud (40 min)</div>
+            </div>
+            <ul class="attractions-list">
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Centro Histórico & Igreja de Sant Bartomeu</strong> (2h00m) - Vila costeira charmosa</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Museu Maricel & Cau Ferrat</strong> (2h00m) - Palácios beira-mar de arte</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Praia de Sant Sebastià</strong> (3h00m) - Relaxamento em praia mediterrânea</span></li>
+            </ul>
+            <div class="post-it-grid">
+                <div class="post-it">
+                    <div class="post-it-title">🍷 Dica Gastronômica</div>
+                    <p>Provai o <em>Xató de Sitges</em> (salada tradicional com molho de amêndoas e escarola) no restaurante <em>La Salseta</em>.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 10 -->
+        <article class="day-card">
+            <div class="day-header">
+                <div>
+                    <span class="stamp navy" style="font-size: 0.9rem; padding: 2px 8px;">DIA 10</span>
+                    <h3 class="day-title" style="display: inline-block; margin-left: 8px;">Modernismo Secreto & Despedida</h3>
+                </div>
+                <div class="day-location">📍 Gràcia / Eixample & Glòries</div>
+            </div>
+            <ul class="attractions-list">
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Casa Vicens</strong> (2h00m) - A 1ª casa projetada por Gaudí</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Palau de la Música Catalana</strong> (2h00m) - Auditório de vitrais espetacular</span></li>
+                <li class="attraction-item"><input type="checkbox" onchange="updateProgress(this)"> <span><strong>Mirador Torre Glòries</strong> (1h30m) - Vista moderna e encerramento</span></li>
+            </ul>
+            <div class="post-it-grid">
+                <div class="post-it green">
+                    <div class="post-it-title">🍷 Jantar de Despedida</div>
+                    <p>Jantar no prestigiado <em>Disfrutar</em> (reserva com até 1 ano de antecedência) ou no clássico <em>Via Veneto</em>.</p>
+                </div>
+            </div>
+        </article>
+
+    </section>
+
+    <!-- TAB 2: MAPA INTERATIVO & ROTAS -->
+    <section id="mapa" class="tab-content">
+        <div class="map-section">
+            <h2 style="color: var(--primary-navy); margin-bottom: 12px;">🗺️ Rotas Estratégicas e Atrações no Mapa</h2>
+            <p style="font-size: 0.92rem; color: var(--text-muted); margin-bottom: 15px;">
+                Marcadores interativos das principais atrações do roteiro. Clique nos pontos para visualizar detalhes de cada atração.
+            </p>
+            <div id="map"></div>
+        </div>
+
+        <h2 style="color: var(--primary-navy); margin-top: 30px; margin-bottom: 15px;">🚆 Hubs Alternativos e Deslocamentos Regionais</h2>
+        <div class="transit-grid">
+            <div class="transit-card">
+                <h3>Madrid (MAD) <span class="badge badge-info">2h 30m Trem</span></h3>
+                <p><strong>Operadora:</strong> Trem de Alta Velocidade AVE / Ouigo / Iryo</p>
+                <p><strong>Análise Tática:</strong> Excelente opção de voo award LATAM. Permite roteiro dividido (4 dias MAD / 6 dias BCN). Hospedagem 15-20% menor que Barcelona.</p>
+            </div>
+            <div class="transit-card">
+                <h3>Girona (GRO) <span class="badge badge-success">38 min Trem</span></h3>
+                <p><strong>Operadora:</strong> Trem AVANT / AVE</p>
+                <p><strong>Análise Tática:</strong> Bate-volta indispensável ou base logística de menor custo durante os grandes festivais em Barcelona.</p>
+            </div>
+            <div class="transit-card">
+                <h3>Valência (VLC) <span class="badge badge-warning">3h 00m Trem</span></h3>
+                <p><strong>Operadora:</strong> Trem Euromed / Renfe</p>
+                <p><strong>Análise Tática:</strong> Fuga da saturação extrema de Barcelona no verão. Gastronomia autêntica e praias amplas.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 3: DOSSIÊ DE MILHAS, CÂMBIO & LOGÍSTICA -->
+    <section id="dossie" class="tab-content">
+        
+        <!-- RESUMO EXECUTIVO -->
+        <div class="dossier-card">
+            <h2>📌 1. Resumo Executivo & Diretrizes</h2>
+            <div class="callout-box">
+                <strong>Objetivo Tático:</strong> Otimização do roteiro de 10 dias em Barcelona (Junho 2027) para 2 passageiros.<br>
+                <strong>Estratégia:</strong> Maximização do ativo de milhas C6 Bank, mitigação de custos inflacionados do verão europeu e otimização de IOF/spread cambial.
+            </div>
+        </div>
+
+        <!-- MATRIZ SAZONAL -->
+        <div class="dossier-card">
+            <h2>☀️ 2. Matriz de Decisão Sazonal (Junho em BCN)</h2>
+            <div class="retro-table-wrapper">
+                <table class="retro-table">
+                    <thead>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Diagnóstico Tático</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Clima & UV</strong></td>
+                            <td>24°C a 28°C. Índice UV 9 (Forte). Precipitação mínima (aprox. 4 dias de chuva no mês).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Temporada</strong></td>
+                            <td>Alta Temporada. Início do verão europeu e abertura de praias.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Saturação Logística</strong></td>
+                            <td><span class="badge badge-warning">Altíssima</span> Megaeventos (Primavera Sound, Sónar) + Feriado Sant Joan (23-24/Jun). Lotação máxima nos monumentos.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custos & Emissão</strong></td>
+                            <td>Hotéis 40-80% mais caros. Emissões com milhas exigem abertura de calendário exata de 330 dias (Julho/2026).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ENGENHARIA DE MILHAS -->
+        <div class="dossier-card">
+            <h2>✈️ 3. Engenharia de Milhas & Diagnóstico de Pontos</h2>
+            <div class="retro-table-wrapper">
+                <table class="retro-table">
+                    <thead>
+                        <tr>
+                            <th>Programa</th>
+                            <th>Saldo Atual</th>
+                            <th>CPM Médio</th>
+                            <th>Parecer Técnico</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>C6 Bank</strong></td>
+                            <td>262.256</td>
+                            <td>R$ 0,00</td>
+                            <td><span class="badge badge-success">Ativo Principal</span> Transferir somente com bônus de 30-50%.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Esfera</strong></td>
+                            <td>80.981</td>
+                            <td>R$ 16,52</td>
+                            <td>Ativo secundário. Manter em hold para composição Iberia/Avios.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Smiles</strong></td>
+                            <td>45.666</td>
+                            <td>R$ 9,87</td>
+                            <td>Insuficiente isoladamente para Europa na alta temporada.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Latam Pass</strong></td>
+                            <td>17.771</td>
+                            <td>R$ 10,74</td>
+                            <td>Receberá os pontos do C6 Bank na janela promocional.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ALL Accor</strong></td>
+                            <td>11.600</td>
+                            <td>R$ 87,41</td>
+                            <td>Equivale a <strong>€200 de abatimento direto</strong> na hospedagem.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="callout-box" style="margin-top: 15px;">
+                <strong>Inteligência de Transferência:</strong> Nunca transfira do C6 a seco (1:1). Aguarde janelas promocionais de 30% a 50% de bônus para LATAM Pass. Com 30% de bônus, os 262k do C6 tornam-se <strong>340k milhas</strong>, volume exato para cobrir ida e volta para 2 pessoas.
+            </div>
+        </div>
+
+        <!-- SALAS VIP -->
+        <div class="dossier-card">
+            <h2>🛋️ 4. Inventário de Salas VIP (Embarque GRU T3)</h2>
+            <div class="retro-table-wrapper">
+                <table class="retro-table">
+                    <thead>
+                        <tr>
+                            <th>Sala VIP (GRU T3)</th>
+                            <th>Cartão Utilizado</th>
+                            <th>Regra de Acesso</th>
+                            <th>Estratégia Recomendada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Mastercard Black Lounge</strong></td>
+                            <td>C6 Black (Titular + Adicional)</td>
+                            <td>Ilimitado para o portador do cartão</td>
+                            <td><span class="badge badge-success">Prioridade 1</span> Acesso Titular + Adicional sem custos nem gasto de cota.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>W Premium Lounge</strong></td>
+                            <td>Inter Prime Black / Unique</td>
+                            <td>Inter: 6 acessos/ano. Unique: 2/ano.</td>
+                            <td><span class="badge badge-info">Backup 1</span> Utilizar caso a sala da Mastercard esteja com fila.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Visa Infinite Lounge</strong></td>
+                            <td>Santander Unique Visa</td>
+                            <td>2 acessos/ano (DragonPass/VAC)</td>
+                            <td><span class="badge badge-warning">Backup 2</span> Usar os 2 acessos do Santander Unique se necessário.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CÂMBIO E CARTOES GLOBAIS -->
+        <div class="dossier-card">
+            <h2>💳 5. Matriz de Câmbio & Cartões Globais (Euro)</h2>
+            <div class="retro-table-wrapper">
+                <table class="retro-table">
+                    <thead>
+                        <tr>
+                            <th>Instituição</th>
+                            <th>Spread (Markup)</th>
+                            <th>IOF</th>
+                            <th>Custo Efetivo</th>
+                            <th>Recomendação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Revolut</strong></td>
+                            <td>0,00% (Até €1.000/mês)</td>
+                            <td>1,10%</td>
+                            <td>1,10%</td>
+                            <td><span class="badge badge-success">Prioridade 1</span> Converter até €1.000 em dias úteis.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Wise</strong></td>
+                            <td>~0,78%</td>
+                            <td>1,10%</td>
+                            <td>1,88%</td>
+                            <td><span class="badge badge-info">Prioridade 2</span> Para o volume excedente ao limite isento da Revolut.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>C6 Global</strong></td>
+                            <td>~0,80% - 0,90%</td>
+                            <td>1,10%</td>
+                            <td>1,90% - 2,00%</td>
+                            <td>Excelente backup integrado no app do banco principal.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Santander Select</strong></td>
+                            <td>~2,00%</td>
+                            <td>1,10%</td>
+                            <td>3,10%</td>
+                            <td><span class="badge badge-warning">Evitar</span> Pior cenário de spread cambial.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- BUROCRACIA & ETIA/EES -->
+        <div class="dossier-card">
+            <h2>🛂 6. Fronteira & Requisitos de Imigração (2027)</h2>
+            <div class="retro-table-wrapper">
+                <table class="retro-table">
+                    <thead>
+                        <tr>
+                            <th>Exigência</th>
+                            <th>Detalhes & Custos</th>
+                            <th>Ação Requerida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ETIAS</strong></td>
+                            <td>€7 por pessoa (Validade de 3 anos)</td>
+                            <td>Preenchimento online do formulário com até 72h antes da viagem.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>EES (Entry/Exit System)</strong></td>
+                            <td>Coleta biométrica facial e dactilar na chegada</td>
+                            <td>Adicionar de 20 a 30 minutos na estimativa de desembarque no aeroporto BCN.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Seguro Viagem</strong></td>
+                            <td>Cobertura mínima de €30.000 (Schengen)</td>
+                            <td>Emitir bilhete de seguro do cartão Visa Infinite ou Mastercard Black.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    // Tab Switching Logic
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+        event.currentTarget.classList.add('active');
+        const activeSection = document.getElementById(tabId);
+        activeSection.classList.add('active');
+
+        if (tabId === 'mapa' && !window.mapInitialized) {
+            initMap();
+            window.mapInitialized = true;
+        }
+    }
+
+    // Interactive Checklist Tracker
+    function updateProgress(checkbox) {
+        const item = checkbox.closest('.attraction-item');
+        if (checkbox.checked) {
+            item.classList.add('completed');
+        } else {
+            item.classList.remove('completed');
+        }
+
+        const allBoxes = document.querySelectorAll('.attraction-item input[type="checkbox"]');
+        const checkedBoxes = document.querySelectorAll('.attraction-item input[type="checkbox"]:checked');
+        
+        const count = checkedBoxes.length;
+        const total = allBoxes.length;
+        const percentage = (count / total) * 100;
+
+        document.getElementById('checklist-count').innerText = `${count} de ${total} concluídas`;
+        document.getElementById('checklist-bar').style.width = `${percentage}%`;
+
+        // Save state to localStorage
+        const state = Array.from(allBoxes).map(cb => cb.checked);
+        localStorage.setItem('bcn2027_checklist', JSON.stringify(state));
+    }
+
+    // Load Checklist State
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedState = localStorage.getItem('bcn2027_checklist');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            const allBoxes = document.querySelectorAll('.attraction-item input[type="checkbox"]');
+            allBoxes.forEach((cb, index) => {
+                if (state[index]) {
+                    cb.checked = true;
+                    cb.closest('.attraction-item').classList.add('completed');
+                }
+            });
+            updateProgress();
+        }
+    });
+
+    // Map Initialization
+    window.mapInitialized = false;
+    function initMap() {
+        // Barcelona Map Center
+        const map = L.map('map').setView([41.388, 2.168], 13);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Landmarks Coordinates
+        const points = [
+            { id: 1, name: "Casa Batlló", lat: 41.3917, lng: 2.1649, desc: "Obra de Antoni Gaudí no Passeig de Gràcia" },
+            { id: 2, name: "Casa Milà (La Pedrera)", lat: 41.3954, lng: 2.1619, desc: "Edifício residencial fascinante de Gaudí" },
+            { id: 3, name: "Passeig de Gràcia", lat: 41.3900, lng: 2.1677, desc: "Avenida das grifes e arquitetura modernista" },
+            { id: 4, name: "Basílica da Sagrada Família", lat: 41.4036, lng: 2.1744, desc: "O monumento mais emblemático da Catalunha" },
+            { id: 5, name: "Recinte Modernista de Sant Pau", lat: 41.4115, lng: 2.1744, desc: "Complexo hospitalar modernista" },
+            { id: 6, name: "Avinguda Gaudí", lat: 41.4080, lng: 2.1730, desc: "Boulevard com cafés e vista para a Sagrada Família" },
+            { id: 7, name: "Catedral de Barcelona", lat: 41.3839, lng: 2.1762, desc: "Catedral gótica no coração do Barri Gòtic" },
+            { id: 8, name: "Plaça del Rei", lat: 41.3840, lng: 2.1775, desc: "Praça monumental histórica medieval" },
+            { id: 9, name: "Basílica de Santa Maria del Mar", lat: 41.3836, lng: 2.1814, desc: "Gótico catalão puro no bairro El Born" },
+            { id: 10, name: "Mercat de Santa Caterina", lat: 41.3862, lng: 2.1781, desc: "Mercado gastronômico com teto colorido" },
+            { id: 11, name: "Park Güell", lat: 41.4145, lng: 2.1527, desc: "Parque mágico com mosaicos trencadís" },
+            { id: 12, name: "Bunkers del Carmel", lat: 41.4193, lng: 2.1616, desc: "Mirante panorâmico imperdível da cidade" },
+            { id: 13, name: "Praia de Barceloneta", lat: 41.3784, lng: 2.1896, desc: "A orla mediterrânea vibrante" }
+        ];
+
+        const latLngs = [];
+
+        points.forEach(pt => {
+            const marker = L.marker([pt.lat, pt.lng]).addTo(map);
+            marker.bindPopup(`
+                <div style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                    <strong style="color: #1B365D; font-size: 1rem;">${pt.name}</strong>
+                    <p style="margin-top: 4px; font-size: 0.85rem; color: #555;">${pt.desc}</p>
+                </div>
+            `);
+            latLngs.push([pt.lat, pt.lng]);
+        });
+
+        // Add connecting polyline
+        const polyline = L.polyline(latLngs, {
+            color: '#C85A32',
+            weight: 3,
+            opacity: 0.6,
+            dashArray: '6, 8'
+        }).addTo(map);
+    }
+</script>
+</body>
+</html>
