@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operação Roma 2027 - Laudo Executivo e Roteiro Tático</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #8B2E16;
+      --secondary: #C59B27;
+      --bg: #FDFBF7;
+      --accent: #2D4A3E;
+      --text-main: #2C2C2C;
+      --text-muted: #666666;
+      --card-bg: #FFFFFF;
+      --border: #EADBCE;
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.03);
+      --shadow-md: 0 8px 24px rgba(139, 46, 22, 0.08);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    /* Container Global */
+    .app-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Header Section */
+    .hero-header {
+      background: linear-gradient(135deg, var(--primary) 0%, #5E1D0C 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius);
+      padding: 40px 32px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .hero-header::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(197, 155, 39, 0.25) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+    }
+
+    .badge-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      color: var(--secondary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(197, 155, 39, 0.3);
+    }
+
+    .hero-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: #E2D5CD;
+      max-width: 750px;
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+    }
+
+    .stat-pill i {
+      color: var(--secondary);
+      font-size: 1.1rem;
+    }
+
+    /* Interactive Section Layout */
+    .interactive-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      margin-bottom: 40px;
+    }
+
+    @media (min-width: 992px) {
+      .interactive-grid {
+        grid-template-columns: 420px 1fr;
+      }
+    }
+
+    /* Sticky Sidebar Map View Controls */
+    .timeline-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .timeline-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .timeline-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--secondary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .timeline-card.active {
+      border-color: var(--primary);
+      background: #FFFBF8;
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+
+    .timeline-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .point-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .point-info {
+      flex-grow: 1;
+    }
+
+    .point-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .next-connection {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .connection-badge {
+      background: rgba(45, 74, 62, 0.08);
+      color: var(--accent);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Map Container */
+    .map-wrapper {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      min-height: 450px;
+      height: 100%;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
+      z-index: 1;
+    }
+
+    /* Leaflet Custom Styles */
+    .custom-leaflet-marker {
+      background: var(--primary);
+      border: 3px solid var(--secondary);
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 13px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+
+    .custom-leaflet-marker:hover {
+      transform: scale(1.2);
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: 12px;
+      padding: 4px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .popup-content {
+      padding: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .popup-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .popup-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Structured Raw Content Render */
+    .laudo-section {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 36px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Custom Styling for Inserted Report HTML */
+    .laudo-content h1 {
+      font-size: 1.6rem;
+      color: var(--primary);
+      border-bottom: 3px solid var(--secondary);
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .laudo-content h2 {
+      font-size: 1.25rem;
+      color: var(--accent);
+      margin-top: 32px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .laudo-content h3 {
+      font-size: 1.05rem;
+      color: var(--primary);
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .laudo-content p {
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    .laudo-content .destaque {
+      background: #F4EFEA;
+      border-left: 5px solid var(--primary);
+      padding: 20px;
+      border-radius: 0 12px 12px 0;
+      margin-bottom: 28px;
+    }
+
+    .laudo-content .destaque h2 {
+      border: none;
+      padding: 0;
+      margin-top: 0;
+      color: var(--primary);
+    }
+
+    /* Responsive Tables */
+    .laudo-content table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 20px 0 28px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+
+    .laudo-content th {
+      background-color: var(--primary);
+      color: #FFFFFF;
+      font-weight: 600;
+      padding: 12px 14px;
+      text-align: left;
+    }
+
+    .laudo-content td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background-color: #FFFFFF;
+      color: var(--text-main);
+    }
+
+    .laudo-content tr:last-child td {
+      border-bottom: none;
+    }
+
+    .laudo-content tr:nth-child(even) td {
+      background-color: #FAF6F0;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin-bottom: 20px;
+      border-radius: 12px;
+    }
+
+    /* Floating Action / Quick Navigation Bar */
+    .quick-nav {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+      scrollbar-width: thin;
+    }
+
+    .quick-nav-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .quick-nav-btn:hover {
+      background: var(--primary);
+      color: #FFF;
+      border-color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        padding: 12px;
+      }
+      .hero-header {
+        padding: 24px 18px;
+      }
+      .hero-title {
+        font-size: 1.6rem;
+      }
+      .laudo-section {
+        padding: 20px 16px;
+      }
+      .map-wrapper {
+        min-height: 350px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Hero Header -->
+    <header class="hero-header">
+      <div class="badge-tag">
+        <i class="fa-solid fa-plane-departure"></i> Planejamento Tático 2027
+      </div>
+      <h1 class="hero-title">Operação Roma, Itália</h1>
+      <p class="hero-subtitle">Consolidação executiva de inteligência de milhas, otimização logística de rotas ferroviárias/aéreas e mapa tático de movimentação.</p>
+      
+      <div class="hero-stats">
+        <div class="stat-pill">
+          <i class="fa-solid fa-piggy-bank"></i>
+          <span><strong>Saving Real:</strong> R$ 378,05 (Hotel) + Aéreo Bônus</span>
+        </div>
+        <div class="stat-pill">
+          <i class="fa-solid fa-credit-card"></i>
+          <span><strong>Estratégia Câmbio:</strong> Wise / Select (0,80% spread)</span>
+        </div>
+        <div class="stat-pill">
+          <i class="fa-solid fa-passport"></i>
+          <span><strong>Fronteiras:</strong> ETIAS & EES Obrigatórios</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Quick Section Links -->
+    <div class="quick-nav">
+      <a href="#mapa-roteiro" class="quick-nav-btn"><i class="fa-solid fa-map-location-dot"></i> Roteiro & Mapa</a>
+      <a href="#resumo-executivo" class="quick-nav-btn"><i class="fa-solid fa-chart-pie"></i> Resumo Executivo</a>
+      <a href="#matriz-sazonal" class="quick-nav-btn"><i class="fa-solid fa-calendar-days"></i> Matriz Sazonal</a>
+      <a href="#milhas-cpm" class="quick-nav-btn"><i class="fa-solid fa-coins"></i> Milhas & CPM</a>
+      <a href="#salas-vip" class="quick-nav-btn"><i class="fa-solid fa-couch"></i> Salas VIP</a>
+      <a href="#cambio" class="quick-nav-btn"><i class="fa-solid fa-money-bill-transfer"></i> Câmbio</a>
+    </div>
+
+    <!-- Map & Interactive Timeline Section -->
+    <section id="mapa-roteiro" class="interactive-grid">
+      
+      <!-- Left Column: Timeline List -->
+      <div class="timeline-sidebar">
+        <div class="section-title">
+          <i class="fa-solid fa-route"></i> Pontos de Deslocamento
+        </div>
+        
+        <div id="timeline-cards-container">
+          <!-- Dynamic Cards Inserted via JS -->
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Map -->
+      <div class="map-wrapper">
+        <div id="map"></div>
+      </div>
+
+    </section>
+
+    <!-- Detailed Technical Report Section -->
+    <section class="laudo-section">
+      <div id="laudo-content-target" class="laudo-content">
+        <!-- Roteiro Bruto Content Inserted Here -->
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // Data Payload from Prompt
+    const meuspontos = [
+      {
+        "id": 1,
+        "nome": "Aeroporto Internacional de Roma-Fiumicino (FCO)",
+        "lat": 41.79352,
+        "lng": 12.25259,
+        "proximo_ponto": {
+          "nome": "Estação Roma Termini",
+          "tempo_minutos": 421,
+          "distancia_km": "35.06"
+        }
+      },
+      {
+        "id": 2,
+        "nome": "Estação Roma Termini",
+        "lat": 41.872758,
+        "lng": 12.483806,
+        "proximo_ponto": {
+          "nome": "Nápoles",
+          "tempo_minutos": 2720,
+          "distancia_km": "254.84"
+        }
+      },
+      {
+        "id": 3,
+        "nome": "Nápoles",
+        "lat": 40.862838,
+        "lng": 14.237375,
+        "proximo_ponto": {
+          "nome": "Florença",
+          "tempo_minutos": 5442,
+          "distancia_km": "1111.12"
+        }
+      },
+      {
+        "id": 4,
+        "nome": "Florença",
+        "lat": 43.817726,
+        "lng": 11.370028,
+        "proximo_ponto": {
+          "nome": "Milão",
+          "tempo_minutos": 4211,
+          "distancia_km": "350.96"
+        }
+      },
+      {
+        "id": 5,
+        "nome": "Milão",
+        "lat": 45.473702,
+        "lng": 9.170685,
+        "proximo_ponto": null
+      }
+    ];
+
+    const roteiroBrutoHTML = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Laudo Técnico Executivo - Roma 2027</title>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #333333;
+        background-color: #F8F9FA;
+        margin: 0;
+        padding: 20px;
+        line-height: 1.6;
+    }
+    h1, h2, h3 {
+        color: #1B365D;
+        page-break-after: avoid;
+        break-after: avoid;
+        border-bottom: 2px solid #1B365D;
+        padding-bottom: 5px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        background-color: #FFFFFF;
+        font-size: 14px;
+    }
+    th, td {
+        border: 1px solid #E5E7EB;
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #1B365D;
+        color: #FFFFFF;
+    }
+    tr:nth-child(even) {
+        background-color: #F3F4F6;
+    }
+    tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    .destaque {
+        background-color: #E0E7FF;
+        padding: 15px;
+        border-left: 5px solid #1B365D;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+</style>
+</head>
+<body>
+
+    <h1>LAUDO TÉCNICO EXECUTIVO: OPERAÇÃO ROMA 2027</h1>
+
+    <div class="destaque" id="resumo-executivo">
+        <h2>[1. RESUMO EXECUTIVO]</h2>
+        <p><strong>Objetivo Tático:</strong> Otimização de ativos de fidelidade para emissão de 2 bilhetes aéreos (ida e volta) para Roma (FCO) em 2027, maximizando o spread cambial e a infraestrutura de Ground Handling.</p>
+        <p><strong>Métricas Brutas de Saving:</strong> O portfólio atual concentra alto volume no C6 Bank (262k) a custo zero, permitindo alavancagem via bônus de transferência para a Smiles. A hospedagem via ALL Accor garante um saving real projetado de R$ 378,05 frente a tarifas pagantes. A escolha de contas globais de baixo spread (0,80%) reduzirá o custo cambial em até 5,20% em comparação aos cartões de crédito tradicionais do portfólio.</p>
+    </div>
+
+    <h2 id="matriz-sazonal">[2. MATRIZ DE DECISÃO SAZONAL]</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Período (2027)</th>
+                <th>Clima (Média)</th>
+                <th>Nível de Temporada</th>
+                <th>Saturação Logística</th>
+                <th>Estimativa de Custos (Cash vs Milhas)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Março - Maio (Primavera)</td>
+                <td>12°C - 20°C</td>
+                <td>Média/Alta (Ombro)</td>
+                <td>Moderada. Filas de 30-45 min em FCO.</td>
+                <td>Cash: € 150/noite | Milhas: 110k - 140k/trecho</td>
+            </tr>
+            <tr>
+                <td>Junho - Agosto (Verão)</td>
+                <td>22°C - 32°C</td>
+                <td>Altíssima</td>
+                <td>Crítica. Filas de imigração > 60 min.</td>
+                <td>Cash: € 250/noite | Milhas: > 180k/trecho (Baixa disponibilidade)</td>
+            </tr>
+            <tr>
+                <td>Setembro - Novembro (Outono)</td>
+                <td>15°C - 25°C</td>
+                <td>Média/Alta (Ombro)</td>
+                <td>Moderada.</td>
+                <td>Cash: € 160/noite | Milhas: 100k - 130k/trecho</td>
+            </tr>
+            <tr>
+                <td>Dezembro - Fevereiro (Inverno)</td>
+                <td>4°C - 13°C</td>
+                <td>Baixa</td>
+                <td>Baixa. Fluxo rápido em terminais.</td>
+                <td>Cash: € 100/noite | Milhas: 80k - 110k/trecho</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="milhas-cpm">[3. ENGENHARIA DE MILHAS E VALORAÇÃO FINANCEIRA (CPM)]</h2>
+    
+    <h3>Diagnóstico do Banco de Milhas</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Programa</th>
+                <th>Saldo Atual</th>
+                <th>Custo Medio (CPM)</th>
+                <th>Parecer Técnico e Estratégia de Alavancagem</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Smiles</td>
+                <td>45.666</td>
+                <td>R$ 9,87</td>
+                <td>Saldo base eficiente. Receberá aporte do C6 Bank.</td>
+            </tr>
+            <tr>
+                <td>Latam</td>
+                <td>17.771</td>
+                <td>R$ 10,74</td>
+                <td>Saldo residual. Manter em hold.</td>
+            </tr>
+            <tr>
+                <td>Esfera</td>
+                <td>80.981</td>
+                <td>R$ 16,52</td>
+                <td>Ativo tático. Transferir para Iberia Plus (2:1) gerando ~40k Avios. Aguardar janela promocional.</td>
+            </tr>
+            <tr>
+                <td>Livelo</td>
+                <td>11.276</td>
+                <td>R$ 25,81</td>
+                <td>Saldo residual. CPM elevado.</td>
+            </tr>
+            <tr>
+                <td>Iberia</td>
+                <td>0</td>
+                <td>R$ 0,00</td>
+                <td>Programa alvo para emissões intra-Europa ou trecho MAD-FCO.</td>
+            </tr>
+            <tr>
+                <td>AllAcoor</td>
+                <td>11.600</td>
+                <td>R$ 87,41</td>
+                <td>Suficiente para abater € 232 em hospedagem.</td>
+            </tr>
+            <tr>
+                <td>Caixa</td>
+                <td>3.624</td>
+                <td>R$ 0,00</td>
+                <td>Saldo residual.</td>
+            </tr>
+            <tr>
+                <td>C6</td>
+                <td>262.256</td>
+                <td>R$ 0,00</td>
+                <td>Ativo principal. <strong>Alerte de Timing:</strong> Historicamente (últimos 60 dias), o C6 ofereceu até 70% de bônus para Smiles. Aguarde janelas de fechamento de trimestre (Set/Dez) ou Black Friday (Nov) para transferir. Projeção: 445.835 milhas Smiles.</td>
+            </tr>
+            <tr>
+                <td>Azul</td>
+                <td>5.000</td>
+                <td>R$ 0,00</td>
+                <td>Saldo residual.</td>
+            </tr>
+            <tr>
+                <td>Revolut</td>
+                <td>0</td>
+                <td>R$ 0,00</td>
+                <td>Conta global a ser ativada para câmbio.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Tabela de Rotas e Franquia de Bagagem</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Cia Aérea (Aliança)</th>
+                <th>Rota Sugerida</th>
+                <th>Custo Estimado (Milhas/Trecho)</th>
+                <th>Regras Rígidas de Franquia de Bagagem (Internacional)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ITA Airways (SkyTeam)</td>
+                <td>GRU - FCO (Direto)</td>
+                <td>120k - 160k Smiles</td>
+                <td>Tarifas base incluem 2 malas de 23kg. Excesso ou mala extra a partir de US$ 150.</td>
+            </tr>
+            <tr>
+                <td>Air France / KLM (SkyTeam)</td>
+                <td>GRU - CDG/AMS - FCO</td>
+                <td>130k - 170k Smiles</td>
+                <td>Até 2 malas de 23kg (158cm lineares). Despacho adicional a partir de US$ 65.</td>
+            </tr>
+            <tr>
+                <td>Iberia (Oneworld)</td>
+                <td>GRU - MAD - FCO</td>
+                <td>42.5k - 50k Avios (Off-peak)</td>
+                <td>Econômica básica inclui 1 mala de 23kg (158cm lineares). Extra a partir de € 65.</td>
+            </tr>
+            <tr>
+                <td>TAP Portugal (Star Alliance)</td>
+                <td>GRU - LIS - FCO</td>
+                <td>110k - 130k TAP/Smiles</td>
+                <td>Tarifa Discount NÃO inclui bagagem. Despacho a partir de US$ 90 por mala. Bagagem de mão restrita a 10kg (55x40x25cm).</td>
+            </tr>
+            <tr>
+                <td>LATAM</td>
+                <td>GRU - FCO (via MAD/BCN)</td>
+                <td>100k - 130k Latam Pass</td>
+                <td>Tarifa básica NÃO inclui bagagem despachada. Despacho a partir de US$ 70.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>[4. ENGENHARIA LOGÍSTICA DE FRONTEIRA E TRANSBORDO]</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Aeroporto</th>
+                <th>Gargalos de Imigração / EES / ETIAS (Vigência 2027)</th>
+                <th>Matriz de Mobilidade e Transbordo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GRU (Guarulhos)</td>
+                <td>Controle de passaporte BR rápido (e-gates). Tempo médio: 15 min.</td>
+                <td>Embarque T3. Deslocamento via GRU Airport Express (Trem) ou Uber.</td>
+            </tr>
+            <tr>
+                <td>FCO (Roma Fiumicino)</td>
+                <td><strong>ETIAS OBRIGATÓRIO</strong> (implementação total em Out/2027, custo €7). EES (biometria) operacional. Tempo de fila: 40-60 min.</td>
+                <td>Leonardo Express (Trem direto para Termini): 32 minutos. Custo: €14.</td>
+            </tr>
+            <tr>
+                <td>CDG (Paris) / AMS (Amsterdã)</td>
+                <td>Ponto de entrada Schengen. EES ativo. Imigração rigorosa. Conexão mínima exigida: 90 minutos.</td>
+                <td>Transbordo interno complexo no CDG (T2E para T2F). AMS é hub único (mais eficiente).</td>
+            </tr>
+            <tr>
+                <td>MAD (Madri)</td>
+                <td>Ponto de entrada Schengen. EES ativo. Tempo médio: 30-45 min.</td>
+                <td>Conexão T4 para T4S via trem subterrâneo (Automated People Mover). Tempo de trânsito: 20 min.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="salas-vip">[5. LOGÍSTICA DE SALAS VIP (GROUND HANDLING) E INVENTÁRIO DE ACESSOS]</h2>
+    <p>O portfólio do cliente possui limites estritos. A estratégia abaixo garante acesso para 2 passageiros sem esgotar cotas desnecessariamente.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Terminal / Aeroporto</th>
+                <th>Cartão Apresentado</th>
+                <th>Sala VIP Escolhida</th>
+                <th>Regra Matemática e Consumo de Cota (Para 2 Pax)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GRU - Terminal 3 (Embarque)</td>
+                <td>C6 Black (Titular) + C6 Black (Adicional)</td>
+                <td>Sala Mastercard Black (Pós-embarque)</td>
+                <td><strong>Ilimitado.</strong> Apresentar os cartões físicos. Consumo: 0 acessos da cota LoungeKey/WAC.</td>
+            </tr>
+            <tr>
+                <td>FCO - Terminal 3 (Retorno)</td>
+                <td>Inter Prime Black (Titular)</td>
+                <td>Plaza Premium Lounge (T3 Schengen/Non-Schengen)</td>
+                <td>Consumo: 2 acessos da cota anual de 6 acessos LoungeKey/WAC. Restarão 4 acessos para o ano.</td>
+            </tr>
+            <tr>
+                <td>MAD - Terminal 4S (Conexão - Alternativa)</td>
+                <td>Santander Unique Visa Infinite (Titular)</td>
+                <td>Neptuno Lounge (Aena)</td>
+                <td>Consumo: 2 acessos da cota anual de 2 acessos DragonPass. Esgota a cota deste cartão.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>[6. HOSPEDAGEM (ALL ACCOR vs MERCADO)]</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Métrica ALL Accor</th>
+                <th>Valoração Matemática</th>
+                <th>Comparativo Pagante (Mercado)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Saldo Atual ALL</td>
+                <td>11.600 pontos</td>
+                <td rowspan="4">Tarifa média em Roma (Ibis/Mercure): € 120/noite.<br>Os pontos cobrem quase 2 diárias integrais.<br><strong>Saving Real: R$ 378,05</strong> (diferença entre o custo de geração dos pontos e o valor de face em Euros).</td>
+            </tr>
+            <tr>
+                <td>Custo de Aquisição (CPM)</td>
+                <td>R$ 87,41 (Custo Total: R$ 1.013,95)</td>
+            </tr>
+            <tr>
+                <td>Fator de Conversão</td>
+                <td>2.000 pontos = € 40</td>
+            </tr>
+            <tr>
+                <td>Poder de Compra (Face Value)</td>
+                <td>€ 232,00 (Aprox. R$ 1.392,00 a um câmbio de R$ 6,00)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="cambio">[7. CONSOLIDAÇÃO FINANCEIRA E CÂMBIO]</h2>
+    <p>Para os gastos em solo europeu, a utilização de cartões de crédito tradicionais (C6, Santander) incorre em spreads punitivos (5,25% a 6,00%). A estratégia exige o uso de contas globais de débito.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Instituição / Conta Global</th>
+                <th>Spread Cambial (2024/2026)</th>
+                <th>IOF</th>
+                <th>Custo Total da Operação (Spread + IOF)</th>
+                <th>Recomendação Técnica</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Wise</td>
+                <td>0,80%</td>
+                <td>1,10%</td>
+                <td>1,90%</td>
+                <td><strong>Altamente Recomendado.</strong> Menor custo absoluto.</td>
+            </tr>
+            <tr>
+                <td>Santander Select Global</td>
+                <td>0,80%</td>
+                <td>1,10%</td>
+                <td>1,90%</td>
+                <td><strong>Altamente Recomendado.</strong> Saques gratuitos em ATMs Santander.</td>
+            </tr>
+            <tr>
+                <td>Revolut</td>
+                <td>0,82%</td>
+                <td>1,10%</td>
+                <td>1,92%</td>
+                <td>Recomendado. Excelente usabilidade na Europa.</td>
+            </tr>
+            <tr>
+                <td>C6 Global</td>
+                <td>0,90%</td>
+                <td>1,10%</td>
+                <td>2,00%</td>
+                <td>Viável, porém ligeiramente superior aos líderes.</td>
+            </tr>
+            <tr>
+                <td>Banco Inter</td>
+                <td>0,99%</td>
+                <td>1,10%</td>
+                <td>2,09%</td>
+                <td>Viável.</td>
+            </tr>
+            <tr>
+                <td>Nomad</td>
+                <td>1,00% a 2,00%</td>
+                <td>1,10%</td>
+                <td>2,10% a 3,10%</td>
+                <td>Evitar, a menos que possua nível alto no Nomad Pass.</td>
+            </tr>
+            <tr>
+                <td>Cartões de Crédito (C6/Santander)</td>
+                <td>5,25% a 6,00%</td>
+                <td>3,50% (2025+)</td>
+                <td>8,75% a 9,50%</td>
+                <td><strong>NÃO UTILIZAR.</strong> Custo financeiro destrutivo. Usar apenas para caução (hold) em hotéis/locadoras.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>[8. EXPANSÃO DE ROTEIRO TÁTICO E CIDADES PRÓXIMAS]</h2>
+    <p>Caso a emissão direta para FCO apresente custo inflacionado em milhas, considere a técnica de <em>Open-Jaw</em> (entradas e saídas divididas) utilizando a malha ferroviária de alta velocidade italiana (Trenitalia/Italo).</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Aeroporto Alternativo</th>
+                <th>Tempo de Deslocamento (Trem até Roma Termini)</th>
+                <th>Custo Médio do Trem (Antecipado)</th>
+                <th>Justificativa Logística</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Nápoles (NAP)</td>
+                <td>1h 15m (Alta Velocidade)</td>
+                <td>€ 15 - € 25</td>
+                <td>Aeroporto secundário com taxas aeroportuárias menores. Excelente para emissões via Air France/KLM. Hospedagem 30% mais barata que Roma.</td>
+            </tr>
+            <tr>
+                <td>Florença (FLR)</td>
+                <td>1h 30m (Alta Velocidade)</td>
+                <td>€ 20 - € 35</td>
+                <td>Pista curta, recebe aeronaves menores (Embraer/A220). Boa opção de stopover logístico antes de descer para Roma.</td>
+            </tr>
+            <tr>
+                <td>Milão (MXP / LIN)</td>
+                <td>3h 00m (Alta Velocidade)</td>
+                <td>€ 30 - € 50</td>
+                <td>Maior hub internacional da Itália. Alta disponibilidade de assentos prêmio na LATAM e ITA Airways. Compensa o tempo de trem pelo saving em milhas.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>`;
+
+    // Helper: Convert Minutes into Readable Format
+    function formatMinutes(min) {
+      if (!min) return '';
+      const hrs = Math.floor(min / 60);
+      const mins = min % 60;
+      if (hrs > 0) {
+        return `${hrs}h ${mins > 0 ? mins + 'm' : ''}`;
+      }
+      return `${mins} min`;
+    }
+
+    // Render Raw HTML safely inside target container
+    document.getElementById('laudo-content-target').innerHTML = roteiroBrutoHTML;
+
+    // Wrap tables in responsive containers
+    document.querySelectorAll('.laudo-content table').forEach(table => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'table-wrapper';
+      table.parentNode.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
+    });
+
+    // Initialize Leaflet Map
+    const map = L.map('map', {
+      zoomControl: true,
+      scrollWheelZoom: false
+    }).setView([42.5, 12.5], 6);
+
+    // Add Tiles (CartoDB Voyager for elegant look)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+
+    const markersMap = {};
+    const latLngList = [];
+
+    // Container for dynamic cards
+    const cardsContainer = document.getElementById('timeline-cards-container');
+
+    meuspontos.forEach((ponto, index) => {
+      const latLng = [ponto.lat, ponto.lng];
+      latLngList.push(latLng);
+
+      // Create Custom Marker Icon
+      const customIcon = L.divIcon({
+        className: 'custom-leaflet-marker',
+        html: `<span>${ponto.id}</span>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+
+      // Marker Popup HTML
+      let popupText = `<div class="popup-content"><div class="popup-title">${ponto.id}. ${ponto.nome}</div>`;
+      if (ponto.proximo_ponto) {
+        popupText += `<div class="popup-meta"><i class="fa-solid fa-person-walking-luggage"></i> <strong>Próximo:</strong> ${ponto.proximo_ponto.nome}<br><i class="fa-solid fa-clock"></i> Tempo estimado: ${formatMinutes(ponto.proximo_ponto.tempo_minutos)} (${ponto.proximo_ponto.distancia_km} km)</div>`;
+      } else {
+        popupText += `<div class="popup-meta"><i class="fa-solid fa-flag-checkered"></i> Ponto Final do Roteiro</div>`;
+      }
+      popupText += `</div>`;
+
+      // Add Marker to Map
+      const marker = L.marker(latLng, { icon: customIcon }).addTo(map);
+      marker.bindPopup(popupText);
+      markersMap[ponto.id] = marker;
+
+      // Render Sidebar Timeline Card
+      const card = document.createElement('div');
+      card.className = `timeline-card ${index === 0 ? 'active' : ''}`;
+      card.id = `card-${ponto.id}`;
+
+      let nextInfoHtml = '';
+      if (ponto.proximo_ponto) {
+        nextInfoHtml = `
+          <div class="next-connection">
+            <span><i class="fa-solid fa-arrow-right-long"></i> ${ponto.proximo_ponto.nome}</span>
+            <span class="connection-badge"><i class="fa-regular fa-clock"></i> ${formatMinutes(ponto.proximo_ponto.tempo_minutos)}</span>
+          </div>
+        `;
+      } else {
+        nextInfoHtml = `
+          <div class="next-connection">
+            <span class="connection-badge" style="background:#E2E8F0; color:#475569;"><i class="fa-solid fa-check"></i> Destino Final</span>
+          </div>
+        `;
+      }
+
+      card.innerHTML = `
+        <div class="timeline-card-header">
+          <div class="point-number">${ponto.id}</div>
+          <div class="point-info">
+            <div class="point-title">${ponto.nome}</div>
+          </div>
+        </div>
+        ${nextInfoHtml}
+      `;
+
+      // Card Click Event -> Focus Map
+      card.addEventListener('click', () => {
+        focusPoint(ponto.id);
+      });
+
+      cardsContainer.appendChild(card);
+    });
+
+    // Draw Polyline connecting route
+    if (latLngList.length > 1) {
+      const polyline = L.polyline(latLngList, {
+        color: '#8B2E16',
+        weight: 4,
+        opacity: 0.85,
+        dashArray: '6, 8',
+        lineCap: 'round'
+      }).addTo(map);
+
+      // Fit map bounds to encompass all points comfortably
+      map.fitBounds(polyline.getBounds(), { padding: [40, 40] });
+    }
+
+    // Interactive Focus Function
+    function focusPoint(id) {
+      const ponto = meuspontos.find(p => p.id === id);
+      if (!ponto) return;
+
+      // Center map & open popup
+      map.flyTo([ponto.lat, ponto.lng], 11, { duration: 1.2 });
+      markersMap[id].openPopup();
+
+      // Highlight corresponding card
+      document.querySelectorAll('.timeline-card').forEach(c => c.classList.remove('active'));
+      const activeCard = document.getElementById(`card-${id}`);
+      if (activeCard) {
+        activeCard.classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>
