@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caderno de Viagem & Dossiê - Sul da França & Riviera</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        :root {
+            --fundo-papel: #FAF6EE;
+            --cor-principal: #1B365D;
+            --cor-secundaria: #8B709F;
+            --cor-destaque: #E07A5F;
+            --texto-handwritten: #2B2D42;
+            --washi-tape: rgba(224, 122, 95, 0.35);
+            --card-bg: #FFFFFF;
+            --postit-bg: #FFF3B0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--fundo-papel);
+            background-image: radial-gradient(#e2d9cc 1px, transparent 0);
+            background-size: 24px 24px;
+            color: #333333;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        h1, h2, h3, .handwritten {
+            font-family: 'Caveat', cursive;
+        }
+
+        /* HEADER & HERO */
+        .header-hero {
+            position: relative;
+            background: linear-gradient(rgba(27, 54, 93, 0.7), rgba(27, 54, 93, 0.85)), 
+                        url('https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            color: #FFFFFF;
+            padding: 50px 20px 70px 20px;
+            text-align: center;
+            border-bottom: 5px dashed var(--cor-destaque);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .header-hero h1 {
+            font-size: 3.8rem;
+            color: #FFF;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .header-hero p {
+            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 0 auto;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        /* CARIMBOS RETRÔ */
+        .stamp-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .stamp {
+            display: inline-block;
+            border: 3px double var(--cor-destaque);
+            color: #FFF;
+            background-color: rgba(224, 122, 95, 0.25);
+            font-family: 'Caveat', cursive;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 6px 16px;
+            border-radius: 6px;
+            transform: rotate(-6deg);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            backdrop-filter: blur(2px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stamp:nth-child(even) {
+            transform: rotate(4deg);
+            border-color: #8B709F;
+            background-color: rgba(139, 112, 159, 0.25);
+        }
+
+        /* TOCADOR DE FITA CASSETE (AUDIO) */
+        .cassette-box {
+            max-width: 480px;
+            margin: -35px auto 30px auto;
+            background: #EEDCC3;
+            border: 3px solid #7C5C3B;
+            border-radius: 12px;
+            padding: 15px 20px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+            z-index: 10;
+        }
+
+        .cassette-box::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-1deg);
+            width: 130px;
+            height: 26px;
+            background: var(--washi-tape);
+            border-left: 2px dashed rgba(255,255,255,0.6);
+            border-right: 2px dashed rgba(255,255,255,0.6);
+        }
+
+        .cassette-title {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #4A3525;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cassette-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .btn-tape {
+            background: #1B365D;
+            color: #FFF;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-tape:hover {
+            background: #E07A5F;
+            transform: translateY(-2px);
+        }
+
+        /* NAVEGAÇÃO POR ABAS */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            max-width: 1000px;
+            margin: 20px auto 0 auto;
+            padding: 0 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: #E8DFD1;
+            border: 2px solid #C5B8A5;
+            border-bottom: none;
+            padding: 12px 24px;
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--cor-principal);
+            border-radius: 12px 12px 0 0;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.03);
+        }
+
+        .tab-btn.active {
+            background: var(--fundo-papel);
+            border-color: var(--cor-principal);
+            border-bottom: 3px solid var(--fundo-papel);
+            color: var(--cor-destaque);
+            transform: translateY(-2px);
+        }
+
+        /* CONTEÚDO DAS ABAS */
+        .tab-content {
+            display: none;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 25px 15px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* WASHI TAPE PARA CARDS */
+        .washi-tape-top {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-1.5deg);
+            width: 110px;
+            height: 24px;
+            background-color: var(--washi-tape);
+            border-left: 2px dashed rgba(255,255,255,0.6);
+            border-right: 2px dashed rgba(255,255,255,0.6);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 3;
+        }
+
+        /* CARDS DO ROTEIRO (SCRAPBOOK STYLE) */
+        .day-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 35px;
+            position: relative;
+            box-shadow: 2px 5px 18px rgba(0,0,0,0.07);
+            border: 1px solid #EAE3D2;
+            transform: rotate(-0.4deg);
+            transition: transform 0.3s ease;
+        }
+
+        .day-card:nth-child(even) {
+            transform: rotate(0.5deg);
+        }
+
+        .day-card:hover {
+            transform: rotate(0deg) translateY(-3px);
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed #E5E7EB;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .day-title {
+            font-size: 2.2rem;
+            color: var(--cor-principal);
+            line-height: 1.1;
+        }
+
+        .day-badge {
+            background: var(--cor-secundaria);
+            color: #FFF;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .day-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 25px;
+        }
+
+        @media (max-width: 850px) {
+            .day-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* CHECKBOX INTERATIVO */
+        .attraction-list {
+            list-style: none;
+        }
+
+        .attraction-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+            background: #FDFBF7;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border-left: 3px solid var(--cor-principal);
+        }
+
+        .attraction-item input[type="checkbox"] {
+            margin-top: 5px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--cor-destaque);
+        }
+
+        .attraction-label {
+            font-size: 1rem;
+            color: #2D3748;
+            cursor: pointer;
+        }
+
+        .attraction-item input[type="checkbox"]:checked + .attraction-label {
+            text-decoration: line-through;
+            color: #A0AEC0;
+        }
+
+        /* POST-IT NOTES */
+        .post-it {
+            background: var(--postit-bg);
+            color: var(--texto-handwritten);
+            padding: 18px;
+            border-radius: 2px;
+            box-shadow: 3px 4px 10px rgba(0,0,0,0.08);
+            transform: rotate(1.5deg);
+            margin-top: 15px;
+            position: relative;
+            border-left: 4px solid #E6C200;
+        }
+
+        .post-it-title {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #8C6D00;
+            margin-bottom: 5px;
+        }
+
+        .post-it p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        /* POLAROID PHOTO */
+        .polaroid {
+            background: #FFFFFF;
+            padding: 12px 12px 20px 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+            transform: rotate(-2deg);
+            border: 1px solid #E2E8F0;
+            text-align: center;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 2px;
+            display: block;
+        }
+
+        .polaroid-caption {
+            font-family: 'Caveat', cursive;
+            font-size: 1.3rem;
+            color: var(--texto-handwritten);
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        /* MAPA INTERATIVO */
+        #map {
+            width: 100%;
+            height: 520px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            border: 4px solid #FFF;
+            margin-bottom: 30px;
+        }
+
+        /* TABLES & TAB 3 DOSSIÊ */
+        .dossier-card {
+            background: #FFF;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            border: 1px solid #EAE3D2;
+            position: relative;
+        }
+
+        .dossier-card h3 {
+            font-size: 2rem;
+            color: var(--cor-principal);
+            border-bottom: 2px solid var(--cor-principal);
+            padding-bottom: 6px;
+            margin-bottom: 18px;
+        }
+
+        .retro-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.93rem;
+        }
+
+        .retro-table th {
+            background-color: var(--cor-principal);
+            color: #FFF;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .retro-table td {
+            padding: 12px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .retro-table tr:nth-child(even) {
+            background-color: #FAF8F5;
+        }
+
+        .alert-box {
+            background-color: #FFFBEB;
+            border-left: 4px solid #F59E0B;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 18px 0;
+            color: #92400E;
+            font-size: 0.95rem;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 30px 15px;
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            color: var(--cor-principal);
+            margin-top: 40px;
+            border-top: 2px dashed #CBD5E1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- IFRAME OCULTO DO YOUTUBE PARA AÁUDIO -->
+    <iframe id="youtube-player" src="https://www.youtube.com/embed/benf4KNrajc?enablejsapi=1" style="display: none;" allow="autoplay"></iframe>
+
+    <!-- HEADER & HERO BANNER -->
+    <header class="header-hero">
+        <h1>Roteiro & Scrapbook Tático</h1>
+        <p>Sul da França & Riviera | Experiência de Viagem, Otimização de Milhas e Logística Tática</p>
+        
+        <div class="stamp-container">
+            <span class="stamp">NICE CÔTE D'AZUR - TERRAIN FLUVIAL</span>
+            <span class="stamp">PROVENCE PASSPORT - SCHENGEN</span>
+            <span class="stamp">TGV INOUI - TRANSIT EXPRESS</span>
+        </div>
+    </header>
+
+    <!-- PLAYER CASSETE RETRÔ -->
+    <div class="cassette-box">
+        <div class="cassette-title">
+            <span>📻 Trilha Sonora - Rádio Provençal</span>
+            <span style="font-size: 0.9rem; font-family: sans-serif; opacity: 0.8;">Gravador de Bolso</span>
+        </div>
+        <div class="cassette-controls">
+            <button class="btn-tape" onclick="playAudio()">▶ Play Músicas</button>
+            <button class="btn-tape" onclick="pauseAudio()">⏸ Pause</button>
+        </div>
+    </div>
+
+    <!-- BARRA DE NAVEGAÇÃO -->
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('tab1', this)">📖 1. Roteiro & Diário de Viagem</button>
+        <button class="tab-btn" onclick="switchTab('tab2', this)">🗺️ 2. Mapa Interativo & Rotas</button>
+        <button class="tab-btn" onclick="switchTab('tab3', this)">📊 3. Dossiê de Milhas & Logística</button>
+    </nav>
+
+    <!-- ABA 1: ROTEIRO & DIÁRIO DE VIAGEM -->
+    <main id="tab1" class="tab-content active">
+
+        <!-- DIA 1 -->
+        <article class="day-card">
+            <div class="washi-tape-top"></div>
+            <div class="day-header">
+                <h2 class="day-title">Dia 1: Chegada em Nice & Reconhecimento da Cidade Velha</h2>
+                <span class="day-badge">Nice & Vieux-Nice</span>
+            </div>
+            <div class="day-grid">
+                <div>
+                    <ul class="attraction-list">
+                        <li class="attraction-item">
+                            <input type="checkbox" id="d1_1">
+                            <label for="d1_1" class="attraction-label"><strong>Mercado de Flores e Sabores no Cours Saleya:</strong> Caminhada pelos aromas locais, degustação de azeitonas e lavanda.</label>
+                        </li>
+                        <li class="attraction-item">
+                            <input type="checkbox" id="d1
