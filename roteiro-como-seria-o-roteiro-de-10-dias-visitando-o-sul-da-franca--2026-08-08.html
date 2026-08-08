@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caderno de Viagem Tático - Sul da França & Riviera</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <style>
+    :root {
+      --fundo-papel: #FAF6EE;
+      --cor-principal: #1B365D;
+      --cor-secundaria: #6B4C9A;
+      --cor-destaque: #D97706;
+      --texto-handwritten: #2B2D42;
+      --washi-color: rgba(27, 54, 93, 0.2);
+      --card-bg: #FFFFFF;
+      --postit-bg: #FEF3C7;
+      --border-color: #E2E8F0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--fundo-papel);
+      background-image: radial-gradient(#e5decf 1px, transparent 0);
+      background-size: 24px 24px;
+      color: #334155;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    /* Container Principal */
+    .scrapbook-container {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    /* Navegação Estilo Aba de Fichário */
+    .binder-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 3px solid var(--cor-principal);
+      margin-bottom: 25px;
+      padding-left: 10px;
+      overflow-x: auto;
+    }
+
+    .tab-button {
+      background: #E2E8F0;
+      border: 2px solid var(--cor-principal);
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      padding: 12px 20px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--cor-principal);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      position: relative;
+      top: 3px;
+    }
+
+    .tab-button:hover {
+      background: #CBD5E1;
+    }
+
+    .tab-button.active {
+      background: var(--fundo-papel);
+      color: var(--cor-destaque);
+      border-color: var(--cor-principal);
+      border-bottom: 4px solid var(--fundo-papel);
+      z-index: 2;
+      top: 0;
+    }
+
+    /* Conteúdo das Abas */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Elementos Decorativos Scrapbook */
+    .washi-tape {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-1.5deg);
+      width: 120px;
+      height: 26px;
+      background-color: var(--washi-color);
+      border-left: 2px dashed rgba(255, 255, 255, 0.5);
+      border-right: 2px dashed rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(2px);
+      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .stamp {
+      display: inline-block;
+      padding: 6px 12px;
+      border: 2px dashed var(--cor-secundaria);
+      color: var(--cor-secundaria);
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      border-radius: 6px;
+      transform: rotate(-6deg);
+      margin: 8px;
+      opacity: 0.85;
+      user-select: none;
+    }
+
+    .stamp.alt {
+      border-color: var(--cor-destaque);
+      color: var(--cor-destaque);
+      transform: rotate(4deg);
+    }
+
+    /* Cards Caderno */
+    .scrap-card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 28px;
+      position: relative;
+      box-shadow: 2px 6px 18px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .scrap-card:nth-child(even) {
+      transform: rotate(0.4deg);
+    }
+
+    .scrap-card:nth-child(odd) {
+      transform: rotate(-0.4deg);
+    }
+
+    /* Photos Polaroid */
+    .polaroid {
+      background: #FFF;
+      padding: 12px 12px 24px 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      border: 1px solid #E2E8F0;
+      text-align: center;
+      max-width: 100%;
+      margin: 15px 0;
+    }
+
+    .polaroid img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+
+    .polaroid-caption {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      color: var(--texto-handwritten);
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    /* Sticky Post-it */
+    .post-it {
+      background-color: var(--postit-bg);
+      padding: 16px;
+      border-radius: 4px;
+      box-shadow: 3px 3px 10px rgba(0,0,0,0.08);
+      transform: rotate(-1deg);
+      margin: 15px 0;
+      border-left: 4px solid var(--cor-destaque);
+    }
+
+    .post-it h4 {
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: var(--cor-destaque);
+      margin-bottom: 5px;
+    }
+
+    /* Audio Cassette Player CSS */
+    .cassette-player {
+      background: #2D3748;
+      border: 4px solid #1A202C;
+      border-radius: 12px;
+      padding: 18px;
+      color: #FFF;
+      max-width: 480px;
+      margin: 20px auto;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .cassette-reels {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: #1A202C;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .reel {
+      width: 45px;
+      height: 45px;
+      border: 4px dashed #CBD5E1;
+      border-radius: 50%;
+      animation: spin 4s linear infinite paused;
+    }
+
+    .cassette-player.playing .reel {
+      animation-play-state: running;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .cassette-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .btn-tape {
+      background: var(--cor-destaque);
+      border: none;
+      color: white;
+      padding: 8px 18px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background 0.2s;
+    }
+
+    .btn-tape:hover {
+      background: #B45309;
+    }
+
+    /* Checklist Roteiro */
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding: 8px;
+      border-bottom: 1px dashed #E2E8F0;
+    }
+
+    .checklist-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--cor-principal);
+      cursor: pointer;
+      margin-top: 3px;
+    }
+
+    .checklist-item.done label {
+      text-decoration: line-through;
+      color: #94A3B8;
+    }
+
+    /* Tabelas Retrô Executivas */
+    .retro-table-wrapper {
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    table.retro-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #FFF;
+      border: 1px solid #CBD5E1;
+      font-size: 0.92rem;
+    }
+
+    table.retro-table th {
+      background-color: var(--cor-principal);
+      color: #FFF;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    table.retro-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    table.retro-table tr:nth-child(even) {
+      background-color: #F8FAFC;
+    }
+
+    /* Alert Boxes */
+    .alert-box {
+      background-color: #FEF3C7;
+      border-left: 5px solid var(--cor-destaque);
+      padding: 16px;
+      border-radius: 4px;
+      margin: 20px 0;
+      color: #92400E;
+    }
+
+    /* Headings */
+    h1, h2, h3 {
+      color: var(--cor-principal);
+      font-weight: 700;
+    }
+
+    h1.scrap-title {
+      font-family: 'Caveat', cursive;
+      font-size: 3.2rem;
+      text-align: center;
+      margin-bottom: 5px;
+      color: var(--cor-principal);
+    }
+
+    .scrap-subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #64748B;
+      margin-bottom: 20px;
+    }
+
+    #map {
+      height: 480px;
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 2px solid var(--cor-principal);
+    }
+
+    @media (max-width: 768px) {
+      h1.scrap-title { font-size: 2.4rem; }
+      .binder-tabs { gap: 4px; }
+      .tab-button { padding: 8px 12px; font-size: 1.1rem; }
+      .scrap-card { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scrapbook-container">
+    
+    <!-- Cabeçalho Principal estilo Diário -->
+    <header style="text-align: center; margin-top: 15px; margin-bottom: 25px; position: relative;">
+      <div class="stamp">ARRIVÉE - NICE CÔTE D'AZUR</div>
+      <div class="stamp alt">PROVENCE EXPEDITION</div>
+      <h1 class="scrap-title">Diário & Dossier: Sul da França</h1>
+      <p class="scrap-subtitle">Riviera Francesa, Principado de Mônaco e Charme da Provence</p>
+    </header>
+
+    <!-- Barra de Navegação por Abas -->
+    <nav class="binder-tabs">
+      <button class="tab-button active" onclick="switchTab('tab-roteiro')">📖 Roteiro & Diário</button>
+      <button class="tab-button" onclick="switchTab('tab-mapa')">🗺️ Mapa & Deslocamentos</button>
+      <button class="tab-button" onclick="switchTab('tab-dossie')">📊 Milhas, Câmbio & Logística</button>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- ABA 1: ROTEIRO & DIÁRIO DE VIAGEM          -->
+    <!-- ========================================== -->
+    <div id="tab-roteiro" class="tab-content active">
+      
+      <!-- Hero Header Imersivo -->
+      <div class="scrap-card" style="text-align: center;">
+        <div class="washi-tape"></div>
+        <div class="polaroid" style="max-width: 680px; margin: 0 auto 20px auto;">
+          <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" alt="Hero Riviera">
+          <div class="polaroid-caption">Côte d'Azur: Onde o azul do Mediterrâneo atinge a perfeição</div>
+        </div>
+
+        <!-- Gravador Cassete Player Retrô -->
+        <div class="cassette-player" id="cassettePlayer">
+          <div style="font-family: 'Caveat', cursive; font-size: 1.3rem; margin-bottom: 8px; color: #FCD34D;">
+            📻 Fita Cassete #1: Trilha Sonora da Côte d'Azur
+          </div>
+          <div class="cassette-reels">
+            <div class="reel"></div>
+            <div style="font-size: 0.8rem; color: #94A3B8; font-family: monospace;">SIDE A - 1984</div>
+            <div class="reel"></div>
+          </div>
+          <div class="cassette-controls">
+            <button class="btn-tape" onclick="playAudio()">▶ PLAY</button>
+            <button class="btn-tape" style="background:#64748B;" onclick="pauseAudio()">⏸ PAUSE</button>
+          </div>
+          <!-- Youtube iframe Oculto -->
+          <iframe id="youtube-player" src="https://www.youtube.com/embed/TURBEJWXm3U?enablejsapi=1" style="display: none;" allow="autoplay"></iframe>
+        </div>
+      </div>
+
+      <!-- DIA 1 & 2: NICE -->
+      <div class="scrap-card">
+        <div class="washi-tape"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+          <h2>Dias 1 & 2: Nice — O Coração da Riviera</h2>
+          <span class="stamp">SNCF TER PASS</span>
+        </div>
+        <p style="margin: 10px 0;">Explore o passeio marítimo mais icônico do mundo e o charme rústico do centro histórico de Nice.</p>
+        
+        <div class="checklist-item">
+          <input type="checkbox" id="p1" onchange="toggleDone(this)">
+          <label for="p1"><strong>Promenade des Anglais:</strong> Caminhada pela orla icônica à beira do Mediterrâneo.</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="p2" onchange="toggleDone(this)">
+          <label for="p2"><strong>Vieux Nice:</strong> Perca-se nas vielas coloridas de arquitetura genovesa.</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="p3" onchange="toggleDone(this)">
+          <label for="p3"><strong>Marché Cours Saleya:</strong> Mercado tradicional de flores, especiarias e produtos locais.</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="p4" onchange="toggleDone(this)">
+          <label for="p4"><strong>Colline du Château:</strong> Subida panorâmica para a melhor vista das baías de Nice.</label>
+        </div>
+
+        <div class="post-it">
+          <h4>💡 Dica Gastronômica Nice</h4>
+          <p>Experimente a autêntica <strong>Socca</strong> (panqueca crocante de farinha de grão-de-bico) bem quente no Cours Saleya, harmonizada com um vinho rosé da Provence.</p>
+        </div>
+      </div>
+
+      <!-- DIA 3 & 4: ÈZE E MÔNACO -->
+      <div class="scrap-card">
+        <div class="washi-tape"></div>
+        <h2>Dias 3 & 4: Vila Medieval de Èze & O Luxo de Mônaco</h2>
+        <p style="margin: 10px 0;">Um contraste marcante entre o vilarejo medieval suspenso nas montanhas e o glamour absoluto do principado.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px;">
+          <div>
+            <div class="checklist-item">
+              <input type="checkbox" id="p5" onchange="toggleDone(this)">
+              <label for="p5"><strong>Vila Medieval de Èze:</strong> Ruas de pedra e arquitetura do século XII.</label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="p6" onchange="toggleDone(this)">
+              <label for="p6"><strong>Jardin Exotique:</strong> Jardim de cactos no topo do penhasco com vista de 360°.</label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="p7" onchange="toggleDone(this)">
+              <label for="p7"><strong>Principado de Mônaco:</strong> Passeio pelo circuito de F1 e Palais Princier.</label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="p8" onchange="toggleDone(this)">
+              <label for="p8"><strong>Cassino de Monte-Carlo:</strong> A lendária obra-prima da Belle Époque.</label>
+            </div>
+          </div>
+          
+          <div class="polaroid">
+            <img src="https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?auto=format&fit=crop&w=800&q=80" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" alt="Monaco">
+            <div class="polaroid-caption">Monte-Carlo & Mônaco</div>
+          </div>
+        </div>
+
+        <div class="post-it">
+          <h4>📜 História de Bolso</h4>
+          <p>O Nietzsche escreveu partes de "Assim Falava Zaratustra" enquanto caminhava pela trilha que desce de Èze até o mar!</p>
+        </div>
+      </div>
+
+      <!-- DIA 5 & 6: MARSEILLE -->
+      <div class="scrap-card">
+        <div class="washi-tape"></div>
+        <h2>Dias 5 & 6: Marseille — A Capital Marítima da Provence</h2>
+        <p style="margin: 10px 0;">A cidade mais antiga da França, combinando vibração multicultural e história naval.</p>
+
+        <div class="checklist-item">
+          <input type="checkbox" id="p9" onchange="toggleDone(this)">
+          <label for="p9"><strong>Vieux-Port de Marseille:</strong> O porto histórico renovado com o pavilhão espelhado de Norman Foster.</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="p10" onchange="toggleDone(this)">
+          <label for="p10"><strong>Basilique Notre-Dame de la Garde:</strong> A 'Bonne Mère' guardiã da cidade no ponto mais alto.</label>
+        </div>
+
+        <div class="post-it">
+          <h4>🍽️ Experiência Culinária</h4>
+          <p>Prove a autêntica <strong>Bouillabaisse</strong> marseillese nos restaurantes do porto tradicional.</p>
+        </div>
+      </div>
+
+      <!-- DIA 7 & 8: CALANQUES E CASSIS -->
+      <div class="scrap-card">
+        <div class="washi-tape"></div>
+        <h2>Dias 7 & 8: Parque das Calanques & Vila de Cassis</h2>
+        <p style="margin: 10px 0;">Fjord europeus e águas turquesa encravadas entre paredões de calcário branco.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px;">
+          <div>
+            <div class="checklist-item">
+              <input type="checkbox" id="p11" onchange="toggleDone(this)">
+              <label for="p11"><strong>Parque Nacional das Calanques:</strong> Trilhas táticas e mirantes para o mar límpido.</label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="p12" onchange="toggleDone(this)">
+              <label for="p12"><strong>Vila Costeira de Cassis:</strong> Charmoso porto de pesca famoso pelos vinhos brancos finos.</label>
+            </div>
+          </div>
+          
+          <div class="polaroid">
+            <img src="https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=800&q=80" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" alt="Calanques Cassis">
+            <div class="polaroid-caption">Calanques de Cassis</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIA 9 & 10: AIX-EN-PROVENCE -->
+      <div class="scrap-card">
+        <div class
