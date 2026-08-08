@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>África do Sul 2026 - Caderno de Viagem & Dossiê Tático</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        :root {
+            --fundo-papel: #FDF8F2;
+            --cor-principal: #A0522D;
+            --cor-secundaria: #2E5A44;
+            --cor-destaque: #D4AF37;
+            --texto-handwritten: #2B2D42;
+            --washi-tape-color: rgba(160, 82, 45, 0.25);
+            --font-hand: 'Caveat', cursive;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --shadow-paper: 0 4px 15px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--fundo-papel);
+            background-image: radial-gradient(#e0d7cd 0.75px, transparent 0.75px);
+            background-size: 16px 16px;
+            color: #333333;
+            font-family: var(--font-body);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        /* Top Binder Navigation */
+        .binder-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #efe6dc;
+            border-bottom: 3px solid var(--cor-principal);
+            padding: 12px 20px 0 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            background: #dfd3c3;
+            border: 2px solid var(--cor-principal);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            padding: 10px 20px;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--texto-handwritten);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            background: #f5ede4;
+        }
+
+        .nav-tab.active {
+            background: var(--fundo-papel);
+            color: var(--cor-principal);
+            padding-top: 14px;
+            margin-top: -4px;
+            border-top: 4px solid var(--cor-principal);
+        }
+
+        /* Container Principal */
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrapbook Components */
+        .washi-tape {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-1.5deg);
+            width: 130px;
+            height: 26px;
+            background-color: var(--washi-tape-color);
+            border-left: 2px dashed rgba(255,255,255,0.5);
+            border-right: 2px dashed rgba(255,255,255,0.5);
+            backdrop-filter: blur(1px);
+            z-index: 5;
+        }
+
+        .stamp {
+            display: inline-block;
+            padding: 6px 14px;
+            text-transform: uppercase;
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            border: 2px dashed var(--cor-principal);
+            color: var(--cor-principal);
+            border-radius: 4px;
+            transform: rotate(-5deg);
+            opacity: 0.85;
+            margin: 5px;
+            background: rgba(255,255,255,0.4);
+            box-shadow: 0 0 0 2px rgba(160, 82, 45, 0.1);
+        }
+
+        .stamp-green {
+            border-color: var(--cor-secundaria);
+            color: var(--cor-secundaria);
+            transform: rotate(3deg);
+        }
+
+        .stamp-gold {
+            border-color: var(--cor-destaque);
+            color: #967a1d;
+            transform: rotate(-2deg);
+        }
+
+        /* Hero Banner */
+        .hero-card {
+            position: relative;
+            background: #ffffff;
+            border-radius: 4px;
+            padding: 25px;
+            box-shadow: var(--shadow-paper);
+            margin-bottom: 35px;
+            border: 1px solid #e2d9cd;
+        }
+
+        .hero-banner {
+            position: relative;
+            height: 380px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+            padding: 30px 25px 20px 25px;
+            color: white;
+        }
+
+        .hero-title {
+            font-family: var(--font-hand);
+            font-size: 3.8rem;
+            line-height: 1;
+            color: #fdf8f2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .stamps-row {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Polaroids Gallery */
+        .polaroid-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 15px 15px 25px 15px;
+            box-shadow: var(--shadow-paper);
+            border: 1px solid #eae2d7;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .polaroid:nth-child(odd) { transform: rotate(-1.5deg); }
+        .polaroid:nth-child(even) { transform: rotate(1.5deg); }
+
+        .polaroid:hover {
+            transform: scale(1.03) rotate(0deg);
+            z-index: 10;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .polaroid-caption {
+            font-family: var(--font-hand);
+            font-size: 1.6rem;
+            text-align: center;
+            color: var(--texto-handwritten);
+            margin-top: 12px;
+        }
+
+        /* Itinerary Cards */
+        .day-card {
+            position: relative;
+            background: #ffffff;
+            border-radius: 4px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-paper);
+            border-left: 6px solid var(--cor-secundaria);
+        }
+
+        .day-card:nth-child(even) {
+            border-left-color: var(--cor-principal);
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px dashed #e5dcd0;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .day-title {
+            font-family: var(--font-hand);
+            font-size: 2.2rem;
+            color: var(--cor-principal);
+            font-weight: 700;
+        }
+
+        .day-location {
+            font-size: 0.9rem;
+            background: #f0ebe1;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: var(--cor-secundaria);
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .checklist li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--cor-secundaria);
+            cursor: pointer;
+        }
+
+        /* Post-it Notes */
+        .post-it-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .post-it {
+            background: #fef9c3;
+            padding: 18px;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.08);
+            position: relative;
+            border-bottom-right-radius: 15px 5px;
+            transform: rotate(-0.5deg);
+        }
+
+        .post-it-blue {
+            background: #e0f2fe;
+            transform: rotate(0.8deg);
+        }
+
+        .post-it h4 {
+            font-family: var(--font-hand);
+            font-size: 1.5rem;
+            color: #854d0e;
+            margin-bottom: 6px;
+        }
+
+        .post-it-blue h4 {
+            color: #0369a1;
+        }
+
+        .post-it p {
+            font-size: 0.92rem;
+            color: #334155;
+        }
+
+        /* Technical / Dossier Styles */
+        .dossier-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 4px;
+            box-shadow: var(--shadow-paper);
+            margin-bottom: 30px;
+            border: 1px solid #e5dcd0;
+        }
+
+        h1, h2, h3 {
+            color: #1B365D;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            border-bottom: 3px double #1B365D;
+            padding-bottom: 8px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            border-bottom: 1px solid #1B365D;
+            padding-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #FFFFFF;
+            font-size: 0.92rem;
+        }
+
+        th, td {
+            border: 1px solid #E5E7EB;
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1B365D;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #F8FAFC;
+        }
+
+        .destaque {
+            background-color: #F1F5F9;
+            padding: 18px;
+            border-left: 5px solid #1B365D;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .alerta {
+            color: #D97706;
+            background: #FFFBEB;
+            border: 1px solid #FDE68A;
+            padding: 15px;
+            border-radius: 4px;
+            font-weight: 500;
+            margin: 20px 0;
+        }
+
+        /* Map Container */
+        #map-container {
+            position: relative;
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: var(--shadow-paper);
+            border: 1px solid #e5dcd0;
+        }
+
+        #map {
+            width: 100%;
+            height: 620px;
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.6rem; }
+            .day-title { font-size: 1.8rem; }
+            .binder-header { padding: 8px 10px 0 10px; }
+            .nav-tab { padding: 8px 12px; font-size: 0.85rem; }
+            th, td { padding: 8px 6px; font-size: 0.82rem; }
+            #map { height: 450px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tab Navigation -->
+    <header class="binder-header">
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('tab-roteiro', this)">
+                📖 ROTEIRO & DIÁRIO DE VIAGEM
+            </button>
+            <button class="nav-tab" onclick="switchTab('tab-mapa', this)">
+                🗺️ MAPA INTERATIVO & ROTAS
+            </button>
+            <button class="nav-tab" onclick="switchTab('tab-dossie', this)">
+                📊 DOSSIÊ DE MILHAS, CÂMBIO & LOGÍSTICA
+            </button>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <!-- ABA 1: ROTEIRO & DIÁRIO DE VIAGEM -->
+        <section id="tab-roteiro" class="tab-content active">
+            
+            <!-- Hero Banner Scrapbook -->
+            <div class="hero-card">
+                <div class="washi-tape"></div>
+                <div class="hero-banner">
+                    <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1200&q=80" 
+                         alt="África do Sul Safari" 
+                         onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                    <div class="hero-overlay">
+                        <h1 class="hero-title">África do Sul 2026</h1>
+                        <p style="font-family: var(--font-hand); font-size: 1.8rem; color: #D4AF37;">Caderno de Campo & Expedição Tática</p>
+                        <div class="stamps-row">
+                            <span class="stamp">SOUTH AFRICA BORDER 2026</span>
+                            <span class="stamp stamp-green">KRUGER SAFARI APPROVED</span>
+                            <span class="stamp stamp-gold">CAPE OF GOOD HOPE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Polaroids Gallery -->
+            <div class="polaroid-grid">
+                <div class="polaroid">
+                    <div class="washi-tape"></div>
+                    <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=800&q=80" 
+                         alt="Kruger National Park" 
+                         onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                    <div class="polaroid-caption">Kruger National Park</div>
+                </div>
+                <div class="polaroid">
+                    <div class="washi-tape"></div>
+                    <img src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=800&q=80" 
+                         alt="Table Mountain" 
+                         onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                    <div class="polaroid-caption">Table Mountain</div>
+                </div>
+                <div class="polaroid">
+                    <div class="washi-tape"></div>
+                    <img src="https://images.unsplash.com/photo-1598439210625-5067c578f3f6?auto=format&fit=crop&w=800&q=80" 
+                         alt="Boulders Beach Penguins" 
+                         onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                    <div class="polaroid-caption">Boulders Beach Penguins</div>
+                </div>
+            </div>
+
+            <!-- Section 9: Detailed Itinerary Day by Day -->
+            <div style="margin-top: 40px;">
+                <h2 style="font-family: var(--font-hand); font-size: 2.8rem; color: var(--cor-principal); border: none; text-align: center; margin-bottom: 25px;">
+                    [9. ROTEIRO TÁTICO E AGENDA CULTURAL DIA A DIA]
+                </h2>
+
+                <!-- Dia 1 -->
+                <div class="day-card">
+                    <div class="washi-tape"></div>
+                    <div class="day-header">
+                        <h3 class="day-title">Dia 1: Chegada e Imersão Urbana em Joanesburgo</h3>
+                        <span class="day-location">📍 Estação Gautrain Sandton / Bairro Sandton</span>
+                    </div>
+                    <p><strong>🏛️ Principais Atrações:</strong></p>
+                    <ul class="checklist">
+                        <li><input type="checkbox"> <span><strong>Nelson Mandela Square</strong> (1h 30m)</span></li>
+                        <li><input type="checkbox"> <span><strong>Sandton City Mall</strong> (2h)</span></li>
+                    </ul>
+                    <p style="color: #B91C1C; font-weight: 600; margin-top: 10px;">
+                        🎟️ Evento Especial / Data: Rosebank Sunday Market (se a chegada for no domingo) - vibrante mercado de rua com artesanato e música local.
+                    </p>
+                    <div class="post-it-grid">
+                        <div class="post-it">
+                            <h4>🍷 Dica Gastronômica</h4>
+                            <p>The Butcher Shop & Grill (Sandton) - Excelente para provar as famosas carnes sul-africanas com ótimo custo-benefício.</p>
+                        </div>
+                        <div class="post-it post-it-blue">
+                            <h4>💡 Dica Tática</h4>
+                            <p>Desembarcando no Aeroporto JNB, ignore os táxis não oficiais. Pegue o trem rápido Gautrain direto do aeroporto para a estação Sandton (aprox. 15 min). É a forma mais segura e eficiente de transbordo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dia 2 -->
+                <div class="day-card">
+                    <div class="washi-tape"></div>
+                    <div class="day-header">
+                        <h3 class="day-title">Dia 2: História, Resistência e Cultura</h3>
+                        <span class="day-location">📍 Centro de Joanesburgo e Soweto</span>
+                    </div>
+                    <p><strong>🏛️ Principais Atrações:</strong></p>
+                    <ul class="checklist">
+                        <li><input type="checkbox"> <span><strong>Apartheid Museum</strong> (2h 30m)</span></li>
+                        <li><input type="checkbox"> <span><strong>Hector Pieterson Memorial</strong> (1h)</span></li>
+                        <li><input type="checkbox"> <span><strong>Vilakazi Street (Soweto)</strong> (1h 30m)</span></li>
+                    </ul>
+                    <p style="color: #B91C1C; font-weight: 600; margin-top: 10px;">
+                        🎟️ Evento Especial / Data: Soweto Art & Craft Fair no Soweto Theatre (evento cultural recorrente com música ao vivo e arte local).
+                    </p>
+                    <div class="post-it-grid">
+                        <div class="post-it">
+                            <h4>🍷 Dica Gastronômica</h4>
+                            <p>Sakhumzi Restaurant na Vilakazi Street - Buffet tradicional sul-africano para imersão cultural.</p>
+                        </div>
+                        <div class="post-it post-it-blue">
+                            <h4>💡 Dica Tática</h4>
+                            <p>A Vilakazi Street é a única rua do mundo onde viveram dois ganhadores do Prêmio Nobel da Paz (Nelson Mandela e Desmond Tutu). Compre o ingresso do Apartheid Museum online para evitar filas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dia 3 -->
+                <div class="day-card">
+                    <div class="washi-tape"></div>
+                    <div class="day-header">
+                        <h3 class="day-title">Dia 3: Rumo à Savana: Transbordo e Primeiro Safári</h3>
+                        <span class="day-location">📍 Aeroporto de Nelspruit (MQP) / Kruger Park</span>
+                    </div>
+                    <p><strong>🏛️ Principais Atrações:</strong></p>
+                    <ul class="checklist">
+                        <li><input type="checkbox"> <span><strong>Voo JNB-MQP (Airlink)</strong> (1h)</span></li>
+                        <li><input type="checkbox"> <span><strong>Transfer para o Lodge e Check-in</strong> (2h)</span></li>
+                        <li><input type="checkbox"> <span><strong>Afternoon Game Drive (Safári de fim de tarde)</strong> (3h)</span></li>
+                    </ul>
+                    <div class="post-it-grid">
+                        <div class="post-it">
+                            <h4>🍷 Dica Gastronômica</h4>
+                            <p>Boma Dinner no Lodge - Jantar tradicional servido ao ar livre ao redor de uma fogueira sob as estrelas.</p>
+                        </div>
+                        <div class="post-it post-it-blue">
+                            <h4>💡 Dica Tática</h4>
+                            <p>Atenção máxima à bagagem no voo da Airlink: o limite é de 20kg despachados e dimensões rígidas. Se for voltar por JNB depois, considere deixar malas grandes no guarda-volumes do aeroporto ou hotel.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dia 4 -->
+                <div class="day-card">
+                    <div class="washi-tape"></div>
+                    <div class="day-header">
+                        <h3 class="day-title">Dia 4: O Grande Safári: Em Busca dos Big Five</h3>
+                        <span class="day-location">📍 Reserva Privada ou Kruger National Park</span>
+                    </div>
+                    <p><strong>🏛️ Principais Atrações:</strong></p>
+                    <ul class="checklist">
+                        <li><input type="checkbox"> <span><strong>Morning Game Drive (Safári ao amanhecer)</strong> (4h)</span></li>
+                        <li><input type="checkbox"> <span><strong>Relaxamento e observação no deck do Lodge</strong> (3h)</span></li>
+                        <li><input type="checkbox"> <span><strong>Night Game Drive (Safári noturno)</strong> (3h)</span></li>
+                    </ul>
+                    <div class="post-it-grid">
+                        <div class="post-it">
+                            <h4>🍷 Dica Gastronômica</h4>
+                            <p>Braai (churrasco sul-africano) preparado pelo chef ou ranger do seu lodge.</p>
+                        </div>
+                        <div class="post-it post-it-blue">
+                            <h4>💡 Dica Tática</h4>
+                            <p>Em novembro (primavera/verão), a vegetação do Kruger fica mais densa e verde devido às chuvas, o que camufla os animais. Os safáris das 5h30 da manhã são taticamente os melhores para avistamento antes do calor extremo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dia 5 -->
+                <div class="day-card">
+                    <div class="washi-tape"></div>
+                    <div class="day-header">
+                        <h3 class="day-title">Dia 5: Rota Panorâmica e Voo para o Cabo</h3>
+                        <span class="day-location">📍 Mpumalanga / Aeroporto MQP</span>
+                    </div>
+                    <p><strong>🏛️ Principais Atrações:</strong></p>
+                    <ul class="checklist">
+                        <li><input type="checkbox"> <span><strong>Blyde River Canyon</strong> (1h 30m)</span></li>
+                        <li><input type="checkbox"> <span><strong>Bourke's Luck Potholes</strong> (1h)</span></li>
+                        <li><input type="checkbox"> <span><strong>God's Window</strong> (45m)</span></li>
+                    </ul>
+                    <div class="post-it-grid">
+                        <div class="post-it">
+                            <h4>🍷 Dica Gastronômica</h4>
+                            <p>Harrie's Pancakes em Graskop - Parada clássica e histórica na Rota Panorâmica.</p>
+                        </div>
+                        <div class="post-it post-it-blue">
+                            <h4>💡 Dica Tática</h4>
+                            <p>Contrate um transfer privativo que faça a Panorama Route a caminho do aeroporto MQP. O Blyde River é o terceiro maior cânion do mundo e o único verde.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dia 6 -->
+                <div class="day-card">
+                    <div class="washi-tape"></div>
+                    <div class="day-header">
+                        <h3 class="day-title">Dia 6: Chegada à Cidade Mãe (Cape Town)</h3>
+                        <span class="day-location">📍 V&A Waterfront / City Bowl</span>
+                    </div>
+                    <p><strong>🏛️ Principais Atrações:</strong></p>
+                    <ul class="checklist">
+                        <li><input type="checkbox"> <span><strong>Voo MQP-CPT</strong> (2h 30m)</span></li>
+                        <li><input type="checkbox"> <span><strong>Exploração do V&A Waterfront</strong> (3h)</span></li>
+                        <li><input type="checkbox"> <span><strong>Zeitz MOCAA (Museu de Arte Contemporânea)</strong> (2h)</span></li>
+                    </ul>
+                    <p style="color: #B91C1C; font-weight: 600; margin-top: 10px;">
+                        🎟️ Evento Especial / Data: First Thursdays Cape Town (se coincidir com a primeira quinta do mês, as galerias de arte e ruas do centro ficam abertas à noite com muita festa e cultura).
+                    </p>
+                    <div class="post-it-grid">
+                        <div class="post-it">
+                            <h4>🍷 Dica Gastronômica</h4>
+                            <p>V&A Food Market para almoço rápido e The Pot Luck Club para um jantar sofisticado (exige reserva com meses de antecedência).</p>
+                        </div>
+                        <div class="post-it post-it-blue">
+                            <h4>💡 Dica Tática</h4>
+                            <p>Use o Uber do aeroporto CPT para o hotel, é barato e seguro (aprox. 25 min). O Zeitz MOCAA foi construído em antigos silos de grãos e é uma obra-prima arquitetônica.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dia 7 -->
+                <div class="day-card">
+                    <div class="washi-tape"></div>
+                    <div class="day-header">
+                        <h3 class="day-title">Dia 7: Vistas Épicas e Botânica</h3>
+                        <span class="day-location">📍 Table Mountain e Kirstenbosch</span>
+                    </div>
+                    <p><strong>🏛️ Principais Atrações:</strong></p>
+                    <ul class="checklist">
+                        <li><input type="checkbox"> <span><strong>Table Mountain Aerial Cableway</strong> (2h 30m)</span></li>
+                        <li><input type="checkbox"> <span><strong>Bo-Kaap (Bairro Malaio)</strong> (1h)</span></li>
+                        <li><input type="checkbox"> <span><strong>Kirstenbosch National Botanical Garden</strong> (2h)</span></li>
+                    </ul>
+                    <p style="color: #B91C1C; font-weight: 600; margin-top: 10px;">
+                        🎟️ Evento Especial / Data: Kirstenbosch Summer Sunset Concerts - Temporada de shows ao ar livre nos jardins botânicos que se inicia em novembro (geralmente aos domingos).
+                    </p>
+                    <div class="post-it-grid">
+                        <div class="post-it">
+                            <h4>🍷 Dica Gastronômica</h4>
+                            <p>Kloof Street House - Ambiente vibrante e decoração eclética, perfeito para jantar após o pôr do sol.</p>
+                        </div>
+                        <div class="post-it post-it-blue">
+                            <h4>💡 Dica Tática</h4>
+                            <p>Tática de Ouro: Suba a Table Mountain no primeiro dia de sol e sem vento que tiver. Em novembro os ventos ('Cape Doctor') aumentam e o bondinho fecha frequentemente à tarde. Compre ingresso Fast Track online.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dia 8 -->
+                <div class="day-card">
+                    <div class="washi-tape"></div>
+                    <div class="day-header">
+                        <h3 class="day-title">Dia 8: Península do Cabo e Pinguins</h3>
+                        <span class="day-location">📍 Cape Peninsula / Rota Costeira</span>
+                    </div>
+                    <p><strong>🏛️ Principais Atrações:</strong></p>
+                    <ul class="checklist">
+                        <li><input type="checkbox"> <span><strong>Chapman's Peak Drive</strong> (1h)</span></li>
+                        <li><input type="checkbox"> <span><strong>Cape of Good Hope (Cabo da Boa Esperança)</strong> (2h)</span></li>
+                        <li><input type="checkbox"> <span><strong>Boulders Beach (Colônia de Pinguins)</strong> (1h 30m)</span></li>
+                    </ul>
+                    <div class="post-it-grid">
+                        <div class="post-it">
+                            <h4>🍷 Dica Gastronômica</h4>
+                            <p>Kalky's em Kalk Bay - O mais autêntico e rústico Fish & Chips da região, comendo de frente para os barcos de pesca.</p>
+                        </div>
+                        <div class="post-it post-it-blue">
+                            <h4>💡 Dica Tática</h4>
+                            <p>O Cabo da Boa Esperança não é o ponto mais ao sul da África (é o Cabo das Agulhas), mas é o ponto mais a sudoeste. Leve corta-vento, pois a região venta extremo o ano todo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dia 9 -->
+                <div class="day-card">
+                    <div class="washi-tape"></div>
+                    <div class="day-header">
+                        <h3 class="day-title">Dia 9: Rota dos Vinhos (Winelands)</h3>
+                        <span class="day-location">📍 Stellenbosch e Franschhoek</span>
+                    </div>
+                    <p><strong>🏛️ Principais Atrações:</strong></p>
+                    <ul class="checklist">
+                        <li><input type="checkbox"> <span><strong>Passeio pelo centro histórico de Stellenbosch</strong> (1h 30m)</span></li>
+                        <li><input type="checkbox"> <span><strong>Degustação em Vinícola de Stellenbosch</strong> (2h)</span></li>
+                        <li><input type="checkbox"> <span><strong>Franschhoek Wine Tram</strong> (3h)</span></li>
+                    </ul>
+                    <p style="color: #B91C1C; font-weight: 600; margin-top: 10px;">
+                        🎟️ Evento Especial / Data: Franschhoek Cap Classique & Champagne Festival (tradicionalmente ocorre no final de novembro, celebrando os espumantes locais).
+                    </p>
+                    <div class="post-it-grid">
+                        <div class="post-it">
+                            <h4>🍷 Dica Gastronômica</h4>
+                            <p>Almoço harmonizado na vinícola Delaire Graff Estate (Stellenbosch) com vista para as montanhas.</p>
+                        </div>
+                        <div class="post-it post-it-blue">
+                            <h4>💡 Dica Tática</h4>
+                            <p>A uva Pinotage é uma invenção sul-africana (cruzamento de Pinot Noir e Cinsaut). Use o Wine Tram em Franschhoek (ônibus/bonde hop-on hop-off) para beber sem se preocupar em dirigir.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dia 10 -->
+                <div class="day-card">
+                    <div class="washi-tape"></div>
+                    <div class="day-header">
+                        <h3 class="day-title">Dia 10: Despedida e Transbordo de Retorno</h3>
+                        <span class="day-location">📍 Camps Bay / Aeroportos CPT e JNB</span>
+                    </div>
+                    <p><strong>🏛️ Principais Atrações:</strong></p>
+                    <ul class="checklist">
+                        <li><input type="checkbox"> <span><strong>Camps Bay Beach e Clifton (Manhã livre)</strong> (2h)</span></li>
+                        <li><input type="checkbox"> <span><strong>Voo Doméstico CPT-JNB</strong> (2h 10m)</span></li>
+                        <li><input type="checkbox"> <span><strong>Conexão e Voo Internacional JNB-GRU</strong> (Transbordo)</span></li>
+                    </ul>
+                    <div class="post-it-grid">
+                        <div class="post-it">
+                            <h4>🍷 Dica Gastronômica</h4>
+                            <p>Café da manhã tardio no The Bungalow (Clifton/Camps Bay) observando o mar antes de ir para o aeroporto.</p>
+                        </div>
+                        <div class="post-it post-it-blue">
+                            <h4>💡 Dica Tática</h4>
+                            <p>Emita o voo CPT-JNB (FlySafair ou Airlink) com pelo menos 4 a 5 horas de folga antes do seu voo internacional JNB-GRU. No Terminal A de JNB, utilize seu cartão Visa Infinite para acessar o Mashonzha Lounge antes de embarcar para o Brasil.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ABA 2: MAPA INTERATIVO & ROTAS ESTRATÉGICAS -->
+        <section id="tab-mapa" class="tab-content">
+            <div id="map-container">
+                <div class="washi-tape"></div>
+                <h2 style="font-family: var(--font-hand); font-size: 2.5rem; color: var(--cor-principal); margin-bottom: 10px;">
+                    📍 Mapeamento Tático de Pontos e Deslocamentos
+                </h2>
+                <p style="margin-bottom: 15px; color: #666; font-size: 0.95rem;">
+                    Interaja com os marcadores para visualizar detalhes de conexão, estimativas de tempo e quilometragem do roteiro.
+                </p>
+                <div id="map"></div>
+            </div>
+        </section>
+
+        <!-- ABA 3: DOSSIÊ DE MILHAS, CÂMBIO & LOGÍSTICA -->
+        <section id="tab-dossie" class="tab-content">
+            <div class="dossier-card">
+                <div class="washi-tape"></div>
+                
+                <h1>LAUDO TÉCNICO EXECUTIVO: OTIMIZAÇÃO DE ROTEIRO - ÁFRICA DO SUL (NOV/2026)</h1>
+
+                <div class="destaque">
+                    <h2>[1. RESUMO EXECUTIVO]</h2>
+                    <p><strong>Objetivo Tático:</strong> Estruturar a logística de uma expedição de 10 dias à África do Sul (Joanesburgo, Kruger Park e Cape Town) para novembro de 2026, maximizando o uso de ativos de fidelidade (milhas e pontos hoteleiros), minimizando o spread cambial e garantindo eficiência de transbordo e acesso a terminais VIP.</p>
+                    <p><strong>Saving Projetado:</strong> A alocação inteligente do saldo de pontos C6 e ALL Accor resultará em uma economia primária substancial em passagens aéreas e hospedagem, reduzindo o desembolso em cash apenas para taxas de embarque, voos internos e complemento de diárias.</p>
+                </div>
+
+                <h2>[2. MATRIZ DE DECISÃO SAZONAL]</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parâmetro</th>
+                            <th>Condição (Novembro 2026)</th>
+                            <th>Impacto Logístico e Financeiro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Clima</strong></td>
+                            <td>Primavera/Verão (15°C a 28°C)</td>
+                            <td>Clima quente e agradável. No Kruger, a vegetação estará mais densa devido às chuvas de primavera, exigindo safáris nas primeiras horas da manhã. Em Cape Town, os ventos começam a aumentar. Dress code: Roupas leves, tons neutros para safári (cáqui/verde), corta-vento para a noite.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Temporada</strong></td>
+                            <td>Média/Alta (Shoulder Season)</td>
+                            <td>Transição para a alta temporada de verão. Preços de hospedagem começam a subir na segunda quinzena.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Saturação</strong></td>
+                            <td>Moderada</td>
+                            <td>Menor saturação que dezembro/janeiro, permitindo maior facilidade em reservas de safáris e menor tempo de fila em atrações.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estimativa de Custos</strong></td>
+                            <td>Cash + Milhas</td>
+                            <td>Voos internacionais cobertos por milhas. Voos internos (JNB-MQP-CPT-JNB) exigirão emissão pagante (cash) em companhias regionais (Airlink/FlySafair).</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>[3. ENGENHARIA DE MILHAS E VALORAÇÃO FINANCEIRA (CPM)]</h2>
+                
+                <h3>Diagnóstico do Banco de Milhas</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Programa</th>
+                            <th>Saldo Atual</th>
+                            <th>Custo Médio (CPM)</th>
+                            <th>Parecer Técnico</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Smiles</td>
+                            <td>45.666</td>
+                            <td>R$ 9,87</td>
+                            <td>Saldo base eficiente. Será o programa alvo para emissão via parceiras (South African Airways / TAAG / Ethiopian).</td>
+                        </tr>
+                        <tr>
+                            <td>Latam</td>
+                            <td>17.771</td>
+                            <td>R$ 10,74</td>
+                            <td>Saldo insuficiente para emissão direta, mas pode ser complementado via Esfera/C6 caso haja disponibilidade na malha própria da LATAM.</td>
+                        </tr>
+                        <tr>
+                            <td>Esfera</td>
+                            <td>80.981</td>
+                            <td>R$ 16,51</td>
+                            <td>Ativo de reserva. Manter em hold para eventuais transferências bonificadas.</td>
+                        </tr>
+                        <tr>
+                            <td>Livelo</td>
+                            <td>11.276</td>
+                            <td>R$ 25,80</td>
+                            <td>Saldo baixo e CPM elevado. Não utilizar nesta operação.</td>
+                        </tr>
+                        <tr>
+                            <td>C6</td>
+                            <td>262.256</td>
+                            <td>R$ 0,00</td>
+                            <td><strong>Ativo principal.</strong> Volume robusto gerado a custo zero. Será utilizado para alavancar o saldo Smiles ou LATAM Pass.</td>
+                        </tr>
+                        <tr>
+                            <td>AllAcoor</td>
+                            <td>11.600</td>
+                            <td>R$ 87,40</td>
+                            <td>Ativo hoteleiro. Equivalente a 232 EUR de abatimento em faturas de hospedagem.</td>
+                        </tr>
+                        <tr>
+                            <td>Caixa</td>
+                            <td>3.624</td>
+                            <td>R$ 0,00</td>
+                            <td>Saldo residual.</td>
+                        </tr>
+                        <tr>
+                            <td>Azul</td>
+                            <td>5.000</td>
+                            <td>R$ 0,00</td>
+                            <td>Saldo residual.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alerta">
+                    ALERTA DE JANELA DE TRANSFERÊNCIA: Como a viagem é para novembro de 2026, você tem amplo tempo para emissão (ideal emitir com 330 dias de antecedência, ou seja, dezembro de 2025). <strong>NÃO transfira seus pontos C6 ou Esfera agora.</strong> Aguarde as janelas estatísticas de bonificação (Black Friday em novembro de 2024/2025 ou aniversário dos programas em março/setembro). Uma transferência de 140.000 pontos C6 com 100% de bônus para a Smiles gerará 280.000 milhas, totalizando ~325.000 milhas Smiles, volume suficiente para 2 bilhetes de ida e volta (GRU-JNB).
+                </div>
+
+                <h3>Tabela de Rotas e Franquia de Bagagem</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rota (Ida e Volta)</th>
+                            <th>Cia Aérea</th>
+                            <th>Custo Estimado (Milhas/Cash)</th>
+                            <th>Franquia de Bagagem (Econômica)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>GRU - JNB (Direto)</td>
+                            <td>LATAM ou SAA</td>
+                            <td>~150.000 a 160.000 Milhas/Pessoa</td>
+                            <td>LATAM: 1 peça de 23kg despachada + 8kg cabine.<br>SAA: 1 peça de 32kg despachada + 8kg cabine.</td>
+                        </tr>
+                        <tr>
+                            <td>JNB - MQP (Nelspruit/Kruger)</td>
+                            <td>Airlink (Cash)</td>
+                            <td>~ZAR 1.200 (R$ 156)</td>
+                            <td>1 peça de 20kg despachada + 8kg cabine. <em>Atenção às dimensões rígidas de bagagem em voos regionais.</em></td>
+                        </tr>
+                        <tr>
+                            <td>MQP - CPT (Cape Town)</td>
+                            <td>Airlink (Cash)</td>
+                            <td>~ZAR 1.700 (R$ 221)</td>
+                            <td>1 peça de 20kg despachada + 8kg cabine.</td>
+                        </tr>
+                        <tr>
+                            <td>CPT - JNB</td>
+                            <td>FlySafair ou Airlink (Cash)</td>
+                            <td>~ZAR 1.400 (R$ 182)</td>
+                            <td>FlySafair: Tarifa base NÃO inclui bagagem despachada (adicionar taxa extra para 20kg). Cabine: 7kg.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>[4. ENGENHARIA LOGÍSTICA DE FRONTEIRA E TRANSBORDO]</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aeroporto</th>
+                            <th>Gargalos e Imigração</th>
+                            <th>Mobilidade e Transbordo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>JNB (Joanesburgo)</td>
+                            <td><strong>Isenção de Visto (90 dias).</strong> Obrigatório apresentar Certificado Internacional de Vacinação contra Febre Amarela. Passaporte deve ter 30 dias de validade após a saída e 2 páginas em branco. <em>Nota: ETIAS/EES não se aplica à África do Sul.</em></td>
+                            <td>Hub principal. O transbordo do terminal Internacional (A) para o Doméstico (B) exige caminhada de 10-15 minutos. Gautrain disponível para acesso rápido a Sandton/Pretoria.</td>
+                        </tr>
+                        <tr>
+                            <td>MQP (Nelspruit / Kruger)</td>
+                            <td>Aeroporto regional de pequeno porte. Desembarque rápido.</td>
+                            <td>Necessário aluguel de carro (retirada no terminal) ou transfer privativo contratado previamente com o lodge para acessar os portões do Kruger Park (aprox. 1h de estrada).</td>
+                        </tr>
+                        <tr>
+                            <td>CPT (Cape Town)</td>
+                            <td>Processamento doméstico rápido.</td>
+                            <td>Uber é a opção mais eficiente, segura e barata para o centro da cidade (V&A Waterfront) - tempo de trânsito de aprox. 25 minutos.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>[5. LOGÍSTICA DE SALAS VIP (GROUND HANDLING) E INVENTÁRIO DE ACESSOS]</h2>
+                <p style="margin-bottom: 12px;">Inventário do Usuário: C6 Black (Ilimitado GRU T3 + 4 LK/WAC), Caixa VI (2 DP), Santander Unique VI (2 DP), Smiles VI (Ilimitado GOL + 2 DP), Inter Prime Black (6 LK/WAC).</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Terminal / Etapa</th>
+                            <th>Sala VIP Recomendada</th>
+                            <th>Cartão a Apresentar</th>
+                            <th>Consumo de Cota (2 Passageiros)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>GRU T3 (Embarque Internacional)</td>
+                            <td>Lounge Mastercard Black</td>
+                            <td>C6 Black (Titular e Adicional)</td>
+                            <td>Acesso Ilimitado e Gratuito. Não consome cotas anuais.</td>
+                        </tr>
+                        <tr>
+                            <td>JNB Terminal B (Conexão Doméstica para MQP)</td>
+                            <td>Bidvest Premier Lounge (Doméstico)</td>
+                            <td>Inter Prime Black (LoungeKey)</td>
+                            <td>Consome 2 acessos da cota de 6 anuais do Inter Prime Black.</td>
+                        </tr>
+                        <tr>
+                            <td>CPT Terminal 1 (Embarque Doméstico para JNB)</td>
+                            <td>Bidvest Premier Lounge ou MyAir Lounge</td>
+                            <td>Santander Unique Visa Infinite (DragonPass/VAC)</td>
+                            <td>Consome 2 acessos da cota de 2 anuais do Santander Unique.</td>
+                        </tr>
+                        <tr>
+                            <td>JNB Terminal A (Embarque Internacional para GRU)</td>
+                            <td>Mashonzha Lounge ou Shongololo Lounge</td>
+                            <td>Caixa Visa Infinite (DragonPass/VAC)</td>
+                            <td>Consome 2 acessos da cota de 2 anuais da Caixa.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>[6. HOSPEDAGEM (ALL ACCOR vs MERCADO)]</h2>
+                <p style="margin-bottom: 12px;">O usuário possui 11.600 pontos ALL Accor (Custo Médio R$ 87,40). A cada 2.000 pontos, abate-se 40 EUR na fatura. Total de abatimento disponível: <strong>232 EUR (Aprox. R$ 1.400)</strong>.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Localidade</th>
+                            <th>Perfil de Hospedagem (Exemplos Accor)</th>
+                            <th>Tarifa Média Mercado (Cash)</th>
+                            <th>Custo com Abatimento ALL Accor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Joanesburgo / Sandton (1 a 2 noites)</td>
+                            <td>Pullman Sandton ou Mercure Randburg</td>
+                            <td>~ZAR 2.500 / noite (R$ 325)</td>
+                            <td rowspan="3">Custo total estimado para 10 noites: R$ 5.500.<br>Aplicando os 11.600 pontos ALL (R$ 1.400 de desconto), o desembolso final em cash será de <strong>R$ 4.100</strong> para as 10 noites.</td>
+                        </tr>
+                        <tr>
+                            <td>Kruger Park (3 noites)</td>
+                            <td>Lodges independentes (Accor possui o Mantis Founders Lodge, mas é categoria Ultra-Luxo)</td>
+                            <td>~ZAR 4.000 / noite (R$ 520)</td>
+                        </tr>
+                        <tr>
+                            <td>Cape Town (5 noites)</td>
+                            <td>Pullman Cape Town City Centre</td>
+                            <td>~ZAR 3.000 / noite (R$ 390)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>[7. CONSOLIDAÇÃO FINANCEIRA E CÂMBIO]</h2>
+                
+                <h3>Tabela de Custo Total Consolidado da Operação (Estimativa 2 Pax)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rubrica</th>
+                            <th>Custo em Milhas/Pontos</th>
+                            <th>Custo em Cash (BRL)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Voos Internacionais (GRU-JNB-GRU)</td>
+                            <td>~300.000 Smiles (via transferência bonificada do C6)</td>
+                            <td>R$ 800 (Taxas de embarque)</td>
+                        </tr>
+                        <tr>
+                            <td>Voos Internos (JNB-MQP-CPT-JNB)</td>
+                            <td>-</td>
+                            <td>R$ 1.118 (~ZAR 8.600)</td>
+                        </tr>
+                        <tr>
+                            <td>Hospedagem (10 noites)</td>
+                            <td>11.600 Pontos ALL Accor</td>
+                            <td>R$ 4.100</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TOTAL ESTIMADO</strong></td>
+                            <td><strong>Ativos já em carteira</strong></td>
+                            <td><strong>R$ 6.018 (R$ 3.009 por pessoa)</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Tabela de Spread/Câmbio Global (ZAR vs BRL)</h3>
+                <p style="margin-bottom: 12px;">Cotação base: 1 ZAR ≈ 0,13 BRL.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Instituição</th>
+                            <th>Spread Médio</th>
+                            <th>Parecer Técnico para ZAR (Rand Sul-Africano)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Wise</strong></td>
+                            <td>~0,10%</td>
+                            <td><strong>Altamente Recomendado.</strong> Utiliza taxa de câmbio comercial real com a menor taxa fixa do mercado. Ideal para converter BRL direto para ZAR.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Revolut</strong></td>
+                            <td>0% a 0,50%</td>
+                            <td>Excelente em dias úteis (0% spread até o limite do plano). <strong>Atenção:</strong> Cobra taxa adicional de ~0,50% aos finais de semana.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Banco Inter</strong></td>
+                            <td>~0,50%</td>
+                            <td>Ótima alternativa para carregar em Dólar e usar a conversão automática da bandeira Mastercard no momento da compra.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>C6 Global / Nomad</strong></td>
+                            <td>1% a 2%</td>
+                            <td>Spread mais alto que Wise/Inter. Útil apenas como backup logístico caso haja falha nos cartões principais.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Santander (Cartão de Crédito)</strong></td>
+                            <td>~2% + 1,1% IOF</td>
+                            <td>Custo total passa de 3%. Usar <strong>exclusivamente</strong> para caução (depósito de garantia) em locadoras de veículos e hotéis para não prender saldo em débito.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>[8. EXPANSÃO DE ROTEIRO TÁTICO E CIDADES PRÓXIMAS]</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cidade Alternativa</th>
+                            <th>Distância / Logística</th>
+                            <th>Justificativa Técnica e Custo-Benefício</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Stellenbosch / Franschhoek</strong></td>
+                            <td>45 min de carro de Cape Town</td>
+                            <td>Região das vinícolas. Custo de hospedagem pode ser inferior ao centro de Cape Town. Ideal para 1 ou 2 noites. Deslocamento barato via Uber ou carro alugado.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pretoria</strong></td>
+                            <td>40 min de JNB via Gautrain</td>
+                            <td>Alternativa de hospedagem mais barata e segura que o centro de Joanesburgo caso precise de um pernoite antes de voar para o Kruger.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hermanus</strong></td>
+                            <td>1h30 de carro de Cape Town</td>
+                            <td>Rota costeira de alto valor cênico. Embora novembro seja o final da temporada de baleias, a hotelaria apresenta excelente custo-benefício em cash fora do pico de inverno.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Data Array for Interactive Map
+        const pontosData = [
+            {"id":1,"nome":"Apartheid Museum","lat":-26.237649,"lng":28.00827,"proximo_ponto":{"nome":"Vilakazi Street em Soweto","tempo_minutos":240,"distancia_km":"20.01"}},
+            {"id":2,"nome":"Vilakazi Street em Soweto","lat":-26.256697,"lng":27.863482,"proximo_ponto":{"nome":"Nelson Mandela Square","tempo_minutos":0,"distancia_km":"0.00"}},
+            {"id":3,"nome":"Nelson Mandela Square","lat":-29.708985,"lng":23.666291,"proximo_ponto":{"nome":"Morning Game Drive em Busca dos Big Five","tempo_minutos":0,"distancia_km":"0.00"}},
+            {"id":4,"nome":"Morning Game Drive em Busca dos Big Five","lat":-29.708985,"lng":23.666291,"proximo_ponto":{"nome":"Deck de Observação da Savana","tempo_minutos":0,"distancia_km":"0.00"}},
+            {"id":5,"nome":"Deck de Observação da Savana","lat":-25.327474,"lng":-49.292112,"proximo_ponto":{"nome":"Night Game Drive","tempo_minutos":0,"distancia_km":"0.00"}},
+            {"id":6,"nome":"Night Game Drive","lat":-29.708985,"lng":23.666291,"proximo_ponto":{"nome":"Bondinho de Table Mountain","tempo_minutos":0,"distancia_km":"0.00"}},
+            {"id":7,"nome":"Bondinho de Table Mountain","lat":-22.849489,"lng":-45.22768,"proximo_ponto":{"nome":"V&A Waterfront & Zeitz MOCAA","tempo_minutos":0,"distancia_km":"0.00"}},
+            {"id":8,"nome":"V&A Waterfront & Zeitz MOCAA","lat":-33.903962,"18.419993":18.419993,"lng":18.419993,"proximo_ponto":{"nome":"Cabo da Boa Esperança","tempo_minutos":13381,"distancia_km":"1115.10"}},
+            {"id":9,"nome":"Cabo da Boa Esperança","lat":-29.73333,"lng":26.36667,"proximo_ponto":{"nome":"Bonde dos Vinhos (Franschhoek Wine Tram)","tempo_minutos":6733,"distancia_km":"561.11"}},
+            {"id":10,"nome":"Bonde dos Vinhos (Franschhoek Wine Tram)","lat":-32.3071,"lng":28.57739,"proximo_ponto":null}
+        ];
+
+        let leafletMap = null;
+
+        function initMap() {
+            if (leafletMap) return;
+
+            // Centered around South Africa
+            leafletMap = L.map('map').setView([-29.0, 24.0], 5);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(leafletMap);
+
+            const bounds = [];
+
+            pontosData.forEach((ponto) => {
+                if(ponto.lat && ponto.lng) {
+                    const marker = L.marker([ponto.lat, ponto.lng]).addTo(leafletMap);
+                    bounds.push([ponto.lat, ponto.lng]);
+
+                    let popupContent = `<div style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                        <h4 style="color: #A0522D; margin-bottom: 5px;">#${ponto.id} ${ponto.nome}</h4>`;
+                    
+                    if (ponto.proximo_ponto) {
+                        popupContent += `<p style="font-size: 0.85rem; margin-top: 5px; color: #555;">
+                            <strong>Próxima parada:</strong> ${ponto.proximo_ponto.nome}<br>
+                            ${ponto.proximo_ponto.distancia_km !== "0.00" ? `<strong>Distância:</strong> ${ponto.proximo_ponto.distancia_km} km<br>` : ''}
+                            ${ponto.proximo_ponto.tempo_minutos > 0 ? `<strong>Tempo estim.:</strong> ${ponto.proximo_ponto.tempo_minutos} min` : ''}
+                        </p>`;
+                    } else {
+                        popupContent += `<p style="font-size: 0.85rem; color: #2E5A44;"><strong>Ponto Final do Roteiro</strong></p>`;
+                    }
+
+                    popupContent += `</div>`;
+                    marker.bindPopup(popupContent);
+                }
+            });
+
+            if (bounds.length > 0) {
+                leafletMap.fitBounds(bounds, { padding: [30, 30] });
+            }
+        }
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+
+            if (tabId === 'tab-mapa') {
+                setTimeout(() => {
+                    initMap();
+                    if (leafletMap) leafletMap.invalidateSize();
+                }, 100);
+            }
+        }
+    </script>
+</body>
+</html>
