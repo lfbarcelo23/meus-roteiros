@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caderno de Viagem - África do Sul 2026</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        :root {
+            --fundo-papel: #FAF5EE;
+            --cor-principal: #C85A32;
+            --cor-secundaria: #4A5D4E;
+            --cor-destaque: #D4A359;
+            --texto-handwritten: #2B2D42;
+            --washi-color: rgba(200, 90, 50, 0.3);
+            --font-handwritten: 'Caveat', cursive;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --sombra-papel: 2px 5px 15px rgba(0,0,0,0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--fundo-papel);
+            background-image: radial-gradient(#e2d9cc 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #333;
+            font-family: var(--font-body);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        /* Container Principal */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header / Capa Caderno */
+        header {
+            margin-top: 20px;
+            background: #fff;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: var(--sombra-papel);
+            position: relative;
+            border: 1px solid #e0d8cc;
+            transform: rotate(-0.3deg);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 40%;
+            width: 140px;
+            height: 28px;
+            background: var(--washi-color);
+            transform: rotate(-2deg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .header-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .title-area h1 {
+            font-family: var(--font-handwritten);
+            font-size: 3.2rem;
+            color: var(--cor-principal);
+            line-height: 1.1;
+            margin-bottom: 5px;
+        }
+
+        .title-area p {
+            font-size: 1.1rem;
+            color: var(--cor-secundaria);
+            font-weight: 600;
+        }
+
+        .stamps-box {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .stamp {
+            border: 2px dashed var(--cor-principal);
+            color: var(--cor-principal);
+            font-family: var(--font-handwritten);
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 6px;
+            transform: rotate(-8deg);
+            opacity: 0.85;
+            text-transform: uppercase;
+            display: inline-block;
+            background: rgba(200, 90, 50, 0.05);
+        }
+
+        .stamp:nth-child(2) {
+            border-color: var(--cor-secundaria);
+            color: var(--cor-secundaria);
+            transform: rotate(5deg);
+        }
+
+        .stamp:nth-child(3) {
+            border-color: var(--cor-destaque);
+            color: var(--cor-destaque);
+            transform: rotate(-4deg);
+        }
+
+        /* Spotify Widget Header */
+        .spotify-container {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Navigation Binder Tabs */
+        nav.binder-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 30px 0 20px 0;
+            border-bottom: 2px solid var(--cor-secundaria);
+            padding-left: 10px;
+        }
+
+        .tab-btn {
+            background: #e8e0d5;
+            border: 1px solid #d0c4b4;
+            border-bottom: none;
+            padding: 12px 22px;
+            font-family: var(--font-handwritten);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--texto-handwritten);
+            cursor: pointer;
+            border-radius: 12px 12px 0 0;
+            transition: all 0.2s ease;
+            position: relative;
+            top: 2px;
+        }
+
+        .tab-btn.active {
+            background: var(--fundo-papel);
+            border-color: var(--cor-secundaria);
+            border-bottom: 2px solid var(--fundo-papel);
+            color: var(--cor-principal);
+            top: 0;
+            padding-bottom: 14px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Scrapbook Cards / Leaf Pages */
+        .day-card {
+            background: #fff;
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 35px;
+            box-shadow: var(--sombra-papel);
+            border: 1px solid #eae2d6;
+            position: relative;
+        }
+
+        .day-card:nth-child(even) {
+            transform: rotate(0.5deg);
+        }
+
+        .day-card:nth-child(odd) {
+            transform: rotate(-0.5deg);
+        }
+
+        /* Washi Tape Accent */
+        .day-card::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: 30px;
+            width: 90px;
+            height: 22px;
+            background: var(--washi-color);
+            transform: rotate(3deg);
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px handwritten var(--cor-destaque);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .day-title {
+            font-family: var(--font-handwritten);
+            font-size: 2.2rem;
+            color: var(--cor-principal);
+            line-height: 1.2;
+        }
+
+        .day-badge {
+            background: var(--cor-secundaria);
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .day-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 25px;
+        }
+
+        @media (max-width: 850px) {
+            .day-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Checklist Section */
+        .checklist-title {
+            font-weight: 700;
+            color: var(--cor-secundaria);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checklist {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .checklist li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.98rem;
+        }
+
+        .checklist input[type="checkbox"] {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--cor-principal);
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            top: 3px;
+            flex-shrink: 0;
+        }
+
+        .checklist input[type="checkbox"]:checked {
+            background-color: var(--cor-principal);
+        }
+
+        .checklist input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 13px;
+            top: -2px;
+            left: 2px;
+            font-weight: bold;
+        }
+
+        .checklist input[type="checkbox"]:checked + span {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        /* Post-it Notes */
+        .post-it {
+            background: #fffde7;
+            border: 1px solid #f0e68c;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 2px 3px 8px rgba(0,0,0,0.05);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            margin-top: 15px;
+            position: relative;
+        }
+
+        .post-it-title {
+            font-family: var(--font-handwritten);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--cor-principal);
+            margin-bottom: 5px;
+        }
+
+        .post-it.gastronomy {
+            background: #f0f7f4;
+            border-color: #c2e0d4;
+        }
+
+        .post-it.tactical {
+            background: #fff5f0;
+            border-color: #fbd3c5;
+        }
+
+        /* Polaroid Photo */
+        .polaroid {
+            background: white;
+            padding: 10px 10px 25px 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            border: 1px solid #eee;
+            transform: rotate(-2deg);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        .polaroid-caption {
+            font-family: var(--font-handwritten);
+            font-size: 1.3rem;
+            color: var(--texto-handwritten);
+            margin-top: 8px;
+        }
+
+        /* Map Section */
+        #map {
+            height: 520px;
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: var(--sombra-papel);
+            border: 2px solid #dfd7cc;
+        }
+
+        /* Tables Retro Styling */
+        .retro-table-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--sombra-papel);
+            margin-bottom: 30px;
+            border: 1px solid #e2d9cd;
+            overflow-x: auto;
+        }
+
+        .table-title {
+            font-family: var(--font-handwritten);
+            font-size: 2rem;
+            color: var(--cor-principal);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--cor-destaque);
+            padding-bottom: 5px;
+        }
+
+        table.retro-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+
+        table.retro-table th {
+            background-color: var(--cor-secundaria);
+            color: #fff;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table.retro-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        table.retro-table tr:nth-child(even) {
+            background-color: #faf7f2;
+        }
+
+        .alert-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .alert-box strong {
+            color: #856404;
+        }
+
+        /* Transport Cards Grid */
+        .transport-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .transport-card {
+            background: #fff;
+            border-left: 4px solid var(--cor-principal);
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: var(--sombra-papel);
+        }
+
+        .transport-card h4 {
+            color: var(--cor-principal);
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- HEADER / CAPA -->
+        <header>
+            <div class="header-grid">
+                <div class="title-area">
+                    <h1>África do Sul 2026</h1>
+                    <p> Caderno de Viagem & Expedição Tática (10 Dias)</p>
+                    <div class="stamps-box">
+                        <div class="stamp">SOUTH AFRICA IMMIGRATION - JNB</div>
+                        <div class="stamp">KRUGER SAFARI APPROVED</div>
+                        <div class="stamp">CAPE OF GOOD HOPE</div>
+                    </div>
+                </div>
+                <div class="spotify-container">
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX134A9m21s3s" width="100%" height="152" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+            </div>
+        </header>
+
+        <!-- NAVEGAÇÃO ABAS -->
+        <nav class="binder-tabs">
+            <button class="tab-btn active" onclick="switchTab('roteiro')">📖 Roteiro & Diário</button>
+            <button class="tab-btn" onclick="switchTab('mapa')">🗺️ Mapa & Rotas</button>
+            <button class="tab-btn" onclick="switchTab('dossie')">📊 Milhas & Logística</button>
+        </nav>
+
+        <!-- ABA 1: ROTEIRO & DIÁRIO DE VIAGEM -->
+        <div id="roteiro" class="tab-content active">
+
+            <!-- DIA 1 -->
+            <div class="day-card">
+                <div class="day-header">
+                    <div class="day-title">Dia 1: Chegada e Imersão Urbana em Joanesburgo</div>
+                    <span class="day-badge">📍 Gautrain Sandton / Bairro Sandton</span>
+                </div>
+                <div class="day-grid">
+                    <div>
+                        <div class="checklist-title">🏛️ Atrações do Dia (Marque as concluídas):</div>
+                        <ul class="checklist">
+                            <li><label><input type="checkbox"> <span>Nelson Mandela Square (1h 30m)</span></label></li>
+                            <li><label><input type="checkbox"> <span>Sandton City Mall (2h)</span></label></li>
+                            <li><label><input type="checkbox"> <span>Rosebank Sunday Market (Se chegada no domingo - Feira vibrante de rua)</span></label></li>
+                        </ul>
+
+                        <div class="post-it gastronomy">
+                            <div class="post-it-title">🍷 Dica Gastronômica</div>
+                            <strong>The Butcher Shop & Grill (Sandton):</strong> Excelente para provar as famosas carnes sul-africanas com ótimo custo-benefício.
+                        </div>
+
+                        <div class="post-it tactical">
+                            <div class="post-it-title">💡 Dica Tática & Logística</div>
+                            Desembarcando no Aeroporto JNB, ignore táxis não oficiais. Pegue o trem rápido Gautrain direto para a estação Sandton (aprox. 15 min). É a forma mais segura e eficiente de transbordo.
+                        </div>
+                    </div>
+                    <div>
+                        <div class="polaroid">
+                            <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=800&q=80" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" alt="Joanesburgo">
+                            <div class="polaroid-caption">Chegada a Joanesburgo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DIA 2 -->
+            <div class="day-card">
+                <div class="day-header">
+                    <div class="day-title">Dia 2: História, Resistência e Cultura</div>
+                    <span class="day-badge">📍 Centro de Joanesburgo & Soweto</span>
+                </div>
+                <div class="day-grid">
+                    <div>
+                        <div class="checklist-title">🏛️ Atrações do Dia:</div>
+                        <ul class="checklist">
+                            <li><label><input type="checkbox"> <span>Apartheid Museum (2h 30m)</span></label></li>
+                            <li><label><input type="checkbox"> <span>Hector Pieterson Memorial (1h)</span></label></li>
+                            <li><label><input type="checkbox"> <span>Vilakazi Street - Soweto (1h 30m)</span></label></li>
+                            <li><label><input type="checkbox"> <span>Soweto Art & Craft Fair no Soweto Theatre</span></label></li>
+                        </ul>
+
+                        <div class="post-it gastronomy">
+                            <div class="post-it-title">🍷 Dica Gastronômica</div>
+                            <strong>Sakhumzi Restaurant:</strong> Localizado na Vilakazi Street, oferece buffet tradicional sul-africano ideal para imersão cultural.
+                        </div>
+
+                        <div class="post-it tactical">
+                            <div class="post-it-title">💡 Dica Tática & Curiosidade</div>
+                            A Vilakazi Street é a única rua do mundo onde viveram dois ganhadores do Prêmio Nobel da Paz (Nelson Mandela e Desmond Tutu). Compre o ingresso do Apartheid Museum online com antecedência.
+                        </div>
+                    </div>
+                    <div>
+                        <div class="polaroid">
+                            <img src="https://images.unsplash.com/photo-1576485375217-d6a95e34d043?auto=format&fit=crop&w=800&q=80" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" alt="Soweto & Apartheid Museum">
+                            <div class="polaroid-caption">Soweto & Memória</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DIA 3 -->
+            <div class="day-card">
+                <div class="day-header">
+                    <div class="day-title">Dia 3: Rumo à Savana: Transbordo e Primeiro Safári</div>
+                    <span class="day-badge">📍 Nelspruit (MQP) / Kruger Park</span>
+                </div>
+                <div class="day-grid">
+                    <div>
+                        <div class="checklist-title">🏛️ Atrações do Dia:</div>
+                        <ul class="checklist">
+                            <li><label><input type="checkbox"> <span>Voo JNB-MQP via Airlink (1h)</span></label></li>
+                            <li><label><input type="checkbox"> <span>Transfer para o Lodge e Check-in (2h)</span></label></li>
+                            <li><label><input type="checkbox"> <span>Afternoon Game Drive - Safári de Fim de Tarde (3h)</span></label></li>
+                        </ul>
+
+                        <div class="post-it gastronomy">
+                            <div class="post-it-title">🍷 Dica Gastronômica</div>
+                            <strong>Boma Dinner no Lodge:</strong> Jantar tradicional servido ao ar livre ao redor de uma fogueira sob o céu estrelado da savana.
+                        </div>
+
+                        <div class="post-it tactical">
+                            <div class="post-it-title">💡 Dica Tática</div>
+                            Atenção à bagagem no voo regional da Airlink: o limite é de 20kg despachados e há restrição de dimensões rígidas. Se retornar por JNB, considere deixar malas maiores no guarda-volumes.
+                        </div>
+                    </div>
+                    <div>
+                        <div class="polaroid">
+                            <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=800&q=80" onerror="this.src='https://images.unsplash.com/photo-1488
