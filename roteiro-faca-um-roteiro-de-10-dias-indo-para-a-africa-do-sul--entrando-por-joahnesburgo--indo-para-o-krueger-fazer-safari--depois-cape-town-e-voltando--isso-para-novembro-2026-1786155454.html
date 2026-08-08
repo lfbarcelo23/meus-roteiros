@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caderno de Viagem & Dossie Tático - África do Sul 2026</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <style>
+        :root {
+            --fundo-papel: #FAF6EE;
+            --cor-principal: #C15C3D;
+            --cor-secundaria: #2E5A44;
+            --cor-destaque: #E6A100;
+            --texto-handwritten: #1C1917;
+            --texto-corpo: #334155;
+            --washi-tape: rgba(193, 92, 61, 0.25);
+            --papel-card: #FFFFFF;
+            --sombra-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --sombra-polaroid: 0 12px 20px -2px rgba(0,0,0,0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--fundo-papel);
+            background-image: 
+                radial-gradient(#e5decf 1px, transparent 1px),
+                linear-gradient(to right, rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 20px 20px, 100% 30px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--texto-corpo);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* TIPOGRAFIA MANUSCRITA */
+        .handwritten {
+            font-family: 'Caveat', cursive;
+            color: var(--texto-handwritten);
+        }
+
+        /* HEADER / HERO */
+        header.hero {
+            position: relative;
+            background: linear-gradient(180deg, rgba(28,25,23,0.6) 0%, rgba(28,25,23,0.85) 100%), 
+                        url('https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            color: #FFF;
+            padding: 60px 20px 80px 20px;
+            text-align: center;
+            border-bottom: 8px solid var(--cor-principal);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .hero-title {
+            font-family: 'Caveat', cursive;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #FFF;
+            text-shadow: 3px 3px 0px var(--cor-principal);
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #FDE68A;
+            font-weight: 600;
+        }
+
+        /* CARIMBOS VISUAIS */
+        .stamp-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .stamp {
+            border: 3px dashed;
+            padding: 8px 16px;
+            font-family: 'Caveat', cursive;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 8px;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(4px);
+        }
+
+        .stamp-1 { color: #FCA5A5; border-color: #FCA5A5; transform: rotate(-4deg); }
+        .stamp-2 { color: #FDE047; border-color: #FDE047; transform: rotate(3deg); }
+        .stamp-3 { color: #86EFAC; border-color: #86EFAC; transform: rotate(-2deg); }
+
+        /* GALERIA POLAROID HERO */
+        .hero-polaroids {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .polaroid {
+            background: #FFF;
+            padding: 10px 10px 25px 10px;
+            box-shadow: var(--sombra-polaroid);
+            width: 200px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border: 1px solid #E2E8F0;
+        }
+
+        .polaroid-caption {
+            font-family: 'Caveat', cursive;
+            font-size: 1.2rem;
+            color: var(--texto-handwritten);
+            margin-top: 8px;
+            font-weight: 700;
+        }
+
+        .polaroid:nth-child(1) { transform: rotate(-5deg); }
+        .polaroid:nth-child(2) { transform: rotate(3deg); }
+        .polaroid:nth-child(3) { transform: rotate(-3deg); }
+
+        .polaroid:hover {
+            transform: scale(1.05) rotate(0deg) !important;
+            z-index: 10;
+        }
+
+        /* NAVEGAÇÃO ESTILO FICHÁRIO (TABS) */
+        .binder-nav {
+            max-width: 1100px;
+            margin: -30px auto 30px auto;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 0 15px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .tab-btn {
+            background-color: #E2E8F0;
+            color: #475569;
+            border: 2px solid #CBD5E1;
+            border-bottom: none;
+            padding: 14px 24px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 12px 12px 0 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            background-color: #F1F5F9;
+            color: var(--cor-principal);
+        }
+
+        .tab-btn.active {
+            background-color: var(--fundo-papel);
+            color: var(--cor-principal);
+            border-color: var(--cor-principal);
+            border-top: 4px solid var(--cor-principal);
+            padding-top: 16px;
+            margin-top: -6px;
+        }
+
+        /* CONTAINER CONTEÚDO */
+        .main-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SCRAPBOOK CARD GENERAL STYLE */
+        .scrapbook-card {
+            background: var(--papel-card);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--sombra-soft);
+            position: relative;
+            border: 1px solid #E2E8F0;
+        }
+
+        .scrapbook-card:nth-child(even) {
+            transform: rotate(0.3deg);
+        }
+
+        .scrapbook-card:nth-child(odd) {
+            transform: rotate(-0.3deg);
+        }
+
+        /* WASHI TAPE */
+        .washi-tape {
+            position: absolute;
+            top: -12px;
+            left: 40%;
+            width: 120px;
+            height: 26px;
+            background-color: var(--washi-tape);
+            border-left: 2px dashed rgba(255,255,255,0.5);
+            border-right: 2px dashed rgba(255,255,255,0.5);
+            transform: rotate(-2deg);
+            backdrop-filter: blur(1px);
+            z-index: 5;
+        }
+
+        /* DIA A DIA CARDS */
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed #E2E8F0;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .day-title {
+            font-family: 'Caveat', cursive;
+            font-size: 2.2rem;
+            color: var(--cor-principal);
+            font-weight: 700;
+        }
+
+        .day-badge {
+            background: var(--cor-secundaria);
+            color: #FFF;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .attraction-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .attraction-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            font-size: 1.05rem;
+        }
+
+        .attraction-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--cor-principal);
+            cursor: pointer;
+        }
+
+        .attraction-item label {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .attraction-item input[type="checkbox"]:checked + label {
+            text-decoration: line-through;
+            color: #94A3B8;
+        }
+
+        /* POST-IT DICAS & ALERTAS */
+        .post-it {
+            background: #FEF3C7;
+            border-left: 6px solid var(--cor-destaque);
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 2px 4px 8px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .post-it.gastronomy {
+            background: #FEE2E2;
+            border-left-color: var(--cor-principal);
+        }
+
+        .post-it-title {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--texto-handwritten);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* MAPA INTERATIVO */
+        #map {
+            height: 550px;
+            width: 100%;
+            border-radius: 12px;
+            border: 4px solid #FFF;
+            box-shadow: var(--sombra-soft);
+            margin-bottom: 25px;
+        }
+
+        .route-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .waypoint-card {
+            background: #FFF;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--cor-secundaria);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* TABELAS DO DOSSIÊ TÉCNICO */
+        .dossier-section {
+            background: #FFF;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: var(--sombra-soft);
+            margin-bottom: 30px;
+        }
+
+        .dossier-section h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 2.8rem;
+            color: var(--cor-principal);
+            border-bottom: 3px double var(--cor-principal);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+
+        .dossier-section h2 {
+            color: var(--cor-secundaria);
+            font-size: 1.5rem;
+            margin: 25px 0 15px 0;
+            border-bottom: 1px solid #CBD5E1;
+            padding-bottom: 5px;
+        }
+
+        .dossier-section h3 {
+            color: var(--cor-principal);
+            font-size: 1.2rem;
+            margin: 20px 0 10px 0;
+        }
+
+        table.retro-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        table.retro-table th, table.retro-table td {
+            border: 1px solid #E2E8F0;
+            padding: 12px;
+            text-align: left;
+        }
+
+        table.retro-table th {
+            background-color: var(--cor-secundaria);
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        table.retro-table tr:nth-child(even) {
+            background-color: #F8FAFC;
+        }
+
+        .destaque-box {
+            background-color: #F1F5F9;
+            padding: 20px;
+            border-left: 5px solid var(--cor-secundaria);
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .alerta-box {
+            background-color: #FFFBEB;
+            border: 2px dashed var(--cor-destaque);
+            padding: 15px;
+            border-radius: 8px;
+            color: #92400E;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.8rem; }
+            .binder-nav { flex-direction: column; align-items: stretch; margin-top: 10px; }
+            .tab-btn { border-radius: 8px; text-align: center; justify-content: center; }
+            .tab-btn.active { margin-top: 0; padding-top: 14px; }
+            .scrapbook-card { padding: 15px; }
+            table.retro-table { display: block; overflow-x: auto; }
+            #map { height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO SECTION -->
+    <header class="hero">
+        <h1 class="hero-title">África do Sul</h1>
+        <p class="hero-subtitle">Caderno de Viagem & Expedição Tática • Nov/2026</p>
+        
+        <div class="stamp-container">
+            <span class="stamp stamp-1">ENTRY PERMIT - SOUTH AFRICA</span>
+            <span class="stamp stamp-2">KRUGER BIG FIVE SAFARI</span>
+            <span class="stamp stamp-3">CAPE OF GOOD HOPE 34°21'S</span>
+        </div>
+
+        <div class="hero-polaroids">
+            <div class="polaroid">
+                <img src="https://images.unsplash.com/photo-1534177616072-ef7dc120449d?auto=format&fit=crop&w=800&q=80" alt="Kruger Park" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                <div class="polaroid-caption">Kruger Park</div>
+            </div>
+            <div class="polaroid">
+                <img src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=800&q=80" alt="Table Mountain" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                <div class="polaroid-caption">Table Mountain</div>
+            </div>
+            <div class="polaroid">
+                <img src="https://images.unsplash.com/photo-1598439210625-5067c578f3f6?auto=format&fit=crop&w=800&q=80" alt="Boulders Beach" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                <div class="polaroid-caption">Boulders Beach</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- TABS DE NAVEGAÇÃO -->
+    <nav class="binder-nav">
+        <button class="tab-btn active" onclick="openTab('tab-roteiro', this)">
+            📖 <span>Roteiro & Diário</span>
+        </button>
+        <button class="tab-btn" onclick="openTab('tab-mapa', this)">
+            🗺️ <span>Mapa Interativo</span>
+        </button>
+        <button class="tab-btn" onclick="openTab('tab-dossie', this)">
+            📊 <span>Dossiê & Logística</span>
+        </button>
+    </nav>
+
+    <!-- CONTEÚDO DAS ABAS -->
+    <main class="main-container">
+
+        <!-- ABA 1: ROTEIRO & DIÁRIO DE VIAGEM -->
+        <section id="tab-roteiro" class="tab-content active">
+            
+            <!-- DIA 1 -->
+            <article class="scrapbook-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 1: Chegada e Imersão Urbana em Joanesburgo</h2>
+                    <span class="day-badge">📍 Estação Gautrain Sandton / Bairro Sandton</span>
+                </div>
+                
+                <p><strong>🏛️ Principais Atrações:</strong></p>
+                <
