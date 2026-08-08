@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caderno de Viagem - Africa do sul</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --fundo-papel: #FAF6EE;
+      --cor-principal: #C15C3D;
+      --cor-secundaria: #2E5A44;
+      --cor-destaque: #E6A100;
+      --texto-handwritten: #1C1917;
+      --washi-color: rgba(193, 92, 61, 0.25);
+      --papel-card: #FFFDF9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--fundo-papel); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--texto-handwritten); padding: 20px; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    header { text-align: center; padding: 25px; background: var(--papel-card); border-radius: 8px; box-shadow: 2px 5px 15px rgba(0,0,0,0.06); margin-bottom: 20px; position: relative; }
+    header h1 { font-family: 'Caveat', cursive; font-size: 3rem; color: var(--cor-principal); }
+    .stamps { display: flex; justify-content: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+    .stamp { border: 2px double var(--cor-principal); color: var(--cor-principal); font-family: 'Caveat', cursive; font-weight: 700; padding: 4px 10px; transform: rotate(-3deg); font-size: 0.9rem; }
+    nav.tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { background: #EFE8DA; border: none; padding: 10px 20px; font-family: 'Caveat', cursive; font-size: 1.4rem; font-weight: 700; cursor: pointer; border-radius: 8px 8px 0 0; }
+    .tab-btn.active { background: var(--papel-card); color: var(--cor-principal); border-bottom: 3px solid var(--cor-principal); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .hero-img { width: 100%; height: 300px; object-fit: cover; border-radius: 6px; margin-bottom: 20px; border: 8px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    #map { height: 450px; width: 100%; border-radius: 8px; border: 2px solid #E2D9C8; }
+    .card { background: var(--papel-card); padding: 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #E2D9C8; box-shadow: 2px 4px 10px rgba(0,0,0,0.04); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Expedição Africa do sul</h1>
+      <div class="stamps">
+        <span class="stamp">ENTRY PERMIT - SOUTH AFRICA</span><span class="stamp">KRUGER BIG FIVE SAFARI</span><span class="stamp">CAPE OF GOOD HOPE 34°21'S</span>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab-btn active" onclick="switchTab('tab1')">📖 Roteiro & Diário</button>
+      <button class="tab-btn" onclick="switchTab('tab2')">🗺️ Mapa Interativo</button>
+      <button class="tab-btn" onclick="switchTab('tab3')">📊 Dossiê Logístico</button>
+    </nav>
+
+    <!-- ABA 1 -->
+    <div id="tab1" class="tab-content active">
+      <img class="hero-img" src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=800&q=80" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+      <div id="dias-container"></div>
+    </div>
+
+    <!-- ABA 2 -->
+    <div id="tab2" class="tab-content">
+      <div id="map"></div>
+    </div>
+
+    <!-- ABA 3 -->
+    <div id="tab3" class="tab-content">
+      <div class="card">
+        
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Laudo Técnico Executivo - Engenharia de Viagem: África do Sul</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #333333;
+            background-color: #F8F9FA;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            color: #1B365D;
+            margin-top: 30px;
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+        h1 {
+            border-bottom: 2px solid #1B365D;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #FFFFFF;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        th, td {
+            border: 1px solid #E5E7EB;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #1B365D;
+            color: #FFFFFF;
+        }
+        tr:nth-child(even) {
+            background-color: #F3F4F6;
+        }
+        .destaque {
+            background-color: #E5E7EB;
+            padding: 15px;
+            border-left: 5px solid #1B365D;
+            margin: 20px 0;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        .alerta {
+            color: #D97706;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>LAUDO TÉCNICO EXECUTIVO: OTIMIZAÇÃO DE ROTEIRO - ÁFRICA DO SUL (NOV/2026)</h1>
+
+    <div class="destaque">
+        <h2>[1. RESUMO EXECUTIVO]</h2>
+        <p><strong>Objetivo Tático:</strong> Estruturar a logística de uma expedição de 10 dias à África do Sul (Joanesburgo, Kruger Park e Cape Town) para novembro de 2026, maximizando o uso de ativos de fidelidade (milhas e pontos hoteleiros), minimizando o spread cambial e garantindo eficiência de transbordo e acesso a terminais VIP.</p>
+        <p><strong>Saving Projetado:</strong> A alocação inteligente do saldo de pontos C6 e ALL Accor resultará em uma economia primária substancial em passagens aéreas e hospedagem, reduzindo o desembolso em cash apenas para taxas de embarque, voos internos e complemento de diárias.</p>
+    </div>
+
+    <h2>[2. MATRIZ DE DECISÃO SAZONAL]</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Parâmetro</th>
+                <th>Condição (Novembro 2026)</th>
+                <th>Impacto Logístico e Financeiro</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Clima</strong></td>
+                <td>Primavera/Verão (15°C a 28°C)</td>
+                <td>Clima quente e agradável. No Kruger, a vegetação estará mais densa devido às chuvas de primavera, exigindo safáris nas primeiras horas da manhã. Em Cape Town, os ventos começam a aumentar. Dress code: Roupas leves, tons neutros para safári (cáqui/verde), corta-vento para a noite.</td>
+            </tr>
+            <tr>
+                <td><strong>Temporada</strong></td>
+                <td>Média/Alta (Shoulder Season)</td>
+                <td>Transição para a alta temporada de verão. Preços de hospedagem começam a subir na segunda quinzena.</td>
+            </tr>
+            <tr>
+                <td><strong>Saturação</strong></td>
+                <td>Moderada</td>
+                <td>Menor saturação que dezembro/janeiro, permitindo maior facilidade em reservas de safáris e menor tempo de fila em atrações.</td>
+            </tr>
+            <tr>
+                <td><strong>Estimativa de Custos</strong></td>
+                <td>Cash + Milhas</td>
+                <td>Voos internacionais cobertos por milhas. Voos internos (JNB-MQP-CPT-JNB) exigirão emissão pagante (cash) em companhias regionais (Airlink/FlySafair).</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>[3. ENGENHARIA DE MILHAS E VALORAÇÃO FINANCEIRA (CPM)]</h2>
+    
+    <h3>Diagnóstico do Banco de Milhas</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Programa</th>
+                <th>Saldo Atual</th>
+                <th>Custo Médio (CPM)</th>
+                <th>Parecer Técnico</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Smiles</td>
+                <td>45.666</td>
+                <td>R$ 9,87</td>
+                <td>Saldo base eficiente. Será o programa alvo para emissão via parceiras (South African Airways / TAAG / Ethiopian).</td>
+            </tr>
+            <tr>
+                <td>Latam</td>
+                <td>17.771</td>
+                <td>R$ 10,74</td>
+                <td>Saldo insuficiente para emissão direta, mas pode ser complementado via Esfera/C6 caso haja disponibilidade na malha própria da LATAM.</td>
+            </tr>
+            <tr>
+                <td>Esfera</td>
+                <td>80.981</td>
+                <td>R$ 16,51</td>
+                <td>Ativo de reserva. Manter em hold para eventuais transferências bonificadas.</td>
+            </tr>
+            <tr>
+                <td>Livelo</td>
+                <td>11.276</td>
+                <td>R$ 25,80</td>
+                <td>Saldo baixo e CPM elevado. Não utilizar nesta operação.</td>
+            </tr>
+            <tr>
+                <td>C6</td>
+                <td>262.256</td>
+                <td>R$ 0,00</td>
+                <td><strong>Ativo principal.</strong> Volume robusto gerado a custo zero. Será utilizado para alavancar o saldo Smiles ou LATAM Pass.</td>
+            </tr>
+            <tr>
+                <td>AllAcoor</td>
+                <td>11.600</td>
+                <td>R$ 87,40</td>
+                <td>Ativo hoteleiro. Equivalente a 232 EUR de abatimento em faturas de hospedagem.</td>
+            </tr>
+            <tr>
+                <td>Caixa</td>
+                <td>3.624</td>
+                <td>R$ 0,00</td>
+                <td>Saldo residual.</td>
+            </tr>
+            <tr>
+                <td>Azul</td>
+                <td>5.000</td>
+                <td>R$ 0,00</td>
+                <td>Saldo residual.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="alerta">ALERTA DE JANELA DE TRANSFERÊNCIA: Como a viagem é para novembro de 2026, você tem amplo tempo para emissão (ideal emitir com 330 dias de antecedência, ou seja, dezembro de 2025). <strong>NÃO transfira seus pontos C6 ou Esfera agora.</strong> Aguarde as janelas estatísticas de bonificação (Black Friday em novembro de 2024/2025 ou aniversário dos programas em março/setembro). Uma transferência de 140.000 pontos C6 com 100% de bônus para a Smiles gerará 280.000 milhas, totalizando ~325.000 milhas Smiles, volume suficiente para 2 bilhetes de ida e volta (GRU-JNB).</p>
+
+    <h3>Tabela de Rotas e Franquia de Bagagem</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Rota (Ida e Volta)</th>
+                <th>Cia Aérea</th>
+                <th>Custo Estimado (Milhas/Cash)</th>
+                <th>Franquia de Bagagem (Econômica)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GRU - JNB (Direto)</td>
+                <td>LATAM ou SAA</td>
+                <td>~150.000 a 160.000 Milhas/Pessoa</td>
+                <td>LATAM: 1 peça de 23kg despachada + 8kg cabine.<br>SAA: 1 peça de 32kg despachada + 8kg cabine.</td>
+            </tr>
+            <tr>
+                <td>JNB - MQP (Nelspruit/Kruger)</td>
+                <td>Airlink (Cash)</td>
+                <td>~ZAR 1.200 (R$ 156)</td>
+                <td>1 peça de 20kg despachada + 8kg cabine. <em>Atenção às dimensões rígidas de bagagem em voos regionais.</em></td>
+            </tr>
+            <tr>
+                <td>MQP - CPT (Cape Town)</td>
+                <td>Airlink (Cash)</td>
+                <td>~ZAR 1.700 (R$ 221)</td>
+                <td>1 peça de 20kg despachada + 8kg cabine.</td>
+            </tr>
+            <tr>
+                <td>CPT - JNB</td>
+                <td>FlySafair ou Airlink (Cash)</td>
+                <td>~ZAR 1.400 (R$ 182)</td>
+                <td>FlySafair: Tarifa base NÃO inclui bagagem despachada (adicionar taxa extra para 20kg). Cabine: 7kg.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>[4. ENGENHARIA LOGÍSTICA DE FRONTEIRA E TRANSBORDO]</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Aeroporto</th>
+                <th>Gargalos e Imigração</th>
+                <th>Mobilidade e Transbordo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>JNB (Joanesburgo)</td>
+                <td><strong>Isenção de Visto (90 dias).</strong> Obrigatório apresentar Certificado Internacional de Vacinação contra Febre Amarela. Passaporte deve ter 30 dias de validade após a saída e 2 páginas em branco. <em>Nota: ETIAS/EES não se aplica à África do Sul.</em></td>
+                <td>Hub principal. O transbordo do terminal Internacional (A) para o Doméstico (B) exige caminhada de 10-15 minutos. Gautrain disponível para acesso rápido a Sandton/Pretoria.</td>
+            </tr>
+            <tr>
+                <td>MQP (Nelspruit / Kruger)</td>
+                <td>Aeroporto regional de pequeno porte. Desembarque rápido.</td>
+                <td>Necessário aluguel de carro (retirada no terminal) ou transfer privativo contratado previamente com o lodge para acessar os portões do Kruger Park (aprox. 1h de estrada).</td>
+            </tr>
+            <tr>
+                <td>CPT (Cape Town)</td>
+                <td>Processamento doméstico rápido.</td>
+                <td>Uber é a opção mais eficiente, segura e barata para o centro da cidade (V&A Waterfront) - tempo de trânsito de aprox. 25 minutos.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>[5. LOGÍSTICA DE SALAS VIP (GROUND HANDLING) E INVENTÁRIO DE ACESSOS]</h2>
+    <p>Inventário do Usuário: C6 Black (Ilimitado GRU T3 + 4 LK/WAC), Caixa VI (2 DP), Santander Unique VI (2 DP), Smiles VI (Ilimitado GOL + 2 DP), Inter Prime Black (6 LK/WAC).</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Terminal / Etapa</th>
+                <th>Sala VIP Recomendada</th>
+                <th>Cartão a Apresentar</th>
+                <th>Consumo de Cota (2 Passageiros)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GRU T3 (Embarque Internacional)</td>
+                <td>Lounge Mastercard Black</td>
+                <td>C6 Black (Titular e Adicional)</td>
+                <td>Acesso Ilimitado e Gratuito. Não consome cotas anuais.</td>
+            </tr>
+            <tr>
+                <td>JNB Terminal B (Conexão Doméstica para MQP)</td>
+                <td>Bidvest Premier Lounge (Doméstico)</td>
+                <td>Inter Prime Black (LoungeKey)</td>
+                <td>Consome 2 acessos da cota de 6 anuais do Inter Prime Black.</td>
+            </tr>
+            <tr>
+                <td>CPT Terminal 1 (Embarque Doméstico para JNB)</td>
+                <td>Bidvest Premier Lounge ou MyAir Lounge</td>
+                <td>Santander Unique Visa Infinite (DragonPass/VAC)</td>
+                <td>Consome 2 acessos da cota de 2 anuais do Santander Unique.</td>
+            </tr>
+            <tr>
+                <td>JNB Terminal A (Embarque Internacional para GRU)</td>
+                <td>Mashonzha Lounge ou Shongololo Lounge</td>
+                <td>Caixa Visa Infinite (DragonPass/VAC)</td>
+                <td>Consome 2 acessos da cota de 2 anuais da Caixa.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>[6. HOSPEDAGEM (ALL ACCOR vs MERCADO)]</h2>
+    <p>O usuário possui 11.600 pontos ALL Accor (Custo Médio R$ 87,40). A cada 2.000 pontos, abate-se 40 EUR na fatura. Total de abatimento disponível: <strong>232 EUR (Aprox. R$ 1.400)</strong>.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Localidade</th>
+                <th>Perfil de Hospedagem (Exemplos Accor)</th>
+                <th>Tarifa Média Mercado (Cash)</th>
+                <th>Custo com Abatimento ALL Accor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Joanesburgo / Sandton (1 a 2 noites)</td>
+                <td>Pullman Sandton ou Mercure Randburg</td>
+                <td>~ZAR 2.500 / noite (R$ 325)</td>
+                <td rowspan="3">Custo total estimado para 10 noites: R$ 5.500.<br>Aplicando os 11.600 pontos ALL (R$ 1.400 de desconto), o desembolso final em cash será de <strong>R$ 4.100</strong> para as 10 noites.</td>
+            </tr>
+            <tr>
+                <td>Kruger Park (3 noites)</td>
+                <td>Lodges independentes (Accor possui o Mantis Founders Lodge, mas é categoria Ultra-Luxo)</td>
+                <td>~ZAR 4.000 / noite (R$ 520)</td>
+            </tr>
+            <tr>
+                <td>Cape Town (5 noites)</td>
+                <td>Pullman Cape Town City Centre</td>
+                <td>~ZAR 3.000 / noite (R$ 390)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>[7. CONSOLIDAÇÃO FINANCEIRA E CÂMBIO]</h2>
+    
+    <h3>Tabela de Custo Total Consolidado da Operação (Estimativa 2 Pax)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Rubrica</th>
+                <th>Custo em Milhas/Pontos</th>
+                <th>Custo em Cash (BRL)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Voos Internacionais (GRU-JNB-GRU)</td>
+                <td>~300.000 Smiles (via transferência bonificada do C6)</td>
+                <td>R$ 800 (Taxas de embarque)</td>
+            </tr>
+            <tr>
+                <td>Voos Internos (JNB-MQP-CPT-JNB)</td>
+                <td>-</td>
+                <td>R$ 1.118 (~ZAR 8.600)</td>
+            </tr>
+            <tr>
+                <td>Hospedagem (10 noites)</td>
+                <td>11.600 Pontos ALL Accor</td>
+                <td>R$ 4.100</td>
+            </tr>
+            <tr>
+                <td><strong>TOTAL ESTIMADO</strong></td>
+                <td><strong>Ativos já em carteira</strong></td>
+                <td><strong>R$ 6.018 (R$ 3.009 por pessoa)</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Tabela de Spread/Câmbio Global (ZAR vs BRL)</h3>
+    <p>Cotação base: 1 ZAR ≈ 0,13 BRL.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Instituição</th>
+                <th>Spread Médio</th>
+                <th>Parecer Técnico para ZAR (Rand Sul-Africano)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Wise</strong></td>
+                <td>~0,10%</td>
+                <td><strong>Altamente Recomendado.</strong> Utiliza taxa de câmbio comercial real com a menor taxa fixa do mercado. Ideal para converter BRL direto para ZAR.</td>
+            </tr>
+            <tr>
+                <td><strong>Revolut</strong></td>
+                <td>0% a 0,50%</td>
+                <td>Excelente em dias úteis (0% spread até o limite do plano). <strong>Atenção:</strong> Cobra taxa adicional de ~0,50% aos finais de semana.</td>
+            </tr>
+            <tr>
+                <td><strong>Banco Inter</strong></td>
+                <td>~0,50%</td>
+                <td>Ótima alternativa para carregar em Dólar e usar a conversão automática da bandeira Mastercard no momento da compra.</td>
+            </tr>
+            <tr>
+                <td><strong>C6 Global / Nomad</strong></td>
+                <td>1% a 2%</td>
+                <td>Spread mais alto que Wise/Inter. Útil apenas como backup logístico caso haja falha nos cartões principais.</td>
+            </tr>
+            <tr>
+                <td><strong>Santander (Cartão de Crédito)</strong></td>
+                <td>~2% + 1,1% IOF</td>
+                <td>Custo total passa de 3%. Usar <strong>exclusivamente</strong> para caução (depósito de garantia) em locadoras de veículos e hotéis para não prender saldo em débito.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>[8. EXPANSÃO DE ROTEIRO TÁTICO E CIDADES PRÓXIMAS]</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Cidade Alternativa</th>
+                <th>Distância / Logística</th>
+                <th>Justificativa Técnica e Custo-Benefício</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Stellenbosch / Franschhoek</strong></td>
+                <td>45 min de carro de Cape Town</td>
+                <td>Região das vinícolas. Custo de hospedagem pode ser inferior ao centro de Cape Town. Ideal para 1 ou 2 noites. Deslocamento barato via Uber ou carro alugado.</td>
+            </tr>
+            <tr>
+                <td><strong>Pretoria</strong></td>
+                <td>40 min de JNB via Gautrain</td>
+                <td>Alternativa de hospedagem mais barata e segura que o centro de Joanesburgo caso precise de um pernoite antes de voar para o Kruger.</td>
+            </tr>
+            <tr>
+                <td><strong>Hermanus</strong></td>
+                <td>1h30 de carro de Cape Town</td>
+                <td>Rota costeira de alto valor cênico. Embora novembro seja o final da temporada de baleias, a hotelaria apresenta excelente custo-benefício em cash fora do pico de inverno.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
+
+      <div style="font-family: Arial, Helvetica, sans-serif; color: #333333; padding: 20px;">
+        <h2 style="color: #1B365D; border-bottom: 2px solid #1B365D; padding-bottom: 10px; page-break-before: always;">
+          [9. ROTEIRO TÁTICO E AGENDA CULTURAL DIA A DIA]
+        </h2>
+        <p style="font-size: 14px; color: #555;">Itinerário tático otimizado por proximidade geográfica e agenda cultural para <strong>África do Sul (Joanesburgo, Kruger Park e Cape Town)</strong> (10 dias).</p>
+    
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 1: Chegada e Imersão Urbana em Joanesburgo</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Gautrain Sandton / Bairro Sandton</p>
+          
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Nelson Mandela Square</strong> (1h 30m)</li><li><strong>Sandton City Mall</strong> (2h)</li></ul>
+          
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Rosebank Sunday Market (se a chegada for no domingo) - vibrante mercado de rua com artesanato e música local.</p>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> The Butcher Shop & Grill (Sandton) - Excelente para provar as famosas carnes sul-africanas com ótimo custo-benefício.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Desembarcando no Aeroporto JNB, ignore os táxis não oficiais. Pegue o trem rápido Gautrain direto do aeroporto para a estação Sandton (aprox. 15 min). É a forma mais segura e eficiente de transbordo.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 2: História, Resistência e Cultura</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Centro de Joanesburgo e Soweto</p>
+          
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Apartheid Museum</strong> (2h 30m)</li><li><strong>Hector Pieterson Memorial</strong> (1h)</li><li><strong>Vilakazi Street (Soweto)</strong> (1h 30m)</li></ul>
+          
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Soweto Art & Craft Fair no Soweto Theatre (evento cultural recorrente com música ao vivo e arte local).</p>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Sakhumzi Restaurant na Vilakazi Street - Buffet tradicional sul-africano para imersão cultural.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> A Vilakazi Street é a única rua do mundo onde viveram dois ganhadores do Prêmio Nobel da Paz (Nelson Mandela e Desmond Tutu). Compre o ingresso do Apartheid Museum online para evitar filas.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 3: Rumo à Savana: Transbordo e Primeiro Safári</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Aeroporto de Nelspruit (MQP) / Kruger Park</p>
+          
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Voo JNB-MQP (Airlink)</strong> (1h)</li><li><strong>Transfer para o Lodge e Check-in</strong> (2h)</li><li><strong>Afternoon Game Drive (Safári de fim de tarde)</strong> (3h)</li></ul>
+          
+          
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Boma Dinner no Lodge - Jantar tradicional servido ao ar livre ao redor de uma fogueira sob as estrelas.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Atenção máxima à bagagem no voo da Airlink: o limite é de 20kg despachados e dimensões rígidas. Se for voltar por JNB depois, considere deixar malas grandes no guarda-volumes do aeroporto ou hotel.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 4: O Grande Safári: Em Busca dos Big Five</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Reserva Privada ou Kruger National Park</p>
+          
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Morning Game Drive (Safári ao amanhecer)</strong> (4h)</li><li><strong>Relaxamento e observação no deck do Lodge</strong> (3h)</li><li><strong>Night Game Drive (Safári noturno)</strong> (3h)</li></ul>
+          
+          
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Braai (churrasco sul-africano) preparado pelo chef ou ranger do seu lodge.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Em novembro (primavera/verão), a vegetação do Kruger fica mais densa e verde devido às chuvas, o que camufla os animais. Os safáris das 5h30 da manhã são taticamente os melhores para avistamento antes do calor extremo.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 5: Rota Panorâmica e Voo para o Cabo</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Mpumalanga / Aeroporto MQP</p>
+          
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Blyde River Canyon</strong> (1h 30m)</li><li><strong>Bourke's Luck Potholes</strong> (1h)</li><li><strong>God's Window</strong> (45m)</li></ul>
+          
+          
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Harrie's Pancakes em Graskop - Parada clássica e histórica na Rota Panorâmica.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Contrate um transfer privativo que faça a Panorama Route a caminho do aeroporto MQP. O Blyde River é o terceiro maior cânion do mundo e o único verde.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 6: Chegada à Cidade Mãe (Cape Town)</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> V&A Waterfront / City Bowl</p>
+          
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Voo MQP-CPT</strong> (2h 30m)</li><li><strong>Exploração do V&A Waterfront</strong> (3h)</li><li><strong>Zeitz MOCAA (Museu de Arte Contemporânea)</strong> (2h)</li></ul>
+          
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> First Thursdays Cape Town (se coincidir com a primeira quinta do mês, as galerias de arte e ruas do centro ficam abertas à noite com muita festa e cultura).</p>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> V&A Food Market para almoço rápido e The Pot Luck Club para um jantar sofisticado (exige reserva com meses de antecedência).</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Use o Uber do aeroporto CPT para o hotel, é barato e seguro (aprox. 25 min). O Zeitz MOCAA foi construído em antigos silos de grãos e é uma obra-prima arquitetônica.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 7: Vistas Épicas e Botânica</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Table Mountain e Kirstenbosch</p>
+          
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Table Mountain Aerial Cableway</strong> (2h 30m)</li><li><strong>Bo-Kaap (Bairro Malaio)</strong> (1h)</li><li><strong>Kirstenbosch National Botanical Garden</strong> (2h)</li></ul>
+          
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Kirstenbosch Summer Sunset Concerts - Temporada de shows ao ar livre nos jardins botânicos que se inicia em novembro (geralmente aos domingos).</p>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Kloof Street House - Ambiente vibrante e decoração eclética, perfeito para jantar após o pôr do sol.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Tática de Ouro: Suba a Table Mountain no primeiro dia de sol e sem vento que tiver. Em novembro os ventos ('Cape Doctor') aumentam e o bondinho fecha frequentemente à tarde. Compre ingresso Fast Track online.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 8: Península do Cabo e Pinguins</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Cape Peninsula / Rota Costeira</p>
+          
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Chapman's Peak Drive</strong> (1h)</li><li><strong>Cape of Good Hope (Cabo da Boa Esperança)</strong> (2h)</li><li><strong>Boulders Beach (Colônia de Pinguins)</strong> (1h 30m)</li></ul>
+          
+          
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Kalky's em Kalk Bay - O mais autêntico e rústico Fish & Chips da região, comendo de frente para os barcos de pesca.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> O Cabo da Boa Esperança não é o ponto mais ao sul da África (é o Cabo das Agulhas), mas é o ponto mais a sudoeste. Leve corta-vento, pois a região venta extremo o ano todo.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 9: Rota dos Vinhos (Winelands)</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Stellenbosch e Franschhoek</p>
+          
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Passeio pelo centro histórico de Stellenbosch</strong> (1h 30m)</li><li><strong>Degustação em Vinícola de Stellenbosch</strong> (2h)</li><li><strong>Franschhoek Wine Tram</strong> (3h)</li></ul>
+          
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Franschhoek Cap Classique & Champagne Festival (tradicionalmente ocorre no final de novembro, celebrando os espumantes locais).</p>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Almoço harmonizado na vinícola Delaire Graff Estate (Stellenbosch) com vista para as montanhas.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> A uva Pinotage é uma invenção sul-africana (cruzamento de Pinot Noir e Cinsaut). Use o Wine Tram em Franschhoek (ônibus/bonde hop-on hop-off) para beber sem se preocupar em dirigir.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 10: Despedida e Transbordo de Retorno</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Camps Bay / Aeroportos CPT e JNB</p>
+          
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Camps Bay Beach e Clifton (Manhã livre)</strong> (2h)</li><li><strong>Voo Doméstico CPT-JNB</strong> (2h 10m)</li><li><strong>Conexão e Voo Internacional JNB-GRU</strong> (Transbordo)</li></ul>
+          
+          
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Café da manhã tardio no The Bungalow (Clifton/Camps Bay) observando o mar antes de ir para o aeroporto.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Emita o voo CPT-JNB (FlySafair ou Airlink) com pelo menos 4 a 5 horas de folga antes do seu voo internacional JNB-GRU. No Terminal A de JNB, utilize seu cartão Visa Infinite para acessar o Mashonzha Lounge antes de embarcar para o Brasil.</p>
+        </div>
+      </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const APP_DATA = {"destino":"Africa do sul","identidade_visual":{"estilo":"Caderno de Viagem / Scrapbook Tático - Expedição África do Sul","paleta_cores":{"fundo_papel":"#FAF6EE","cor_principal":"#C15C3D","cor_secundaria":"#2E5A44","cor_destaque":"#E6A100","texto_handwritten":"#1C1917"},"fontes_google":["Caveat","Plus Jakarta Sans"],"elementos_scrapbook":{"carimbos":["ENTRY PERMIT - SOUTH AFRICA","KRUGER BIG FIVE SAFARI","CAPE OF GOOD HOPE 34°21'S"],"washi_tape_color":"rgba(193, 92, 61, 0.25)"}},"midia_e_ambiente":{"foto_header":"https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=800&q=80","imagens_destaque":{"hero_header":"https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=800&q=80","atracoes":[{"nome":"Kruger National Park","url":"https://images.unsplash.com/photo-1534177616072-ef7dc120449d?auto=format&fit=crop&w=800&q=80"},{"nome":"Table Mountain","url":"https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=800&q=80"},{"nome":"Boulders Beach","url":"https://images.unsplash.com/photo-1598439210625-5067c578f3f6?auto=format&fit=crop&w=800&q=80"}]}},"pontos":[{"id":1,"nome":"Apartheid Museum","lat":-26.237649,"lng":28.00827,"proximo_ponto":{"nome":"Vilakazi Street no Soweto","tempo_minutos":240,"distancia_km":"20.01"}},{"id":2,"nome":"Vilakazi Street no Soweto","lat":-26.256697,"lng":27.863482,"proximo_ponto":{"nome":"Nelson Mandela Square","tempo_minutos":0,"distancia_km":"0.00"}},{"id":3,"nome":"Nelson Mandela Square","lat":-29.708985,"lng":23.666291,"proximo_ponto":{"nome":"Blyde River Canyon","tempo_minutos":0,"distancia_km":"0.00"}},{"id":4,"nome":"Blyde River Canyon","lat":-29.708985,"lng":23.666291,"proximo_ponto":{"nome":"Bourke's Luck Potholes","tempo_minutos":0,"distancia_km":"0.00"}},{"id":5,"nome":"Bourke's Luck Potholes","lat":-24.672763,"lng":30.807149,"proximo_ponto":{"nome":"Table Mountain Aerial Cableway","tempo_minutos":10109,"distancia_km":"842.41"}},{"id":6,"nome":"Table Mountain Aerial Cableway","lat":-29.580573,"lng":30.572613,"proximo_ponto":{"nome":"V&A Waterfront e Zeitz MOCAA","tempo_minutos":20424,"distancia_km":"1701.97"}},{"id":7,"nome":"V&A Waterfront e Zeitz MOCAA","lat":-33.903269,"lng":18.42229,"proximo_ponto":{"nome":"Cabo da Boa Esperança","tempo_minutos":13383,"distancia_km":"1115.24"}},{"id":8,"nome":"Cabo da Boa Esperança","lat":-29.73333,"lng":26.36667,"proximo_ponto":{"nome":"Franschhoek Wine Tram e Vinícolas","tempo_minutos":12874,"distancia_km":"1072.84"}},{"id":9,"nome":"Franschhoek Wine Tram e Vinícolas","lat":-33.907982,"lng":19.117731,"proximo_ponto":null}],"roteiro_bruto":"\n<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Laudo Técnico Executivo - Engenharia de Viagem: África do Sul</title>\n    <style>\n        body {\n            font-family: Arial, Helvetica, sans-serif;\n            color: #333333;\n            background-color: #F8F9FA;\n            margin: 0;\n            padding: 20px;\n            line-height: 1.6;\n        }\n        h1, h2, h3 {\n            color: #1B365D;\n            margin-top: 30px;\n            page-break-after: avoid;\n            break-after: avoid;\n        }\n        h1 {\n            border-bottom: 2px solid #1B365D;\n            padding-bottom: 10px;\n        }\n        table {\n            width: 100%;\n            border-collapse: collapse;\n            margin: 20px 0;\n            background-color: #FFFFFF;\n            page-break-inside: avoid;\n            break-inside: avoid;\n        }\n        th, td {\n            border: 1px solid #E5E7EB;\n            padding: 10px;\n            text-align: left;\n        }\n        th {\n            background-color: #1B365D;\n            color: #FFFFFF;\n        }\n        tr:nth-child(even) {\n            background-color: #F3F4F6;\n        }\n        .destaque {\n            background-color: #E5E7EB;\n            padding: 15px;\n            border-left: 5px solid #1B365D;\n            margin: 20px 0;\n            page-break-inside: avoid;\n            break-inside: avoid;\n        }\n        .alerta {\n            color: #D97706;\n            font-weight: bold;\n        }\n    </style>\n</head>\n<body>\n\n    <h1>LAUDO TÉCNICO EXECUTIVO: OTIMIZAÇÃO DE ROTEIRO - ÁFRICA DO SUL (NOV/2026)</h1>\n\n    <div class=\"destaque\">\n        <h2>[1. RESUMO EXECUTIVO]</h2>\n        <p><strong>Objetivo Tático:</strong> Estruturar a logística de uma expedição de 10 dias à África do Sul (Joanesburgo, Kruger Park e Cape Town) para novembro de 2026, maximizando o uso de ativos de fidelidade (milhas e pontos hoteleiros), minimizando o spread cambial e garantindo eficiência de transbordo e acesso a terminais VIP.</p>\n        <p><strong>Saving Projetado:</strong> A alocação inteligente do saldo de pontos C6 e ALL Accor resultará em uma economia primária substancial em passagens aéreas e hospedagem, reduzindo o desembolso em cash apenas para taxas de embarque, voos internos e complemento de diárias.</p>\n    </div>\n\n    <h2>[2. MATRIZ DE DECISÃO SAZONAL]</h2>\n    <table>\n        <thead>\n            <tr>\n                <th>Parâmetro</th>\n                <th>Condição (Novembro 2026)</th>\n                <th>Impacto Logístico e Financeiro</th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td><strong>Clima</strong></td>\n                <td>Primavera/Verão (15°C a 28°C)</td>\n                <td>Clima quente e agradável. No Kruger, a vegetação estará mais densa devido às chuvas de primavera, exigindo safáris nas primeiras horas da manhã. Em Cape Town, os ventos começam a aumentar. Dress code: Roupas leves, tons neutros para safári (cáqui/verde), corta-vento para a noite.</td>\n            </tr>\n            <tr>\n                <td><strong>Temporada</strong></td>\n                <td>Média/Alta (Shoulder Season)</td>\n                <td>Transição para a alta temporada de verão. Preços de hospedagem começam a subir na segunda quinzena.</td>\n            </tr>\n            <tr>\n                <td><strong>Saturação</strong></td>\n                <td>Moderada</td>\n                <td>Menor saturação que dezembro/janeiro, permitindo maior facilidade em reservas de safáris e menor tempo de fila em atrações.</td>\n            </tr>\n            <tr>\n                <td><strong>Estimativa de Custos</strong></td>\n                <td>Cash + Milhas</td>\n                <td>Voos internacionais cobertos por milhas. Voos internos (JNB-MQP-CPT-JNB) exigirão emissão pagante (cash) em companhias regionais (Airlink/FlySafair).</td>\n            </tr>\n        </tbody>\n    </table>\n\n    <h2>[3. ENGENHARIA DE MILHAS E VALORAÇÃO FINANCEIRA (CPM)]</h2>\n    \n    <h3>Diagnóstico do Banco de Milhas</h3>\n    <table>\n        <thead>\n            <tr>\n                <th>Programa</th>\n                <th>Saldo Atual</th>\n                <th>Custo Médio (CPM)</th>\n                <th>Parecer Técnico</th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>Smiles</td>\n                <td>45.666</td>\n                <td>R$ 9,87</td>\n                <td>Saldo base eficiente. Será o programa alvo para emissão via parceiras (South African Airways / TAAG / Ethiopian).</td>\n            </tr>\n            <tr>\n                <td>Latam</td>\n                <td>17.771</td>\n                <td>R$ 10,74</td>\n                <td>Saldo insuficiente para emissão direta, mas pode ser complementado via Esfera/C6 caso haja disponibilidade na malha própria da LATAM.</td>\n            </tr>\n            <tr>\n                <td>Esfera</td>\n                <td>80.981</td>\n                <td>R$ 16,51</td>\n                <td>Ativo de reserva. Manter em hold para eventuais transferências bonificadas.</td>\n            </tr>\n            <tr>\n                <td>Livelo</td>\n                <td>11.276</td>\n                <td>R$ 25,80</td>\n                <td>Saldo baixo e CPM elevado. Não utilizar nesta operação.</td>\n            </tr>\n            <tr>\n                <td>C6</td>\n                <td>262.256</td>\n                <td>R$ 0,00</td>\n                <td><strong>Ativo principal.</strong> Volume robusto gerado a custo zero. Será utilizado para alavancar o saldo Smiles ou LATAM Pass.</td>\n            </tr>\n            <tr>\n                <td>AllAcoor</td>\n                <td>11.600</td>\n                <td>R$ 87,40</td>\n                <td>Ativo hoteleiro. Equivalente a 232 EUR de abatimento em faturas de hospedagem.</td>\n            </tr>\n            <tr>\n                <td>Caixa</td>\n                <td>3.624</td>\n                <td>R$ 0,00</td>\n                <td>Saldo residual.</td>\n            </tr>\n            <tr>\n                <td>Azul</td>\n                <td>5.000</td>\n                <td>R$ 0,00</td>\n                <td>Saldo residual.</td>\n            </tr>\n        </tbody>\n    </table>\n\n    <p class=\"alerta\">ALERTA DE JANELA DE TRANSFERÊNCIA: Como a viagem é para novembro de 2026, você tem amplo tempo para emissão (ideal emitir com 330 dias de antecedência, ou seja, dezembro de 2025). <strong>NÃO transfira seus pontos C6 ou Esfera agora.</strong> Aguarde as janelas estatísticas de bonificação (Black Friday em novembro de 2024/2025 ou aniversário dos programas em março/setembro). Uma transferência de 140.000 pontos C6 com 100% de bônus para a Smiles gerará 280.000 milhas, totalizando ~325.000 milhas Smiles, volume suficiente para 2 bilhetes de ida e volta (GRU-JNB).</p>\n\n    <h3>Tabela de Rotas e Franquia de Bagagem</h3>\n    <table>\n        <thead>\n            <tr>\n                <th>Rota (Ida e Volta)</th>\n                <th>Cia Aérea</th>\n                <th>Custo Estimado (Milhas/Cash)</th>\n                <th>Franquia de Bagagem (Econômica)</th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>GRU - JNB (Direto)</td>\n                <td>LATAM ou SAA</td>\n                <td>~150.000 a 160.000 Milhas/Pessoa</td>\n                <td>LATAM: 1 peça de 23kg despachada + 8kg cabine.<br>SAA: 1 peça de 32kg despachada + 8kg cabine.</td>\n            </tr>\n            <tr>\n                <td>JNB - MQP (Nelspruit/Kruger)</td>\n                <td>Airlink (Cash)</td>\n                <td>~ZAR 1.200 (R$ 156)</td>\n                <td>1 peça de 20kg despachada + 8kg cabine. <em>Atenção às dimensões rígidas de bagagem em voos regionais.</em></td>\n            </tr>\n            <tr>\n                <td>MQP - CPT (Cape Town)</td>\n                <td>Airlink (Cash)</td>\n                <td>~ZAR 1.700 (R$ 221)</td>\n                <td>1 peça de 20kg despachada + 8kg cabine.</td>\n            </tr>\n            <tr>\n                <td>CPT - JNB</td>\n                <td>FlySafair ou Airlink (Cash)</td>\n                <td>~ZAR 1.400 (R$ 182)</td>\n                <td>FlySafair: Tarifa base NÃO inclui bagagem despachada (adicionar taxa extra para 20kg). Cabine: 7kg.</td>\n            </tr>\n        </tbody>\n    </table>\n\n    <h2>[4. ENGENHARIA LOGÍSTICA DE FRONTEIRA E TRANSBORDO]</h2>\n    <table>\n        <thead>\n            <tr>\n                <th>Aeroporto</th>\n                <th>Gargalos e Imigração</th>\n                <th>Mobilidade e Transbordo</th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>JNB (Joanesburgo)</td>\n                <td><strong>Isenção de Visto (90 dias).</strong> Obrigatório apresentar Certificado Internacional de Vacinação contra Febre Amarela. Passaporte deve ter 30 dias de validade após a saída e 2 páginas em branco. <em>Nota: ETIAS/EES não se aplica à África do Sul.</em></td>\n                <td>Hub principal. O transbordo do terminal Internacional (A) para o Doméstico (B) exige caminhada de 10-15 minutos. Gautrain disponível para acesso rápido a Sandton/Pretoria.</td>\n            </tr>\n            <tr>\n                <td>MQP (Nelspruit / Kruger)</td>\n                <td>Aeroporto regional de pequeno porte. Desembarque rápido.</td>\n                <td>Necessário aluguel de carro (retirada no terminal) ou transfer privativo contratado previamente com o lodge para acessar os portões do Kruger Park (aprox. 1h de estrada).</td>\n            </tr>\n            <tr>\n                <td>CPT (Cape Town)</td>\n                <td>Processamento doméstico rápido.</td>\n                <td>Uber é a opção mais eficiente, segura e barata para o centro da cidade (V&A Waterfront) - tempo de trânsito de aprox. 25 minutos.</td>\n            </tr>\n        </tbody>\n    </table>\n\n    <h2>[5. LOGÍSTICA DE SALAS VIP (GROUND HANDLING) E INVENTÁRIO DE ACESSOS]</h2>\n    <p>Inventário do Usuário: C6 Black (Ilimitado GRU T3 + 4 LK/WAC), Caixa VI (2 DP), Santander Unique VI (2 DP), Smiles VI (Ilimitado GOL + 2 DP), Inter Prime Black (6 LK/WAC).</p>\n    <table>\n        <thead>\n            <tr>\n                <th>Terminal / Etapa</th>\n                <th>Sala VIP Recomendada</th>\n                <th>Cartão a Apresentar</th>\n                <th>Consumo de Cota (2 Passageiros)</th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>GRU T3 (Embarque Internacional)</td>\n                <td>Lounge Mastercard Black</td>\n                <td>C6 Black (Titular e Adicional)</td>\n                <td>Acesso Ilimitado e Gratuito. Não consome cotas anuais.</td>\n            </tr>\n            <tr>\n                <td>JNB Terminal B (Conexão Doméstica para MQP)</td>\n                <td>Bidvest Premier Lounge (Doméstico)</td>\n                <td>Inter Prime Black (LoungeKey)</td>\n                <td>Consome 2 acessos da cota de 6 anuais do Inter Prime Black.</td>\n            </tr>\n            <tr>\n                <td>CPT Terminal 1 (Embarque Doméstico para JNB)</td>\n                <td>Bidvest Premier Lounge ou MyAir Lounge</td>\n                <td>Santander Unique Visa Infinite (DragonPass/VAC)</td>\n                <td>Consome 2 acessos da cota de 2 anuais do Santander Unique.</td>\n            </tr>\n            <tr>\n                <td>JNB Terminal A (Embarque Internacional para GRU)</td>\n                <td>Mashonzha Lounge ou Shongololo Lounge</td>\n                <td>Caixa Visa Infinite (DragonPass/VAC)</td>\n                <td>Consome 2 acessos da cota de 2 anuais da Caixa.</td>\n            </tr>\n        </tbody>\n    </table>\n\n    <h2>[6. HOSPEDAGEM (ALL ACCOR vs MERCADO)]</h2>\n    <p>O usuário possui 11.600 pontos ALL Accor (Custo Médio R$ 87,40). A cada 2.000 pontos, abate-se 40 EUR na fatura. Total de abatimento disponível: <strong>232 EUR (Aprox. R$ 1.400)</strong>.</p>\n    <table>\n        <thead>\n            <tr>\n                <th>Localidade</th>\n                <th>Perfil de Hospedagem (Exemplos Accor)</th>\n                <th>Tarifa Média Mercado (Cash)</th>\n                <th>Custo com Abatimento ALL Accor</th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>Joanesburgo / Sandton (1 a 2 noites)</td>\n                <td>Pullman Sandton ou Mercure Randburg</td>\n                <td>~ZAR 2.500 / noite (R$ 325)</td>\n                <td rowspan=\"3\">Custo total estimado para 10 noites: R$ 5.500.<br>Aplicando os 11.600 pontos ALL (R$ 1.400 de desconto), o desembolso final em cash será de <strong>R$ 4.100</strong> para as 10 noites.</td>\n            </tr>\n            <tr>\n                <td>Kruger Park (3 noites)</td>\n                <td>Lodges independentes (Accor possui o Mantis Founders Lodge, mas é categoria Ultra-Luxo)</td>\n                <td>~ZAR 4.000 / noite (R$ 520)</td>\n            </tr>\n            <tr>\n                <td>Cape Town (5 noites)</td>\n                <td>Pullman Cape Town City Centre</td>\n                <td>~ZAR 3.000 / noite (R$ 390)</td>\n            </tr>\n        </tbody>\n    </table>\n\n    <h2>[7. CONSOLIDAÇÃO FINANCEIRA E CÂMBIO]</h2>\n    \n    <h3>Tabela de Custo Total Consolidado da Operação (Estimativa 2 Pax)</h3>\n    <table>\n        <thead>\n            <tr>\n                <th>Rubrica</th>\n                <th>Custo em Milhas/Pontos</th>\n                <th>Custo em Cash (BRL)</th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td>Voos Internacionais (GRU-JNB-GRU)</td>\n                <td>~300.000 Smiles (via transferência bonificada do C6)</td>\n                <td>R$ 800 (Taxas de embarque)</td>\n            </tr>\n            <tr>\n                <td>Voos Internos (JNB-MQP-CPT-JNB)</td>\n                <td>-</td>\n                <td>R$ 1.118 (~ZAR 8.600)</td>\n            </tr>\n            <tr>\n                <td>Hospedagem (10 noites)</td>\n                <td>11.600 Pontos ALL Accor</td>\n                <td>R$ 4.100</td>\n            </tr>\n            <tr>\n                <td><strong>TOTAL ESTIMADO</strong></td>\n                <td><strong>Ativos já em carteira</strong></td>\n                <td><strong>R$ 6.018 (R$ 3.009 por pessoa)</strong></td>\n            </tr>\n        </tbody>\n    </table>\n\n    <h3>Tabela de Spread/Câmbio Global (ZAR vs BRL)</h3>\n    <p>Cotação base: 1 ZAR ≈ 0,13 BRL.</p>\n    <table>\n        <thead>\n            <tr>\n                <th>Instituição</th>\n                <th>Spread Médio</th>\n                <th>Parecer Técnico para ZAR (Rand Sul-Africano)</th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td><strong>Wise</strong></td>\n                <td>~0,10%</td>\n                <td><strong>Altamente Recomendado.</strong> Utiliza taxa de câmbio comercial real com a menor taxa fixa do mercado. Ideal para converter BRL direto para ZAR.</td>\n            </tr>\n            <tr>\n                <td><strong>Revolut</strong></td>\n                <td>0% a 0,50%</td>\n                <td>Excelente em dias úteis (0% spread até o limite do plano). <strong>Atenção:</strong> Cobra taxa adicional de ~0,50% aos finais de semana.</td>\n            </tr>\n            <tr>\n                <td><strong>Banco Inter</strong></td>\n                <td>~0,50%</td>\n                <td>Ótima alternativa para carregar em Dólar e usar a conversão automática da bandeira Mastercard no momento da compra.</td>\n            </tr>\n            <tr>\n                <td><strong>C6 Global / Nomad</strong></td>\n                <td>1% a 2%</td>\n                <td>Spread mais alto que Wise/Inter. Útil apenas como backup logístico caso haja falha nos cartões principais.</td>\n            </tr>\n            <tr>\n                <td><strong>Santander (Cartão de Crédito)</strong></td>\n                <td>~2% + 1,1% IOF</td>\n                <td>Custo total passa de 3%. Usar <strong>exclusivamente</strong> para caução (depósito de garantia) em locadoras de veículos e hotéis para não prender saldo em débito.</td>\n            </tr>\n        </tbody>\n    </table>\n\n    <h2>[8. EXPANSÃO DE ROTEIRO TÁTICO E CIDADES PRÓXIMAS]</h2>\n    <table>\n        <thead>\n            <tr>\n                <th>Cidade Alternativa</th>\n                <th>Distância / Logística</th>\n                <th>Justificativa Técnica e Custo-Benefício</th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr>\n                <td><strong>Stellenbosch / Franschhoek</strong></td>\n                <td>45 min de carro de Cape Town</td>\n                <td>Região das vinícolas. Custo de hospedagem pode ser inferior ao centro de Cape Town. Ideal para 1 ou 2 noites. Deslocamento barato via Uber ou carro alugado.</td>\n            </tr>\n            <tr>\n                <td><strong>Pretoria</strong></td>\n                <td>40 min de JNB via Gautrain</td>\n                <td>Alternativa de hospedagem mais barata e segura que o centro de Joanesburgo caso precise de um pernoite antes de voar para o Kruger.</td>\n            </tr>\n            <tr>\n                <td><strong>Hermanus</strong></td>\n                <td>1h30 de carro de Cape Town</td>\n                <td>Rota costeira de alto valor cênico. Embora novembro seja o final da temporada de baleias, a hotelaria apresenta excelente custo-benefício em cash fora do pico de inverno.</td>\n            </tr>\n        </tbody>\n    </table>\n\n</body>\n</html>\n\n      <div style=\"font-family: Arial, Helvetica, sans-serif; color: #333333; padding: 20px;\">\n        <h2 style=\"color: #1B365D; border-bottom: 2px solid #1B365D; padding-bottom: 10px; page-break-before: always;\">\n          [9. ROTEIRO TÁTICO E AGENDA CULTURAL DIA A DIA]\n        </h2>\n        <p style=\"font-size: 14px; color: #555;\">Itinerário tático otimizado por proximidade geográfica e agenda cultural para <strong>África do Sul (Joanesburgo, Kruger Park e Cape Town)</strong> (10 dias).</p>\n    \n        <div class=\"destaque\" style=\"background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;\">\n          <h3 style=\"color: #1B365D; margin-top: 0;\">Dia 1: Chegada e Imersão Urbana em Joanesburgo</h3>\n          <p style=\"margin: 5px 0;\"><strong>📍 Apoio Logístico:</strong> Estação Gautrain Sandton / Bairro Sandton</p>\n          \n          <p style=\"margin: 10px 0 5px 0;\"><strong>🏛️ Principais Atrações:</strong></p>\n          <ul style=\"margin: 0; padding-left: 20px;\"><li><strong>Nelson Mandela Square</strong> (1h 30m)</li><li><strong>Sandton City Mall</strong> (2h)</li></ul>\n          \n          <p style=\"margin: 10px 0 5px 0; color: #B91C1C;\"><strong>🎟️ Evento Especial / Data:</strong> Rosebank Sunday Market (se a chegada for no domingo) - vibrante mercado de rua com artesanato e música local.</p>\n          \n          <p style=\"margin: 8px 0 4px 0;\"><strong>🍷 Dica Gastronômica:</strong> The Butcher Shop & Grill (Sandton) - Excelente para provar as famosas carnes sul-africanas com ótimo custo-benefício.</p>\n          <p style=\"margin: 4px 0 0 0; font-size: 13px; color: #4B5563;\"><strong>💡 Dica Tática:</strong> Desembarcando no Aeroporto JNB, ignore os táxis não oficiais. Pegue o trem rápido Gautrain direto do aeroporto para a estação Sandton (aprox. 15 min). É a forma mais segura e eficiente de transbordo.</p>\n        </div>\n      \n        <div class=\"destaque\" style=\"background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;\">\n          <h3 style=\"color: #1B365D; margin-top: 0;\">Dia 2: História, Resistência e Cultura</h3>\n          <p style=\"margin: 5px 0;\"><strong>📍 Apoio Logístico:</strong> Centro de Joanesburgo e Soweto</p>\n          \n          <p style=\"margin: 10px 0 5px 0;\"><strong>🏛️ Principais Atrações:</strong></p>\n          <ul style=\"margin: 0; padding-left: 20px;\"><li><strong>Apartheid Museum</strong> (2h 30m)</li><li><strong>Hector Pieterson Memorial</strong> (1h)</li><li><strong>Vilakazi Street (Soweto)</strong> (1h 30m)</li></ul>\n          \n          <p style=\"margin: 10px 0 5px 0; color: #B91C1C;\"><strong>🎟️ Evento Especial / Data:</strong> Soweto Art & Craft Fair no Soweto Theatre (evento cultural recorrente com música ao vivo e arte local).</p>\n          \n          <p style=\"margin: 8px 0 4px 0;\"><strong>🍷 Dica Gastronômica:</strong> Sakhumzi Restaurant na Vilakazi Street - Buffet tradicional sul-africano para imersão cultural.</p>\n          <p style=\"margin: 4px 0 0 0; font-size: 13px; color: #4B5563;\"><strong>💡 Dica Tática:</strong> A Vilakazi Street é a única rua do mundo onde viveram dois ganhadores do Prêmio Nobel da Paz (Nelson Mandela e Desmond Tutu). Compre o ingresso do Apartheid Museum online para evitar filas.</p>\n        </div>\n      \n        <div class=\"destaque\" style=\"background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;\">\n          <h3 style=\"color: #1B365D; margin-top: 0;\">Dia 3: Rumo à Savana: Transbordo e Primeiro Safári</h3>\n          <p style=\"margin: 5px 0;\"><strong>📍 Apoio Logístico:</strong> Aeroporto de Nelspruit (MQP) / Kruger Park</p>\n          \n          <p style=\"margin: 10px 0 5px 0;\"><strong>🏛️ Principais Atrações:</strong></p>\n          <ul style=\"margin: 0; padding-left: 20px;\"><li><strong>Voo JNB-MQP (Airlink)</strong> (1h)</li><li><strong>Transfer para o Lodge e Check-in</strong> (2h)</li><li><strong>Afternoon Game Drive (Safári de fim de tarde)</strong> (3h)</li></ul>\n          \n          \n          \n          <p style=\"margin: 8px 0 4px 0;\"><strong>🍷 Dica Gastronômica:</strong> Boma Dinner no Lodge - Jantar tradicional servido ao ar livre ao redor de uma fogueira sob as estrelas.</p>\n          <p style=\"margin: 4px 0 0 0; font-size: 13px; color: #4B5563;\"><strong>💡 Dica Tática:</strong> Atenção máxima à bagagem no voo da Airlink: o limite é de 20kg despachados e dimensões rígidas. Se for voltar por JNB depois, considere deixar malas grandes no guarda-volumes do aeroporto ou hotel.</p>\n        </div>\n      \n        <div class=\"destaque\" style=\"background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;\">\n          <h3 style=\"color: #1B365D; margin-top: 0;\">Dia 4: O Grande Safári: Em Busca dos Big Five</h3>\n          <p style=\"margin: 5px 0;\"><strong>📍 Apoio Logístico:</strong> Reserva Privada ou Kruger National Park</p>\n          \n          <p style=\"margin: 10px 0 5px 0;\"><strong>🏛️ Principais Atrações:</strong></p>\n          <ul style=\"margin: 0; padding-left: 20px;\"><li><strong>Morning Game Drive (Safári ao amanhecer)</strong> (4h)</li><li><strong>Relaxamento e observação no deck do Lodge</strong> (3h)</li><li><strong>Night Game Drive (Safári noturno)</strong> (3h)</li></ul>\n          \n          \n          \n          <p style=\"margin: 8px 0 4px 0;\"><strong>🍷 Dica Gastronômica:</strong> Braai (churrasco sul-africano) preparado pelo chef ou ranger do seu lodge.</p>\n          <p style=\"margin: 4px 0 0 0; font-size: 13px; color: #4B5563;\"><strong>💡 Dica Tática:</strong> Em novembro (primavera/verão), a vegetação do Kruger fica mais densa e verde devido às chuvas, o que camufla os animais. Os safáris das 5h30 da manhã são taticamente os melhores para avistamento antes do calor extremo.</p>\n        </div>\n      \n        <div class=\"destaque\" style=\"background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;\">\n          <h3 style=\"color: #1B365D; margin-top: 0;\">Dia 5: Rota Panorâmica e Voo para o Cabo</h3>\n          <p style=\"margin: 5px 0;\"><strong>📍 Apoio Logístico:</strong> Mpumalanga / Aeroporto MQP</p>\n          \n          <p style=\"margin: 10px 0 5px 0;\"><strong>🏛️ Principais Atrações:</strong></p>\n          <ul style=\"margin: 0; padding-left: 20px;\"><li><strong>Blyde River Canyon</strong> (1h 30m)</li><li><strong>Bourke's Luck Potholes</strong> (1h)</li><li><strong>God's Window</strong> (45m)</li></ul>\n          \n          \n          \n          <p style=\"margin: 8px 0 4px 0;\"><strong>🍷 Dica Gastronômica:</strong> Harrie's Pancakes em Graskop - Parada clássica e histórica na Rota Panorâmica.</p>\n          <p style=\"margin: 4px 0 0 0; font-size: 13px; color: #4B5563;\"><strong>💡 Dica Tática:</strong> Contrate um transfer privativo que faça a Panorama Route a caminho do aeroporto MQP. O Blyde River é o terceiro maior cânion do mundo e o único verde.</p>\n        </div>\n      \n        <div class=\"destaque\" style=\"background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;\">\n          <h3 style=\"color: #1B365D; margin-top: 0;\">Dia 6: Chegada à Cidade Mãe (Cape Town)</h3>\n          <p style=\"margin: 5px 0;\"><strong>📍 Apoio Logístico:</strong> V&A Waterfront / City Bowl</p>\n          \n          <p style=\"margin: 10px 0 5px 0;\"><strong>🏛️ Principais Atrações:</strong></p>\n          <ul style=\"margin: 0; padding-left: 20px;\"><li><strong>Voo MQP-CPT</strong> (2h 30m)</li><li><strong>Exploração do V&A Waterfront</strong> (3h)</li><li><strong>Zeitz MOCAA (Museu de Arte Contemporânea)</strong> (2h)</li></ul>\n          \n          <p style=\"margin: 10px 0 5px 0; color: #B91C1C;\"><strong>🎟️ Evento Especial / Data:</strong> First Thursdays Cape Town (se coincidir com a primeira quinta do mês, as galerias de arte e ruas do centro ficam abertas à noite com muita festa e cultura).</p>\n          \n          <p style=\"margin: 8px 0 4px 0;\"><strong>🍷 Dica Gastronômica:</strong> V&A Food Market para almoço rápido e The Pot Luck Club para um jantar sofisticado (exige reserva com meses de antecedência).</p>\n          <p style=\"margin: 4px 0 0 0; font-size: 13px; color: #4B5563;\"><strong>💡 Dica Tática:</strong> Use o Uber do aeroporto CPT para o hotel, é barato e seguro (aprox. 25 min). O Zeitz MOCAA foi construído em antigos silos de grãos e é uma obra-prima arquitetônica.</p>\n        </div>\n      \n        <div class=\"destaque\" style=\"background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;\">\n          <h3 style=\"color: #1B365D; margin-top: 0;\">Dia 7: Vistas Épicas e Botânica</h3>\n          <p style=\"margin: 5px 0;\"><strong>📍 Apoio Logístico:</strong> Table Mountain e Kirstenbosch</p>\n          \n          <p style=\"margin: 10px 0 5px 0;\"><strong>🏛️ Principais Atrações:</strong></p>\n          <ul style=\"margin: 0; padding-left: 20px;\"><li><strong>Table Mountain Aerial Cableway</strong> (2h 30m)</li><li><strong>Bo-Kaap (Bairro Malaio)</strong> (1h)</li><li><strong>Kirstenbosch National Botanical Garden</strong> (2h)</li></ul>\n          \n          <p style=\"margin: 10px 0 5px 0; color: #B91C1C;\"><strong>🎟️ Evento Especial / Data:</strong> Kirstenbosch Summer Sunset Concerts - Temporada de shows ao ar livre nos jardins botânicos que se inicia em novembro (geralmente aos domingos).</p>\n          \n          <p style=\"margin: 8px 0 4px 0;\"><strong>🍷 Dica Gastronômica:</strong> Kloof Street House - Ambiente vibrante e decoração eclética, perfeito para jantar após o pôr do sol.</p>\n          <p style=\"margin: 4px 0 0 0; font-size: 13px; color: #4B5563;\"><strong>💡 Dica Tática:</strong> Tática de Ouro: Suba a Table Mountain no primeiro dia de sol e sem vento que tiver. Em novembro os ventos ('Cape Doctor') aumentam e o bondinho fecha frequentemente à tarde. Compre ingresso Fast Track online.</p>\n        </div>\n      \n        <div class=\"destaque\" style=\"background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;\">\n          <h3 style=\"color: #1B365D; margin-top: 0;\">Dia 8: Península do Cabo e Pinguins</h3>\n          <p style=\"margin: 5px 0;\"><strong>📍 Apoio Logístico:</strong> Cape Peninsula / Rota Costeira</p>\n          \n          <p style=\"margin: 10px 0 5px 0;\"><strong>🏛️ Principais Atrações:</strong></p>\n          <ul style=\"margin: 0; padding-left: 20px;\"><li><strong>Chapman's Peak Drive</strong> (1h)</li><li><strong>Cape of Good Hope (Cabo da Boa Esperança)</strong> (2h)</li><li><strong>Boulders Beach (Colônia de Pinguins)</strong> (1h 30m)</li></ul>\n          \n          \n          \n          <p style=\"margin: 8px 0 4px 0;\"><strong>🍷 Dica Gastronômica:</strong> Kalky's em Kalk Bay - O mais autêntico e rústico Fish & Chips da região, comendo de frente para os barcos de pesca.</p>\n          <p style=\"margin: 4px 0 0 0; font-size: 13px; color: #4B5563;\"><strong>💡 Dica Tática:</strong> O Cabo da Boa Esperança não é o ponto mais ao sul da África (é o Cabo das Agulhas), mas é o ponto mais a sudoeste. Leve corta-vento, pois a região venta extremo o ano todo.</p>\n        </div>\n      \n        <div class=\"destaque\" style=\"background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;\">\n          <h3 style=\"color: #1B365D; margin-top: 0;\">Dia 9: Rota dos Vinhos (Winelands)</h3>\n          <p style=\"margin: 5px 0;\"><strong>📍 Apoio Logístico:</strong> Stellenbosch e Franschhoek</p>\n          \n          <p style=\"margin: 10px 0 5px 0;\"><strong>🏛️ Principais Atrações:</strong></p>\n          <ul style=\"margin: 0; padding-left: 20px;\"><li><strong>Passeio pelo centro histórico de Stellenbosch</strong> (1h 30m)</li><li><strong>Degustação em Vinícola de Stellenbosch</strong> (2h)</li><li><strong>Franschhoek Wine Tram</strong> (3h)</li></ul>\n          \n          <p style=\"margin: 10px 0 5px 0; color: #B91C1C;\"><strong>🎟️ Evento Especial / Data:</strong> Franschhoek Cap Classique & Champagne Festival (tradicionalmente ocorre no final de novembro, celebrando os espumantes locais).</p>\n          \n          <p style=\"margin: 8px 0 4px 0;\"><strong>🍷 Dica Gastronômica:</strong> Almoço harmonizado na vinícola Delaire Graff Estate (Stellenbosch) com vista para as montanhas.</p>\n          <p style=\"margin: 4px 0 0 0; font-size: 13px; color: #4B5563;\"><strong>💡 Dica Tática:</strong> A uva Pinotage é uma invenção sul-africana (cruzamento de Pinot Noir e Cinsaut). Use o Wine Tram em Franschhoek (ônibus/bonde hop-on hop-off) para beber sem se preocupar em dirigir.</p>\n        </div>\n      \n        <div class=\"destaque\" style=\"background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;\">\n          <h3 style=\"color: #1B365D; margin-top: 0;\">Dia 10: Despedida e Transbordo de Retorno</h3>\n          <p style=\"margin: 5px 0;\"><strong>📍 Apoio Logístico:</strong> Camps Bay / Aeroportos CPT e JNB</p>\n          \n          <p style=\"margin: 10px 0 5px 0;\"><strong>🏛️ Principais Atrações:</strong></p>\n          <ul style=\"margin: 0; padding-left: 20px;\"><li><strong>Camps Bay Beach e Clifton (Manhã livre)</strong> (2h)</li><li><strong>Voo Doméstico CPT-JNB</strong> (2h 10m)</li><li><strong>Conexão e Voo Internacional JNB-GRU</strong> (Transbordo)</li></ul>\n          \n          \n          \n          <p style=\"margin: 8px 0 4px 0;\"><strong>🍷 Dica Gastronômica:</strong> Café da manhã tardio no The Bungalow (Clifton/Camps Bay) observando o mar antes de ir para o aeroporto.</p>\n          <p style=\"margin: 4px 0 0 0; font-size: 13px; color: #4B5563;\"><strong>💡 Dica Tática:</strong> Emita o voo CPT-JNB (FlySafair ou Airlink) com pelo menos 4 a 5 horas de folga antes do seu voo internacional JNB-GRU. No Terminal A de JNB, utilize seu cartão Visa Infinite para acessar o Mashonzha Lounge antes de embarcar para o Brasil.</p>\n        </div>\n      </div>\n","chat_id":"920828204"};
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+      if(tabId === 'tab2' && window.map) { setTimeout(() => window.map.invalidateSize(), 200); }
+    }
+
+    // Inicializa Mapa Leaflet
+    if (APP_DATA.pontos && APP_DATA.pontos.length > 0) {
+      const firstPoint = APP_DATA.pontos[0];
+      window.map = L.map('map').setView([firstPoint.lat, firstPoint.lng], 6);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(window.map);
+
+      const bounds = [];
+      APP_DATA.pontos.forEach(p => {
+        if(p.lat && p.lng) {
+          bounds.push([p.lat, p.lng]);
+          let popupText = `<b>${p.nome}</b>`;
+          if (p.proximo_ponto) {
+            popupText += `<br><small>Próximo: ${p.proximo_ponto.nome} (${p.proximo_ponto.distancia_km} km)</small>`;
+          }
+          L.marker([p.lat, p.lng]).addTo(window.map).bindPopup(popupText);
+        }
+      });
+      if(bounds.length > 0) window.map.fitBounds(bounds);
+    }
+  </script>
+</body>
+</html>
