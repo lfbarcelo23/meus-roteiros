@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caderno de Viagem - Barcelona 5 Dias</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root {
+      --fundo-papel: #FBF8F1;
+      --cor-principal: #C84B31;
+      --cor-secundaria: #19515D;
+      --cor-destaque: #E9A036;
+      --texto-handwritten: #2D2A26;
+      --washi-tape: rgba(200, 75, 49, 0.3);
+      --sombra-papel: 0 4px 15px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+      --sombra-hover: 0 8px 25px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--fundo-papel);
+      background-image: 
+        radial-gradient(#e2ded4 0.75px, transparent 0.75px),
+        radial-gradient(#e2ded4 0.75px, var(--fundo-papel) 0.75px);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
+      color: var(--texto-handwritten);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    .handwritten {
+      font-family: 'Caveat', cursive;
+    }
+
+    /* Outer Wrapper */
+    .journal-container {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    /* Tabs Header */
+    .tabs-header {
+      display: flex;
+      gap: 8px;
+      border-bottom: 3px solid var(--cor-secundaria);
+      padding-left: 10px;
+      margin-bottom: 25px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: #EFECE6;
+      border: 2px solid var(--cor-secundaria);
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      padding: 12px 24px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cor-secundaria);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: #E4E0D7;
+      transform: translateY(-2px);
+    }
+
+    .tab-btn.active {
+      background: var(--fundo-papel);
+      color: var(--cor-principal);
+      border-color: var(--cor-secundaria);
+      padding-bottom: 14px;
+      margin-bottom: -3px;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+    }
+
+    /* Tab Content Panels */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scrapbook Elements */
+    .washi-tape {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-1.5deg);
+      width: 120px;
+      height: 26px;
+      background-color: var(--washi-tape);
+      border-left: 2px dashed rgba(255,255,255,0.5);
+      border-right: 2px dashed rgba(255,255,255,0.5);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+
+    .stamp {
+      display: inline-block;
+      padding: 6px 14px;
+      border: 2px dashed var(--cor-principal);
+      border-radius: 8px;
+      color: var(--cor-principal);
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transform: rotate(-4deg);
+      background: rgba(200, 75, 49, 0.04);
+      user-select: none;
+    }
+
+    .stamp.alt {
+      border-color: var(--cor-secundaria);
+      color: var(--cor-secundaria);
+      transform: rotate(3deg);
+      background: rgba(25, 81, 93, 0.04);
+    }
+
+    /* Hero Banner */
+    .hero-card {
+      position: relative;
+      background: #FFF;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: var(--sombra-papel);
+      margin-bottom: 30px;
+      border: 1px solid #EADBCE;
+      transform: rotate(-0.3deg);
+    }
+
+    .hero-banner-img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .hero-title-box {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .hero-title {
+      font-family: 'Caveat', cursive;
+      font-size: 3.2rem;
+      color: var(--cor-principal);
+      line-height: 1;
+    }
+
+    .hero-stamps {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .kit-visual-hero {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      max-width: 90px;
+      max-height: 90px;
+      transform: rotate(8deg);
+      z-index: 5;
+      filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
+      border-radius: 8px;
+    }
+
+    /* Spotify Audio Section */
+    .audio-section {
+      background: #FFF;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 35px;
+      box-shadow: var(--sombra-papel);
+      border: 1px dashed var(--cor-destaque);
+    }
+
+    .audio-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: var(--cor-secundaria);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Itinerary Days Grid */
+    .day-card {
+      position: relative;
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 35px;
+      box-shadow: var(--sombra-papel);
+      border: 1px solid #EAE5D9;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .day-card:nth-child(odd) {
+      transform: rotate(-0.4deg);
+    }
+
+    .day-card:nth-child(even) {
+      transform: rotate(0.4deg);
+    }
+
+    .day-card:hover {
+      transform: rotate(0deg) translateY(-3px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed #E5E0D8;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .day-title {
+      font-family: 'Caveat', cursive;
+      font-size: 2.2rem;
+      color: var(--cor-principal);
+      font-weight: 700;
+    }
+
+    .day-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 25px;
+    }
+
+    @media (max-width: 850px) {
+      .day-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Checklist */
+    .attraction-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .attraction-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #FAF8F5;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border-left: 4px solid var(--cor-secundaria);
+    }
+
+    .attraction-item input[type="checkbox"] {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--cor-secundaria);
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 3px;
+      position: relative;
+      flex-shrink: 0;
+      background: #FFF;
+    }
+
+    .attraction-item input[type="checkbox"]:checked {
+      background-color: var(--cor-principal);
+      border-color: var(--cor-principal);
+    }
+
+    .attraction-item input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      top: -2px;
+      left: 3px;
+    }
+
+    .attraction-item.completed label {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    .attraction-info {
+      flex: 1;
+    }
+
+    .attraction-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--texto-handwritten);
+      cursor: pointer;
+    }
+
+    .attraction-next {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .next-tag {
+      background: rgba(233, 160, 54, 0.2);
+      color: #B36B00;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+
+    /* Polaroid Image */
+    .polaroid {
+      background: #FFF;
+      padding: 12px 12px 18px 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+      border: 1px solid #EEE;
+      transform: rotate(2deg);
+      text-align: center;
+      max-width: 100%;
+    }
+
+    .polaroid img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .polaroid-caption {
+      font-family: 'Caveat', cursive;
+      font-size: 1.25rem;
+      color: var(--texto-handwritten);
+      margin-top: 8px;
+    }
+
+    /* Post-it Note */
+    .postit-note {
+      background: #FFF9A6;
+      padding: 18px;
+      border-radius: 4px;
+      box-shadow: 3px 4px 10px rgba(0,0,0,0.1);
+      transform: rotate(-1.5deg);
+      margin-top: 15px;
+      position: relative;
+      border-bottom-right-radius: 25px 5px;
+    }
+
+    .postit-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #8A6D00;
+      margin-bottom: 6px;
+    }
+
+    .postit-text {
+      font-size: 0.9rem;
+      color: #4A442D;
+    }
+
+    /* Tab 2: Map Controls & Container */
+    .map-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      background: #FFF;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: var(--sombra-papel);
+      margin-bottom: 20px;
+    }
+
+    .toggle-group {
+      display: flex;
+      gap: 6px;
+      background: #EFECE6;
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    .toggle-btn {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--cor-secundaria);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-btn.active {
+      background: #FFF;
+      color: var(--cor-principal);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .day-selector {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+    }
+
+    .day-select-btn {
+      padding: 6px 14px;
+      border: 1px solid var(--cor-secundaria);
+      background: #FFF;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--cor-secundaria);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .day-select-btn.active {
+      background: var(--cor-secundaria);
+      color: #FFF;
+    }
+
+    #map-container {
+      height: 520px;
+      width: 100%;
+      border-radius: 16px;
+      box-shadow: var(--sombra-papel);
+      border: 4px solid #FFF;
+      z-index: 1;
+    }
+
+    /* Tab 3: Dossiê & Logistics */
+    .dossier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
+    .dossier-card {
+      background: #FFF;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--sombra-papel);
+      border: 1px solid #EAE5D9;
+      position: relative;
+    }
+
+    .dossier-card-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.8rem;
+      color: var(--cor-principal);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px dashed #E5E0D8;
+      padding-bottom: 6px;
+    }
+
+    .dossier-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .dossier-table th, .dossier-table td {
+      padding: 10px 8px;
+      text-align: left;
+      border-bottom: 1px solid #EFECE6;
+    }
+
+    .dossier-table th {
+      color: var(--cor-secundaria);
+      font-weight: 700;
+    }
+
+    .tag-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .tag-badge.green { background: #E6F4EA; color: #137333; }
+    .tag-badge.blue { background: #E8F0FE; color: #1A73E8; }
+    .tag-badge.orange { background: #FEF7E0; color: #B06000; }
+
+    /* Custom Map Leaflet Popup Styling */
+    .leaflet-popup-content-wrapper {
+      border-radius: 10px;
+      padding: 4px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .popup-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--cor-principal);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .popup-desc {
+      font-size: 0.85rem;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="journal-container">
+    
+    <!-- Navigation Tabs -->
+    <nav class="tabs-header">
+      <button class="tab-btn active" onclick="switchTab('tab-roteiro', this)">
+        📖 Roteiro & Diário
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-mapa', this)">
+        🗺️ Mapa Interativo
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-dossie', this)">
+        📊 Dossiê & Logística
+      </button>
+    </nav>
+
+    <!-- TAB 1: ROTEIRO & DIÁRIO DE VIAGEM -->
+    <div id="tab-roteiro" class="tab-content active">
+      
+      <!-- Hero Banner -->
+      <header class="hero-card">
+        <div class="washi-tape"></div>
+        <img src="data:image/jpeg;base64,filesystem-v2" alt="Kit Visual Decorativo" class="kit-visual-hero" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+        
+        <img src="https://images.unsplash.com/photo-1771153492862-f4737fba886c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8QmFyY2Vsb25hJTIwcGFub3JhbWljJTIwYWVyaWFsJTIwdmlldyUyMFNhZ3JhZGElMjBGYW1pbGlhJTIwc3Vuc2V0JTIwTWVkaXRlcnJhbmVhbiUyMHNlYXxlbnwwfDB8fHwxNzg2NTQwMzc3fDA&ixlib=rb-4.1.0&q=80&w=1080" 
+             alt="Barcelona Panorama" class="hero-banner-img" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+        
+        <div class="hero-title-box">
+          <div>
+            <h1 class="hero-title">Roteiro 5 dias em Barcelona</h1>
+            <p style="color: var(--cor-secundaria); font-weight: 600;">Explore a Catalunha: Arquitetura, Praia, Arte e Gastronomia</p>
+          </div>
+          <div class="hero-stamps">
+            <div class="stamp">BARCELONA - BARRI GÒTIC</div>
+            <div class="stamp alt">SAGRADA FAMÍLIA PASSPORT STAMP</div>
+            <div class="stamp">CATALUNYA EXCURSION 2026</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Audio Track Section -->
+      <section class="audio-section">
+        <div class="audio-title">🎵 Trilha da viagem</div>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2OitzyUJy94WW8DcWska3m" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </section>
+
+      <!-- ITINERARY DAYS -->
+
+      <!-- DIA 1 -->
+      <article class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2 class="day-title">Dia 1: O Coração Histórico & Brisa Marítima</h2>
+          <span class="stamp alt">Dia 01</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <ul class="attraction-list">
+              <li class="attraction-item" id="item-1">
+                <input type="checkbox" onchange="toggleAttraction('item-1')">
+                <div class="attraction-info">
+                  <label class="attraction-name">1. Catedral de Barcelona</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚶‍♂️ Bairro Gótico (Barri Gòtic) • 30 min (2.50 km)
+                  </div>
+                </div>
+              </li>
+              <li class="attraction-item" id="item-2">
+                <input type="checkbox" onchange="toggleAttraction('item-2')">
+                <div class="attraction-info">
+                  <label class="attraction-name">2. Bairro Gótico (Barri Gòtic)</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚶‍♂️ Praia de Barceloneta • No mesmo local
+                  </div>
+                </div>
+              </li>
+              <li class="attraction-item" id="item-3">
+                <input type="checkbox" onchange="toggleAttraction('item-3')">
+                <div class="attraction-info">
+                  <label class="attraction-name">3. Praia de Barceloneta</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚗 Sagrada Família • 6 min (2.21 km)
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <div class="postit-note">
+              <div class="postit-title">💡 Dica Tática & Gastronômica</div>
+              <div class="postit-text">
+                Perca-se nas ruelas do Barri Gòtic logo pela manhã para evitar multidões. Faça uma pausa para tapas e churros com chocolate no El Xurrería no caminho para a praia.
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="polaroid">
+              <img src="https://images.unsplash.com/photo-1782156985555-7b12eab6be6b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8QmFyY2Vsb25hJTIwR290aGljJTIwUXVhcnRlciUyMENhdGhlZHJhbCUyMGZhY2FkZSUyMGNvdXJ0eWFyZCUyMHBhbG1zfGVufDB8MHx8fDE3ODY1NDAzNzd8MA&ixlib=rb-4.1.0&q=80&w=1080" 
+                   alt="Catedral de Barcelona" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+              <div class="polaroid-caption">Catedral de Barcelona</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- DIA 2 -->
+      <article class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2 class="day-title">Dia 2: As Obras-Primas do Modernismo de Gaudí</h2>
+          <span class="stamp">Dia 02</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <ul class="attraction-list">
+              <li class="attraction-item" id="item-4">
+                <input type="checkbox" onchange="toggleAttraction('item-4')">
+                <div class="attraction-info">
+                  <label class="attraction-name">4. Sagrada Família</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚶‍♂️ Casa Batlló • 23 min (1.91 km)
+                  </div>
+                </div>
+              </li>
+              <li class="attraction-item" id="item-5">
+                <input type="checkbox" onchange="toggleAttraction('item-5')">
+                <div class="attraction-info">
+                  <label class="attraction-name">5. Casa Batlló</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚶‍♂️ Casa Milà (La Pedrera) • 6 min (0.52 km)
+                  </div>
+                </div>
+              </li>
+              <li class="attraction-item" id="item-6">
+                <input type="checkbox" onchange="toggleAttraction('item-6')">
+                <div class="attraction-info">
+                  <label class="attraction-name">6. Casa Milà (La Pedrera)</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚗 Castelo de Montjuïc • Deslocamento de conexão
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <div class="postit-note">
+              <div class="postit-title">🎟️ Segredo do Viajante</div>
+              <div class="postit-text">
+                Reserve os ingressos para a Sagrada Família com pelo menos 2 semanas de antecedência para pegar a luz das 15h refletindo nos vitrais coloridos.
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="polaroid" style="transform: rotate(-3deg);">
+              <img src="https://images.unsplash.com/photo-1763796216517-b480bc16d369?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8U2FncmFkYSUyMEZhbWlsaWElMjBpbnRlcmlvciUyMHN0YWluZWQlMjBnbGFzcyUyMGxpZ2h0JTIwcmVmbGVjdGlvbnMlMjBBbnRvbmklMjBHYXVkaXxlbnwwfDB8fHwxNzg2NTQwMzc3fDA&ixlib=rb-4.1.0&q=80&w=1080" 
+                   alt="Interior Sagrada Família" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+              <div class="polaroid-caption">Luzes na Sagrada Família</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- DIA 3 -->
+      <article class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2 class="day-title">Dia 3: A Montanha Mágica de Montjuïc</h2>
+          <span class="stamp alt">Dia 03</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <ul class="attraction-list">
+              <li class="attraction-item" id="item-7">
+                <input type="checkbox" onchange="toggleAttraction('item-7')">
+                <div class="attraction-info">
+                  <label class="attraction-name">7. Castelo de Montjuïc</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚗 Fundação Joan Miró • Perto da colina
+                  </div>
+                </div>
+              </li>
+              <li class="attraction-item" id="item-8">
+                <input type="checkbox" onchange="toggleAttraction('item-8')">
+                <div class="attraction-info">
+                  <label class="attraction-name">8. Fundação Joan Miró</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚶‍♂️ Poble Espanyol • No mesmo complexo
+                  </div>
+                </div>
+              </li>
+              <li class="attraction-item" id="item-9">
+                <input type="checkbox" onchange="toggleAttraction('item-9')">
+                <div class="attraction-info">
+                  <label class="attraction-name">9. Poble Espanyol</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚗 Park Güell • 11 min (3.07 km)
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <div class="postit-note">
+              <div class="postit-title">🌅 Pôr do Sol Imperdível</div>
+              <div class="postit-text">
+                Suba de teleférico até o Castelo de Montjuïc para ter uma vista panorâmica 360° da cidade e do porto de Barcelona.
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="polaroid" style="transform: rotate(2deg);">
+              <img src="https://images.unsplash.com/photo-1529551739587-e242c564f727?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8TW9udGp1aWMlMjBjYXN0bGUlMjB2aWV3cG9pbnQlMjBvdmVybG9va2luZyUyMEJhcmNlbG9uYSUyMGNpdHklMjBhbmQlMjBzZWF8ZW58MHwwfHx8MTc4NjU0MDM3N3ww&ixlib=rb-4.1.0&q=80&w=1080" 
+                   alt="Castelo de Montjuïc" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+              <div class="polaroid-caption">Vista de Montjuïc</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- DIA 4 -->
+      <article class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2 class="day-title">Dia 4: Natureza, Mosaicos & A Vibe Boêmia</h2>
+          <span class="stamp">Dia 04</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <ul class="attraction-list">
+              <li class="attraction-item" id="item-10">
+                <input type="checkbox" onchange="toggleAttraction('item-10')">
+                <div class="attraction-info">
+                  <label class="attraction-name">10. Park Güell</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚶‍♂️ Passeio pelas ruas de Gràcia • 25 min (2.06 km)
+                  </div>
+                </div>
+              </li>
+              <li class="attraction-item" id="item-11">
+                <input type="checkbox" onchange="toggleAttraction('item-11')">
+                <div class="attraction-info">
+                  <label class="attraction-name">11. Passeio pelas ruas de Gràcia</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚗 MACBA • 10 min (3.49 km)
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <div class="postit-note">
+              <div class="postit-title">🍷 Noite em Gràcia</div>
+              <div class="postit-text">
+                A Plaça del Sol no bairro de Gràcia é o ponto de encontro perfeito para uma vermutaria tradicional no fim da tarde.
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="polaroid" style="transform: rotate(-2deg);">
+              <img src="https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80" 
+                   alt="Park Güell Mosaic" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+              <div class="polaroid-caption">Mosaicos Trencadís</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- DIA 5 -->
+      <article class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2 class="day-title">Dia 5: Arte Contemporânea, Sabores & Despedida</h2>
+          <span class="stamp alt">Dia 05</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <ul class="attraction-list">
+              <li class="attraction-item" id="item-12">
+                <input type="checkbox" onchange="toggleAttraction('item-12')">
+                <div class="attraction-info">
+                  <label class="attraction-name">12. MACBA (Museu de Arte Contemporânea)</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚶‍♂️ Mercado La Boqueria • 31 min (2.57 km)
+                  </div>
+                </div>
+              </li>
+              <li class="attraction-item" id="item-13">
+                <input type="checkbox" onchange="toggleAttraction('item-13')">
+                <div class="attraction-info">
+                  <label class="attraction-name">13. Mercado La Boqueria</label>
+                  <div class="attraction-next">
+                    Próxima parada: 🚶‍♂️ Las Ramblas • Integração imediata
+                  </div>
+                </div>
+              </li>
+              <li class="attraction-item" id="item-14">
+                <input type="checkbox" onchange="toggleAttraction('item-14')">
+                <div class="attraction-info">
+                  <label class="attraction-name">14. Las Ramblas</label>
+                  <div class="attraction-next">
+                    <span class="next-tag">🏁 Fim do Roteiro</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <div class="postit-note">
+              <div class="postit-title">🍓 Prova de Sabores</div>
+              <div class="postit-text">
+                Na Boqueria, busque as bancas dos fundos para provar jamón ibérico de bellota cortado na hora e sucos de frutas frescas por €2.
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="polaroid" style="transform: rotate(3deg);">
+              <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80" 
+                   alt="La Boqueria Market" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+              <div class="polaroid-caption">Mercado La Boqueria</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- TAB 2: MAPA INTERATIVO & ROTAS ESTRATÉGICAS -->
+    <div id="tab-mapa" class="tab-content">
+      <div class="map-controls">
+        <div class="toggle-group">
+          <button id="btn-mode-day" class="toggle-btn active" onclick="setMapMode('day')">Mapa do Dia</button>
+          <button id="btn-mode-city" class="toggle-btn" onclick="setMapMode('city')">Rota Entre Cidades</button>
+        </div>
+
+        <div id="day-selector-wrapper" class="day-selector">
+          <button class="day-select-btn active" onclick="selectMapDay(1, this)">Dia 1</button>
+          <button class="day-select-btn" onclick="selectMapDay(2, this)">Dia 2</button>
+          <button class="day-select-btn" onclick="selectMapDay(3, this)">Dia 3</button>
+          <button class="day-select-btn" onclick="selectMapDay(4, this)">Dia 4</button>
+          <button class="day-select-btn" onclick="selectMapDay(5, this)">Dia 5</button>
+        </div>
+      </div>
+
+      <div id="map-container"></div>
+    </div>
+
+    <!-- TAB 3: DOSSIÊ DE MILHAS, CÂMBIO & LOGÍSTICA -->
+    <div id="tab-dossie" class="tab-content">
+      <div class="dossier-grid">
+        
+        <!-- Cartão Logística & Transporte -->
+        <article class="dossier-card">
+          <div class="washi-tape"></div>
+          <h3 class="dossier-card-title">🚌 Transporte & Pases</h3>
+          <p style="font-size: 0.9rem; margin-bottom: 15px;">Estratégia de mobilidade urbana em Barcelona para economizar tempo e euros.</p>
+          
+          <table class="dossier-table">
+            <thead>
+              <tr>
+                <th>Opção</th>
+                <th>Custo Estimado</th>
+                <th>Recomendação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Hola BCN! (5 Dias)</strong></td>
+                <td>€38,20</td>
+                <td><span class="tag-badge green">Ideal</span></td>
+              </tr>
+              <tr>
+                <td><strong>Cartão T-Casual (10 viagens)</strong></td>
+                <td>€11,35</td>
+                <td><span class="tag-badge blue">Econômico</span></td>
+              </tr>
+              <tr>
+                <td><strong>Metrô Aeroporto (L9S)</strong></td>
+                <td>€5,15</td>
+                <td><span class="tag-badge orange">Avulso</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+
+        <!-- Cartão Estratégia de Milhas -->
+        <article class="dossier-card">
+          <div class="washi-tape"></div>
+          <h3 class="dossier-card-title">✈️ Estratégia de Milhas & Vôos</h3>
+          <p style="font-size: 0.9rem; margin-bottom: 15px;">Resgate tático de passagens para o Aeroporto Josep Tarradellas El Prat (BCN).</p>
+          
+          <table class="dossier-table">
+            <thead>
+              <tr>
+                <th>Programa</th>
+                <th>Trecho (Economica)</th>
+                <th>Taxas Aprox.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Iberia Plus</strong></td>
+                <td>21.250 Avios (Off-peak)</td>
+                <td>€110,00</td>
+              </tr>
+              <tr>
+                <td><strong>TudoAzul (Parceiros)</strong></td>
+                <td>85.000 pontos</td>
+                <td>R$ 450,00</td>
+              </tr>
+              <tr>
+                <td><strong>Smiles (KLM/Air France)</strong></td>
+                <td>98.000 milhas</td>
+                <td>R$ 620,00</td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+
+        <!-- Cartão Câmbio & Custos -->
+        <article class="dossier-card">
+          <div class="washi-tape"></div>
+          <h3 class="dossier-card-title">💶 Planejamento Financeiro</h3>
+          <p style="font-size: 0.9rem; margin-bottom: 15px;">Estimativa diária por pessoa em Barcelona (Câmbio Ref: €1 = R$ 5,50).</p>
+          
+          <table class="dossier-table">
+            <thead>
+              <tr>
+                <th>Categoria</th>
+                <th>Média Diária (€)</th>
+                <th>Média Diária (R$)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Alimentação / Tapas</strong></td>
+                <td>€45,00</td>
+                <td>R$ 247,50</td>
+              </tr>
+              <tr>
+                <td><strong>Atrações & Entradas</strong></td>
+                <td>€30,00</td>
+                <td>R$ 165,00</td>
+              </tr>
+              <tr>
+                <td><strong>Imprevistos / Compras</strong></td>
+                <td>€25,00</td>
+                <td>R$ 137,50</td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // Data from JSON
+    const pontos = [
+      {"id":1,"nome":"Catedral de Barcelona","lat":41.38411,"lng":2.17621,"dia":1,"cidade":"Barcelona","proximo_ponto":{"nome":"Bairro Gótico (Barri Gòtic)","modo":"pe","tempo_minutos":30,"distancia_km":"2.50"}},
+      {"id":2,"nome":"Bairro Gótico (Barri Gòtic)","lat":41.400347,"lng":2.159592,"dia":1,"cidade":"Barcelona","proximo_ponto":{"nome":"Praia de Barceloneta","modo":"pe","tempo_minutos":0,"distancia_km":"0.00"}},
+      {"id":3,"nome":"Praia de Barceloneta","lat":41.400347,"lng":2.159592,"dia":1,"cidade":"Barcelona","proximo_ponto":{"nome":"Sagrada Família","modo":"carro","tempo_minutos":6,"distancia_km":"2.21"}},
+      {"id":4,"nome":"Sagrada Família","lat":41.403794,"lng":2.174773,"dia":2,"cidade":"Barcelona","proximo_ponto":{"nome":"Casa Batlló","modo":"pe","tempo_minutos":23,"distancia_km":"1.91"}},
+      {"id":5,"nome":"Casa Batlló","lat":41.391701,"lng":2.164966,"dia":2,"cidade":"Barcelona","proximo_ponto":{"nome":"Casa Milà (La Pedrera)","modo":"pe","tempo_minutos":6,"distancia_km":"0.52"}},
+      {"id":6,"nome":"Casa Milà (La Pedrera)","lat":41.395192,"lng":2.161783,"dia":2,"cidade":"Barcelona","proximo_ponto":{"nome":"Castelo de Montjuïc","modo":"carro","tempo_minutos":642,"distancia_km":"1089.85"}},
+      {"id":7,"nome":"Castelo de Montjuïc","lat":42.860907,"lng":-8.573208,"dia":3,"cidade":"Barcelona","proximo_ponto":{"nome":"Fundação Joan Miró","modo":"carro","tempo_minutos":645,"distancia_km":"1089.93"}},
+      {"id":8,"nome":"Fundação Joan Miró","lat":41.400347,"lng":2.159592,"dia":3,"cidade":"Barcelona","proximo_ponto":{"nome":"Poble Espanyol","modo":"pe","tempo_minutos":0,"distancia_km":"0.00"}},
+      {"id":9,"nome":"Poble Espanyol","lat":41.400347,"lng":2.159592,"dia":3,"cidade":"Barcelona","proximo_ponto":{"nome":"Park Güell","modo":"carro","tempo_minutos":11,"distancia_km":"3.07"}},
+      {"id":10,"nome":"Park Güell","lat":41.413808,"lng":2.151001,"dia":4,"cidade":"Barcelona","proximo_ponto":{"nome":"Passeio pelas ruas de Gràcia","modo":"pe","tempo_minutos":25,"distancia_km":"2.06"}},
+      {"id":11,"nome":"Passeio pelas ruas de Gràcia","lat":41.400347,"lng":2.159592,"dia":4,"cidade":"Barcelona","proximo_ponto":{"nome":"MACBA (Museu de Arte Contemporânea)","modo":"carro","tempo_minutos":10,"distancia_km":"3.49"}},
+      {"id":12,"nome":"MACBA (Museu de Arte Contemporânea)","lat":41.383095,"lng":2.166776,"dia":5,"cidade":"Barcelona","proximo_ponto":{"nome":"Mercado La Boqueria","modo":"pe","tempo_minutos":31,"distancia_km":"2.57"}},
+      {"id":13,"nome":"Mercado La Boqueria","lat":41.400347,"lng":2.159592,"dia":5,"cidade":"Barcelona","proximo_ponto":{"nome":"Las Ramblas","modo":"pe","tempo_minutos":0,"distancia_km":"0.00"}},
+      {"id":14,"nome":"Las Ramblas","lat":41.400347,"lng":2.159592,"dia":5,"cidade":"Barcelona","proximo_ponto":null}
+    ];
+
+    let map = null;
+    let markersGroup = null;
+    let currentMapMode = 'day'; // 'day' or 'city'
+    let currentDay = 1;
+
+    // Switch Tabs
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+
+      if (tabId === 'tab-mapa') {
+        setTimeout(() => {
+          if (!map) {
+            initMap();
+          } else {
+            map.invalidateSize();
+          }
+        }, 100);
+      }
+    }
+
+    // Toggle Checkbox state
+    function toggleAttraction(itemId) {
+      const el = document.getElementById(itemId);
+      if (el) {
+        el.classList.toggle('completed');
+      }
+    }
+
+    // Initialize Leaflet Map
+    function initMap() {
+      map = L.map('map-container').setView([41.3851, 2.1734], 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map);
+
+      markersGroup = L.layerGroup().addTo(map);
+      renderMap();
+    }
+
+    function setMapMode(mode) {
+      currentMapMode = mode;
+      document.getElementById('btn-mode-day').classList.toggle('active', mode === 'day');
+      document.getElementById('btn-mode-city').classList.toggle('active', mode === 'city');
+      
+      const dayWrapper = document.getElementById('day-selector-wrapper');
+      dayWrapper.style.display = (mode === 'day') ? 'flex' : 'none';
+
+      renderMap();
+    }
+
+    function selectMapDay(day, btn) {
+      currentDay = day;
+      document.querySelectorAll('.day-select-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderMap();
+    }
+
+    function renderMap() {
+      if (!map) return;
+      markersGroup.clearLayers();
+
+      if (currentMapMode === 'day') {
+        const dayPoints = pontos.filter(p => p.dia === currentDay);
+        if (dayPoints.length === 0) return;
+
+        const latLngs = [];
+
+        dayPoints.forEach((p, idx) => {
+          const latLng = [p.lat, p.lng];
+          latLngs.push(latLng);
+
+          let nextText = p.proximo_ponto 
+            ? `<br><b>Próximo:</b> ${p.proximo_ponto.nome} (${p.proximo_ponto.tempo_minutos} min - ${p.proximo_ponto.distancia_km} km)`
+            : '<br><b>Última parada do dia!</b>';
+
+          const marker = L.marker(latLng).bindPopup(`
+            <div class="popup-title">Stop ${idx + 1}: ${p.nome}</div>
+            <div class="popup-desc"><b>Dia ${p.dia}</b> - ${p.cidade}${nextText}</div>
+          `);
+          markersGroup.addLayer(marker);
+        });
+
+        if (latLngs.length > 1) {
+          const polyline = L.polyline(latLngs, { color: '#C84B31', weight: 4, opacity: 0.8, dashArray: '6, 8' });
+          markersGroup.addLayer(polyline);
+        }
+
+        const bounds = L.latLngBounds(latLngs);
+        map.fitBounds(bounds, { padding: [40, 40] });
+
+      } else {
+        // Mode: Rota Entre Cidades / Panorama
+        const citiesMap = new Map();
+
+        pontos.forEach(p => {
+          if (!citiesMap.has(p.cidade)) {
+            citiesMap.set(p.cidade, {
+              cidade: p.cidade,
+              lat: p.lat,
+              lng: p.lng,
+              count: 1
+            });
+          } else {
+            citiesMap.get(p.cidade).count++;
+          }
+        });
+
+        const cityArray = Array.from(citiesMap.values());
+        const latLngs = [];
+
+        cityArray.forEach(c => {
+          const latLng = [c.lat, c.lng];
+          latLngs.push(latLng);
+
+          const marker = L.marker(latLng).bindPopup(`
+            <div class="popup-title">🏙️ ${c.cidade}</div>
+            <div class="popup-desc">Total de atrações no roteiro: <b>${c.count}</b></div>
+          `);
+          markersGroup.addLayer(marker);
+        });
+
+        if (latLngs.length > 1) {
+          const polyline = L.polyline(latLngs, { color: '#19515D', weight: 5, opacity: 0.9 });
+          markersGroup.addLayer(polyline);
+          map.fitBounds(L.latLngBounds(latLngs), { padding: [50, 50] });
+        } else if (latLngs.length === 1) {
+          map.setView(latLngs[0], 12);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
