@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japão 2027 — Caderno de Viagem & Diário Tático</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <style>
+        :root {
+            --fundo-papel: #FDFBF7;
+            --cor-principal: #B83227;
+            --cor-secundaria: #1F2D3D;
+            --cor-destaque: #D4A373;
+            --texto-handwritten: #2B2D42;
+            --washi-tape: rgba(184, 50, 39, 0.3);
+            --papel-postit: #FFF8C5;
+            --sombra-card: 0 8px 20px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--fundo-papel);
+            background-image: radial-gradient(#e0d9cb 0.8px, transparent 0.8px);
+            background-size: 16px 16px;
+            color: var(--cor-secundaria);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* TIPOGRAFIA MANUSCRITA */
+        .handwriting {
+            font-family: 'Caveat', cursive;
+            color: var(--texto-handwritten);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* HERO HEADER SCRAPBOOK */
+        .hero {
+            position: relative;
+            background: #ffffff;
+            border-bottom: 3px dashed #d0c8b8;
+            padding: 40px 0 30px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .hero-banner {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--sombra-card);
+            border: 8px solid #ffffff;
+            transform: rotate(-0.5deg);
+        }
+
+        .hero-img {
+            width: 100%;
+            height: 340px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(31, 45, 61, 0.85), transparent);
+            padding: 30px 25px 20px 25px;
+            color: #ffffff;
+        }
+
+        .hero-title {
+            font-family: 'Caveat', cursive;
+            font-size: 3.2rem;
+            line-height: 1;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 5px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.05rem;
+            opacity: 0.9;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* DECORAÇÕES SCRAPBOOK HERO */
+        .kit-visual-decor {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            width: 110px;
+            height: auto;
+            z-index: 10;
+            transform: rotate(8deg);
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+            pointer-events: none;
+        }
+
+        .stamps-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: flex-start;
+        }
+
+        .stamp {
+            display: inline-block;
+            padding: 6px 14px;
+            border: 2px dashed var(--cor-principal);
+            color: var(--cor-principal);
+            font-family: 'Caveat', cursive;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 6px;
+            background: rgba(184, 50, 39, 0.04);
+            transform: rotate(-2deg);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.8);
+        }
+
+        .stamp:nth-child(even) {
+            transform: rotate(3deg);
+            border-color: var(--cor-secundaria);
+            color: var(--cor-secundaria);
+            background: rgba(31, 45, 61, 0.04);
+        }
+
+        /* SOUNDTRACK PLAYER */
+        .audio-section {
+            margin: 25px 0 35px 0;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #e8e2d5;
+            box-shadow: var(--sombra-card);
+            position: relative;
+        }
+
+        .audio-title {
+            font-family: 'Caveat', cursive;
+            font-size: 1.6rem;
+            color: var(--cor-principal);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* BINDER TABS NAVEGAÇÃO */
+        .binder-nav-wrapper {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--fundo-papel);
+            padding: 15px 0 5px 0;
+            border-bottom: 2px solid #e2dacb;
+        }
+
+        .binder-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: none;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .binder-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            background: #eae3d2;
+            border: 1px solid #d0c5b0;
+            border-bottom: none;
+            padding: 12px 22px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #5a5243;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: inset 0 -3px 5px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn:hover {
+            background: #f4efe2;
+            color: var(--cor-principal);
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: var(--cor-principal);
+            border-color: #d0c5b0;
+            border-bottom: 3px solid #ffffff;
+            margin-bottom: -2px;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* TAB CONTENT */
+        .tab-content {
+            display: none;
+            padding-top: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* SCRAPBOOK CARDS (DIÁRIO & ROTEIRO) */
+        .day-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 35px;
+            position: relative;
+            box-shadow: var(--sombra-card);
+            border: 1px solid #eae3d5;
+            transition: transform 0.2s ease;
+        }
+
+        .day-card:nth-child(odd) {
+            transform: rotate(-0.4deg);
+        }
+
+        .day-card:nth-child(even) {
+            transform: rotate(0.4deg);
+        }
+
+        /* WASHI TAPE */
+        .washi-tape {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-1deg);
+            width: 140px;
+            height: 26px;
+            background-color: var(--washi-tape);
+            border-left: 2px dashed rgba(255,255,255,0.5);
+            border-right: 2px dashed rgba(255,255,255,0.5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 5;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px dashed #ece6d8;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .day-title {
+            font-family: 'Caveat', cursive;
+            font-size: 2.2rem;
+            color: var(--cor-principal);
+            line-height: 1.1;
+        }
+
+        .day-location {
+            font-size: 0.85rem;
+            font-weight: 700;
+            background: #f0ebe0;
+            color: var(--cor-secundaria);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* CHECKBOXES INTERATIVOS */
+        .attractions-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .attraction-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f6f2ea;
+        }
+
+        .attraction-item input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--cor-principal);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            margin-top: 3px;
+            flex-shrink: 0;
+            background: #fff;
+            transition: all 0.2s;
+        }
+
+        .attraction-item input[type="checkbox"]:checked {
+            background-color: var(--cor-principal);
+        }
+
+        .attraction-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            top: -2px;
+            left: 3px;
+        }
+
+        .attraction-item input[type="checkbox"]:checked + label {
+            text-decoration: line-through;
+            color: #8c857b;
+        }
+
+        .attraction-item label {
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--cor-secundaria);
+            font-weight: 500;
+        }
+
+        /* POST-IT TIPS */
+        .postit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .postit {
+            background: var(--papel-postit);
+            padding: 18px;
+            border-radius: 2px;
+            box-shadow: 3px 4px 10px rgba(0,0,0,0.08);
+            position: relative;
+            transform: rotate(-1deg);
+            font-size: 0.95rem;
+            border-left: 4px solid #e6d875;
+        }
+
+        .postit:nth-child(even) {
+            transform: rotate(1.5deg);
+            background: #eef7e5;
+            border-left-color: #aed581;
+        }
+
+        .postit-title {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #4a422d;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* POLAROIDS */
+        .polaroid-wrapper {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .polaroid {
+            background: #ffffff;
+            padding: 12px 12px 25px 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            border: 1px solid #e2dacb;
+            transform: rotate(-2deg);
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            border-radius: 2px;
+            display: block;
+        }
+
+        .polaroid-caption {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            color: var(--texto-handwritten);
+            margin-top: 12px;
+            line-height: 1.2;
+        }
+
+        /* MAP CONTROLS & LEAFLET */
+        .map-controls {
+            background: #ffffff;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: var(--sombra-card);
+            margin-bottom: 20px;
+            border: 1px solid #eae3d5;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .mode-toggles {
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px dashed #d0c5b0;
+            padding-bottom: 12px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid var(--cor-principal);
+            background: transparent;
+            color: var(--cor-principal);
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .mode-btn.active {
+            background: var(--cor-principal);
+            color: #ffffff;
+        }
+
+        .day-selector {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            scrollbar-width: thin;
+        }
+
+        .day-select-btn {
+            background: #f0ebe0;
+            border: 1px solid #d0c5b0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            color: var(--cor-secundaria);
+        }
+
+        .day-select-btn.active {
+            background: var(--cor-secundaria);
+            color: #ffffff;
+            border-color: var(--cor-secundaria);
+        }
+
+        #map {
+            height: 520px;
+            width: 100%;
+            border-radius: 14px;
+            box-shadow: var(--sombra-card);
+            border: 4px solid #ffffff;
+            z-index: 1;
+        }
+
+        /* TAB 3 - DOSSIÊ ESTILIZAÇÃO RETRÔ */
+        .dossie-container {
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: var(--sombra-card);
+            border: 1px solid #eae3d5;
+            position: relative;
+        }
+
+        .dossie-container h1 {
+            color: var(--cor-principal);
+            font-family: 'Caveat', cursive;
+            font-size: 2.8rem;
+            border-bottom: 2px dashed var(--cor-principal);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .dossie-container h2 {
+            color: var(--cor-secundaria);
+            font-size: 1.4rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e0d8c8;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dossie-container h3 {
+            color: var(--cor-principal);
+            font-size: 1.15rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .dossie-container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #fdfbf7;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e0d8c8;
+        }
+
+        .dossie-container th {
+            background: var(--cor-secundaria);
+            color: #ffffff;
+            padding: 12px;
+            text-align: left;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dossie-container td {
+            padding: 12px;
+            border-bottom: 1px solid #e8e2d5;
+            font-size: 0.92rem;
+        }
+
+        .dossie-container tr:nth-child(even) {
+            background: #f7f3eb;
+        }
+
+        .dossie-container div.destaque {
+            background: #faf6ed;
+            border-left: 5px solid var(--cor-principal);
+            padding: 18px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.03);
+            font-size: 0.95rem;
+        }
+
+        .dossie-container .condicional {
+            color: var(--cor-principal);
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.3rem;
+            }
+            .day-card {
+                padding: 20px;
+            }
+            .dossie-container {
+                padding: 20px;
+            }
+            #map {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO HEADER -->
+    <header class="hero">
+        <div class="container">
+            <div class="hero-banner">
+                <img src="https://images.unsplash.com/photo-1711181138064-43c2e2239a45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8VG9reW8lMjBza3lsaW5lJTIwbmVvbiUyMGxpZ2h0cyUyMGFuZCUyME1vdW50JTIwRnVqaSUyMEphcGFuJTIwZHVza3xlbnwwfDB8fHwxNzg2ODQxOTcwfDA&ixlib=rb-4.1.0&q=80&w=1080" 
+                     alt="Japão Header" class="hero-img" 
+                     onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                
+                <img src="data:image/jpeg;base64,filesystem-v2" 
+                     alt="Kit Visual" class="kit-visual-decor" 
+                     onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                
+                <div class="hero-overlay">
+                    <h1 class="hero-title">Japão 2027 — Caderno de Viagem</h1>
+                    <p class="hero-subtitle">Expedição Tática de 12 Dias • Outono • Tóquio, Hakone, Kyoto, Osaka & Nara</p>
+                </div>
+            </div>
+
+            <!-- CARIMBOS SCRAPBOOK -->
+            <div class="stamps-container">
+                <div class="stamp">NARITA PASSPORT ENTRY 2027</div>
+                <div class="stamp">KYOTO TEMPLE HANKO</div>
+                <div class="stamp">SHINKANSEN BULLET TRAIN PASS</div>
+            </div>
+
+            <!-- TRILHA SONORA -->
+            <div class="audio-section">
+                <p class="audio-title">🎵 Trilha da viagem</p>
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/70gBfwSabcKCRmpHYMO4iy" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVEGAÇÃO DE FICHÁRIO -->
+    <div class="binder-nav-wrapper">
+        <div class="container">
+            <nav class="binder-tabs">
+                <button class="tab-btn active" onclick="switchTab('tab-roteiro', this)">
+                    📖 ROTEIRO & DIÁRIO DE VIAGEM
+                </button>
+                <button class="tab-btn" onclick="switchTab('tab-mapa', this)">
+                    🗺️ MAPA INTERATIVO & ROTAS
+                </button>
+                <button class="tab-btn" onclick="switchTab('tab-dossie', this)">
+                    📊 DOSSIÊ DE MILHAS & LOGÍSTICA
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <main class="container">
+        
+        <!-- ABA 1: ROTEIRO & DIÁRIO DE VIAGEM -->
+        <section id="tab-roteiro" class="tab-content active">
+            
+            <!-- DIA 1 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 1 — Tokyo: Chegada e Imersão Neon</h2>
+                    <span class="day-location">📍 Estação Shibuya</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d1_1">
+                        <label for="d1_1">Shibuya Crossing (1h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d1_2">
+                        <label for="d1_2">Hachiko Memorial (30m)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d1_3">
+                        <label for="d1_3">Shibuya Sky (1h 30m)</label>
+                    </li>
+                </ul>
+
+                <div class="polaroid-wrapper">
+                    <div class="polaroid">
+                        <img src="https://images.unsplash.com/photo-1573456373835-579c408de263?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8U2hpYnV5YSUyMENyb3NzaW5nJTIwVG9reW8lMjBKYXBhbiUyMGFlcmlhbCUyMHZpZXclMjBuZW9uJTIwbmlnaHQlMjBjcm93ZHxlbnwwfDB8fHwxNzg2ODQxOTcwfDA&ixlib=rb-4.1.0&q=80&w=1080" 
+                             alt="Shibuya Crossing" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                        <div class="polaroid-caption">O cruzamento mais famoso do mundo!</div>
+                    </div>
+                </div>
+
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Ramen no Ichiran Shibuya (cabines individuais focadas na experiência total do sabor).
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">💡 Dica Tática</div>
+                        Compre o ingresso do observatório Shibuya Sky com semanas de antecedência para garantir o cobiçado horário do pôr do sol.
+                    </div>
+                </div>
+            </article>
+
+            <!-- DIA 2 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 2 — Tokyo: Tradição e Cultura Pop</h2>
+                    <span class="day-location">📍 Estação Asakusa</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d2_1">
+                        <label for="d2_1">Templo Senso-ji (2h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d2_2">
+                        <label for="d2_2">Rua de Compras Nakamise (1h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d2_3">
+                        <label for="d2_3">Akihabara Electric Town (2h 30m)</label>
+                    </li>
+                </ul>
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Tempura tradicional no Daikokuya em Asakusa, famoso por seu molho escuro e rico.
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">💡 Dica Tática</div>
+                        Visite o Senso-ji bem cedo (antes das 9h) para evitar as multidões intensas e conseguir fotos limpas do Kaminarimon.
+                    </div>
+                </div>
+            </article>
+
+            <!-- DIA 3 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 3 — Tokyo: Santuários e Festivais de Outono</h2>
+                    <span class="day-location">📍 Estação Harajuku</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d3_1">
+                        <label for="d3_1">Santuário Meiji (Meiji Jingu) (2h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d3_2">
+                        <label for="d3_2">Parque Yoyogi (1h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d3_3">
+                        <label for="d3_3">Takeshita Street (Harajuku) (1h 30m)</label>
+                    </li>
+                </ul>
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🎟️ Evento Especial</div>
+                        Great Festival of Meiji Shrine (Novembro 2027) - Celebração do aniversário do Imperador Meiji com Yabusame (arco e flecha a cavalo).
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Crepes doces super recheados na Marion Crepes, um clássico da cultura jovem de Harajuku.
+                    </div>
+                </div>
+            </article>
+
+            <!-- DIA 4 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 4 — Tokyo: Arte Digital e Baía de Tóquio</h2>
+                    <span class="day-location">📍 Estação Toyosu</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d4_1">
+                        <label for="d4_1">Mercado Exterior de Tsukiji (2h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d4_2">
+                        <label for="d4_2">teamLab Planets TOKYO (2h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d4_3">
+                        <label for="d4_3">Odaiba Seaside Park (1h 30m)</label>
+                    </li>
+                </ul>
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Sushi fresco e tamagoyaki (omelete doce) nas barracas de rua do Mercado de Tsukiji.
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">💡 Dica Tática</div>
+                        Vá com roupas que possam ser dobradas até o joelho para o teamLab Planets, pois inclui caminhar em salas com água.
+                    </div>
+                </div>
+            </article>
+
+            <!-- DIA 5 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 5 — Hakone: Fuga para a Natureza e Águas Termais</h2>
+                    <span class="day-location">📍 Estação Hakone-Yumoto</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d5_1">
+                        <label for="d5_1">Santuário de Hakone (Hakone Shrine) (1h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d5_2">
+                        <label for="d5_2">Cruzeiro Turístico no Lago Ashi (1h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d5_3">
+                        <label for="d5_3">Vale Vulcânico de Owakudani (1h 30m)</label>
+                    </li>
+                </ul>
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🎟️ Evento Especial</div>
+                        Hakone Daimyo Parade (Novembro 2027) - Desfile histórico com trajes de samurais do período Edo.
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Kuro Tamago em Owakudani: ovos cozidos nas águas vulcânicas (diz a lenda que prolonga a vida em 7 anos).
+                    </div>
+                </div>
+            </article>
+
+            <!-- DIA 6 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 6 — Kyoto: O Coração Histórico do Japão</h2>
+                    <span class="day-location">📍 Estação Kyoto</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d6_1">
+                        <label for="d6_1">Kinkaku-ji (Pavilhão Dourado) (1h 30m)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d6_2">
+                        <label for="d6_2">Jardim Zen de Ryoan-ji (1h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d6_3">
+                        <label for="d6_3">Floresta de Bambu de Arashiyama (2h)</label>
+                    </li>
+                </ul>
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Yudofu (tofu cozido em caldo leve) em Arashiyama, especialidade budista para o outono.
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">💡 Dica Tática</div>
+                        A Floresta de Bambu fica cheia após as 9h. Visite ao amanhecer para ter o local calmo e perfeito para fotos.
+                    </div>
+                </div>
+            </article>
+
+            <!-- DIA 7 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 7 — Kyoto: Portões Vermelhos e Distrito das Gueixas</h2>
+                    <span class="day-location">📍 Estação Gion-Shijo</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d7_1">
+                        <label for="d7_1">Fushimi Inari Taisha (3h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d7_2">
+                        <label for="d7_2">Templo Kiyomizu-dera (2h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d7_3">
+                        <label for="d7_3">Distrito de Gion (1h 30m)</label>
+                    </li>
+                </ul>
+
+                <div class="polaroid-wrapper">
+                    <div class="polaroid">
+                        <img src="https://images.unsplash.com/photo-1539036982489-398455e43248?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8RnVzaGltaSUyMEluYXJpJTIwVGFpc2hhJTIwc2hyaW5lJTIwdG9yaWklMjBnYXRlcyUyMEt5b3RvJTIwSmFwYW4lMjBhdXR1bW4lMjBmb2xpYWdlfGVufDB8MHx8fDE3ODY4NDE5NzB8MA&ixlib=rb-4.1.0&q=80&w=1080" 
+                             alt="Fushimi Inari Taisha" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                        <div class="polaroid-caption">Os milenaristas Torii de Fushimi Inari</div>
+                    </div>
+                </div>
+
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Kaiseki Ryori (jantar tradicional de múltiplos pratos) em um restaurante histórico em Gion.
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">💡 Dica Tática</div>
+                        No Fushimi Inari, a maioria para no cruzamento Yotsutsuji. Continue subindo a montanha para caminhos místicos e vazios.
+                    </div>
+                </div>
+            </article>
+
+            <!-- DIA 8 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 8 — Kyoto: Cultura do Chá e Caminhos Filosóficos</h2>
+                    <span class="day-location">📍 Estação Keage</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d8_1">
+                        <label for="d8_1">Ginkaku-ji (Pavilhão de Prata) (1h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d8_2">
+                        <label for="d8_2">Caminho do Filósofo (Tetsugaku no Michi) (1h 30m)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d8_3">
+                        <label for="d8_3">Templo Nanzen-ji (1h 30m)</label>
+                    </li>
+                </ul>
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Matcha e doces tradicionais wagashi em uma casa de chá ao longo do Caminho do Filósofo.
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">💡 Dica Tática</div>
+                        Caminhe no sentido norte-sul para terminar a rota explorando o imponente portão Sanmon de Nanzen-ji.
+                    </div>
+                </div>
+            </article>
+
+            <!-- DIA 9 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 9 — Osaka: A Cozinha do Japão e Castelos</h2>
+                    <span class="day-location">📍 Estação Namba</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d9_1">
+                        <label for="d9_1">Castelo de Osaka (2h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d9_2">
+                        <label for="d9_2">Dotonbori (2h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d9_3">
+                        <label for="d9_3">Shinsaibashi Shopping Arcade (1h 30m)</label>
+                    </li>
+                </ul>
+
+                <div class="polaroid-wrapper">
+                    <div class="polaroid">
+                        <img src="https://images.unsplash.com/photo-1580080947864-03a0f681838e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8T3Nha2ElMjBDYXN0bGUlMjBKYXBhbiUyMGlsbHVtaW5hdGVkJTIwd2l0aCUyMGF1dHVtbiUyMHRyZWVzJTIwZm9saWFnZSUyMHN1bnNldHxlbnwwfDB8fHwxNzg2ODQxOTcwfDA&ixlib=rb-4.1.0&q=80&w=1080" 
+                             alt="Castelo de Osaka" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';">
+                        <div class="polaroid-caption">Castelo de Osaka iluminado no outono</div>
+                    </div>
+                </div>
+
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Takoyaki e Okonomiyaki nas vibrantes barracas de rua de Dotonbori.
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">💡 Dica Tática</div>
+                        O Castelo de Osaka é uma reconstrução moderna por dentro. Se o tempo for curto, foque nos belos jardins externos.
+                    </div>
+                </div>
+            </article>
+
+            <!-- DIA 10 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 10 — Osaka: Retro e Futurismo</h2>
+                    <span class="day-location">📍 Estação Umeda</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d10_1">
+                        <label for="d10_1">Distrito de Shinsekai (1h 30m)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d10_2">
+                        <label for="d10_2">Torre Tsutenkaku (1h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d10_3">
+                        <label for="d10_3">Umeda Sky Building (1h 30m)</label>
+                    </li>
+                </ul>
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Kushikatsu (espetinhos fritos variados) no bairro retro de Shinsekai.
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">💡 Dica Tática</div>
+                        Suba no observatório do Umeda Sky Building antes do pôr do sol para ver a cidade transicionando para a noite.
+                    </div>
+                </div>
+            </article>
+
+            <!-- DIA 11 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 11 — Nara: Veados Sagrados e Budas Gigantes</h2>
+                    <span class="day-location">📍 Estação Kintetsu-Nara</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d11_1">
+                        <label for="d11_1">Parque de Nara (2h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d11_2">
+                        <label for="d11_2">Templo Todai-ji (1h 30m)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d11_3">
+                        <label for="d11_3">Santuário Kasuga Taisha (1h)</label>
+                    </li>
+                </ul>
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Kakinoha-zushi (sushi prensado e enrolado em folha de caqui), tradição histórica de Nara.
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">💡 Dica Tática</div>
+                        Ao alimentar os veados com 'shika senbei', faça uma leve reverência; muitos veados retribuem o gesto!
+                    </div>
+                </div>
+            </article>
+
+            <!-- DIA 12 -->
+            <article class="day-card">
+                <div class="washi-tape"></div>
+                <div class="day-header">
+                    <h2 class="day-title">Dia 12 — Tokyo: Despedida e Cores de Outono</h2>
+                    <span class="day-location">📍 Estação Shinjuku</span>
+                </div>
+                <ul class="attractions-list">
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d12_1">
+                        <label for="d12_1">Shinjuku Gyoen National Garden (2h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d12_2">
+                        <label for="d12_2">Tokyo Metropolitan Government Building (1h)</label>
+                    </li>
+                    <li class="attraction-item">
+                        <input type="checkbox" id="d12_3">
+                        <label for="d12_3">Omoide Yokocho (1h 30m)</label>
+                    </li>
+                </ul>
+                <div class="postit-grid">
+                    <div class="postit">
+                        <div class="postit-title">🎟️ Evento Especial</div>
+                        Hachioji Ginkgo Autumn Colors Festival (Novembro 2027) - Celebração das árvores Ginkgo (Icho) douradas.
+                    </div>
+                    <div class="postit">
+                        <div class="postit-title">🍷 Dica Gastronômica</div>
+                        Yakitori (espetinhos de frango) nas minúsculas e atmosféricas tabernas do Omoide Yokocho.
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- ABA 2: MAPA INTERATIVO & ROTAS -->
+        <section id="tab-mapa" class="tab-content">
+            <div class="map-controls">
+                <div class="mode-toggles">
+                    <button class="mode-btn active" id="btn-mode-day" onclick="setMapMode('day')">📅 Mapa do Dia</button>
+                    <button class="mode-btn" id="btn-mode-city" onclick="setMapMode('city')">🏙️ Rota Entre Cidades</button>
+                </div>
+                
+                <div id="day-selector-container" class="day-selector">
+                    <!-- Gerado via JavaScript -->
+                </div>
+            </div>
+
+            <div id="map"></div>
+        </section>
+
+        <!-- ABA 3: DOSSIÊ DE MILHAS, CÂMBIO & LOGÍSTICA -->
+        <section id="tab-dossie" class="tab-content">
+            <div class="dossie-container">
+                
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Laudo Técnico Executivo - Operação Japão 2027</title>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: #F8F9FA;
+        color: #333333;
+        margin: 0;
+        padding: 20px;
+        line-height: 1.6;
+    }
+    h1, h2, h3 {
+        color: #1B365D;
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+    h1 {
+        border-bottom: 2px solid #1B365D;
+        padding-bottom: 5px;
+        font-size: 24px;
+    }
+    h2 {
+        margin-top: 30px;
+        border-bottom: 1px solid #E5E7EB;
+        padding-bottom: 5px;
+        font-size: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        background-color: #FFFFFF;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    th, td {
+        border: 1px solid #E5E7EB;
+        padding: 10px;
+        text-align: left;
+        font-size: 14px;
+    }
+    th {
+        background-color: #1B365D;
+        color: #FFFFFF;
+    }
+    tr:nth-child(even) {
+        background-color: #F8F9FA;
+    }
+    tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    div.destaque {
+        background-color: #E5E7EB;
+        border-left: 4px solid #1B365D;
+        padding: 15px;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    .condicional {
+        color: #D93025;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<h1>[1. RESUMO EXECUTIVO]</h1>
+<div class="destaque">
+    <strong>Objetivo Tático:</strong> Estruturação logística e financeira para expedição de 12 dias ao Japão (Tóquio - NRT/HND) no segundo semestre de 2027, partindo de Uberlândia (UDI).<br>
+    <strong>Estratégia de Saving:</strong> Maximização do saldo bruto de 262.256 pontos C6 Bank e 80.981 pontos Esfera através de janelas de transferência bonificadas iminentes para o programa Smiles, visando emissão em parceiros globais (Qatar Airways ou Emirates). O custo total porta-a-porta projetado para 2 passageiros é de R$ 6.151,41, representando uma eficiência financeira extrema frente aos custos pagantes de mercado.
+</div>
+
+<h2>[2. MATRIZ DE DECISÃO SAZONAL]</h2>
+<table>
+    <tr>
+        <th>Parâmetro</th>
+        <th>Análise Técnica</th>
+    </tr>
+    <tr>
+        <td><strong>Período Alvo</strong></td>
+        <td>Outubro a Novembro de 2027</td>
+    </tr>
+    <tr>
+        <td><strong>Clima</strong></td>
+        <td>Outono (15°C a 21°C). Baixo índice pluviométrico, ideal para deslocamentos logísticos a pé e via malha ferroviária.</td>
+    </tr>
+    <tr>
+        <td><strong>Nível de Temporada</strong></td>
+        <td>Alta (Momijigari - temporada das folhas de outono).</td>
+    </tr>
+    <tr>
+        <td><strong>Saturação</strong></td>
+        <td>Alta saturação hoteleira e ferroviária nos eixos Tóquio-Kyoto. Exige reserva de assentos no Shinkansen com antecedência.</td>
+    </tr>
+    <tr>
+        <td><strong>Estimativa de Custos</strong></td>
+        <td>Cash (R$ 8.000,00 a R$ 10.000,00 por passageiro) vs Milhas (Projeção de ~360.000 milhas Smiles por passageiro RT).</td>
+    </tr>
+</table>
+
+<h2>[3. ENGENHARIA DE MILHAS E VALORAÇÃO FINANCEIRA (CPM)]</h2>
+
+<h3>Tabela de Rotas e Franquia de Bagagem</h3>
+<table>
+    <tr>
+        <th>Rota (Ida e Volta)</th>
+        <th>Cia Aérea / Programa</th>
+        <th>Custo Estimado (Milhas)</th>
+        <th>Franquia de Bagagem (Econômica - 2026)</th>
+    </tr>
+    <tr>
+        <td>GRU ↔ DOH ↔ NRT/HND</td>
+        <td>Qatar Airways (via Smiles)</td>
+        <td>~360.000 / pax</td>
+        <td>1 volume de cabine (7 kg) + 30 kg despachados (ou 2x 23 kg dependendo da tarifa).</td>
+    </tr>
+    <tr>
+        <td>GRU ↔ DXB ↔ NRT/HND</td>
+        <td>Emirates (via Smiles)</td>
+        <td>~360.000 / pax</td>
+        <td>1 volume de cabine (7 kg) + 30 kg despachados.</td>
+    </tr>
+    <tr>
+        <td>UDI ↔ GRU (Doméstico)</td>
+        <td>Latam / GOL</td>
+        <td>~42.500 / pax</td>
+        <td>1 volume de cabine (10 kg). Bagagem despachada adquirida à parte ou via status.</td>
+    </tr>
+</table>
+
+<h3>Diagnóstico do Banco de Milhas</h3>
+<table>
+    <tr>
+        <th>Programa</th>
+        <th>Saldo Atual</th>
+        <th>Custo Médio (CPM)</th>
+        <th>Custo Total de Aquisição</th>
+    </tr>
+    <tr>
+        <td>Smiles</td>
+        <td>45.666</td>
+        <td>R$ 9,87</td>
+        <td>R$ 450,86</td>
+    </tr>
+    <tr>
+        <td>Latam</td>
+        <td>17.771</td>
+        <td>R$ 10,74</td>
+        <td>R$ 190,86</td>
+    </tr>
+    <tr>
+        <td>Esfera</td>
+        <td>80.981</td>
+        <td>R$ 16,52</td>
+        <td>R$ 1.337,80</td>
+    </tr>
+    <tr>
+        <td>Livelo</td>
+        <td>11.276</td>
+        <td>R$ 25,81</td>
+        <td>R$ 291,03</td>
+    </tr>
+    <tr>
+        <td>AllAcoor</td>
+        <td>11.600</td>
+        <td>R$ 87,41</td>
+        <td>R$ 1.013,95</td>
+    </tr>
+    <tr>
+        <td>Caixa</td>
+        <td>3.624</td>
+        <td>R$ 0,00</td>
+        <td>R$ 0,00</td>
+    </tr>
+    <tr>
+        <td>C6</td>
+        <td>262.256</td>
+        <td>R$ 0,00</td>
+        <td>R$ 0,00</td>
+    </tr>
+    <tr>
+        <td>Azul</td>
+        <td>5.000</td>
+        <td>R$ 0,00</td>
+        <td>R$ 0,00</td>
+    </tr>
+</table>
+
+<h3>Inteligência de Janelas e Promoções de Transferência</h3>
+<div class="destaque">
+    <strong>Análise de Sazonalidade (Data Atual: 15/08/2026):</strong><br><br>
+    <strong>1. C6 Bank para Smiles (Elegibilidade: Clube Smiles - 70% Bônus):</strong> A última campanha ocorreu em 08-09 de junho de 2026. Até a DATA ATUAL, passaram-se 67 dias. Como o ciclo de repetição de mercado é de 60 a 90 dias, a próxima janela está IMINENTE, com abertura esperada entre hoje e 07/09/2026. <span class="condicional">Se/quando a janela abrir, a projeção seria transferir 262.256 pontos C6 para gerar 445.835 milhas Smiles.</span><br><br>
+    <strong>2. Esfera para Smiles (Elegibilidade: Clube Smiles - 70% Bônus):</strong> A última campanha ocorreu em maio de 2026. Até a DATA ATUAL, passaram-se aproximadamente 90 dias. A próxima janela está IMINENTE. <span class="condicional">Se/quando a janela abrir, a projeção seria transferir 80.981 pontos Esfera para gerar 137.667 milhas Smiles.</span><br><br>
+    <strong>3. Livelo para Smiles (Elegibilidade: Clube Smiles - 90% Bônus):</strong> A última campanha ocorreu em janeiro/junho de 2026. Até a DATA ATUAL, passaram-se aproximadamente 60 dias. A próxima janela está IMINENTE. <span class="condicional">Se/quando a janela abrir, a projeção seria transferir 11.276 pontos Livelo para gerar 21.424 milhas Smiles.</span><br><br>
+    <strong>Projeção Total Condicional Smiles:</strong> 45.666 (Atual) + 445.835 (C6) + 137.667 (Esfera) + 21.424 (Livelo) = <strong>650.592 milhas Smiles</strong>.<br>
+    <strong>Déficit Projetado:</strong> Para atingir as ~720.000 milhas necessárias para 2 passageiros (Ida e Volta), haverá um déficit de 69.408 milhas. Estas poderão ser adquiridas em promoções de compra de pontos com 80% de desconto (R$ 14,00 o milheiro), totalizando um custo complementar de R$ 971,71.
+</div>
+
+<h2>[4. ENGENHARIA LOGÍSTICA DE FRONTEIRA E TRANSBORDO]</h2>
+<table>
+    <tr>
+        <th>Aeroporto / Fronteira</th>
+        <th>Diretriz Logística e Tempos de Trânsito</th>
+    </tr>
+    <tr>
+        <td><strong>UDI (Uberlândia)</strong></td>
+        <td>Tempo de voo UDI-GRU: 1h15m. Recomendado tempo mínimo de conexão em GRU de 4 a 5 horas, pois bilhetes emitidos separadamente exigem re-despacho de bagagem e novo check-in no T3.</td>
+    </tr>
+    <tr>
+        <td><strong>GRU (Guarulhos)</strong></td>
+        <td>Gargalo de imigração e raio-x no T3 pode levar até 60 minutos em horários de pico (noturno).</td>
+    </tr>
+    <tr>
+        <td><strong>DOH / DXB (Conexão)</strong></td>
+        <td>Tempo de trânsito total GRU-NRT via Oriente Médio varia de 24 a 26 horas. Conexões eficientes não exigem visto de trânsito se o passageiro não deixar a zona internacional.</td>
+    </tr>
+    <tr>
+        <td><strong>Japão (Imigração / JESTA)</strong></td>
+        <td>A partir de 2026, viajantes isentos de visto (brasileiros) DEVEM obrigatoriamente emitir o <strong>JESTA (Japan Electronic System for Travel Authorization)</strong> online antes do embarque. Validade de 2 anos, custo aprox. US$ 25,00 a US$ 30,00. O uso do portal <strong>Visit Japan Web</strong> é altamente recomendado para gerar o QR Code de imigração e alfândega, acelerando o transbordo na chegada.</td>
+    </tr>
+</table>
+
+<h2>[5. LOGÍSTICA DE SALAS VIP (GROUND HANDLING) E INVENTÁRIO DE ACESSOS]</h2>
+<table>
+    <tr>
+        <th>Terminal</th>
+        <th>Cartão Recomendado</th>
+        <th>Sala VIP Selecionada</th>
+        <th>Regra Matemática e Consumo de Cota (Para 2 Pax)</th>
+    </tr>
+    <tr>
+        <td><strong>UDI (Embarque)</strong></td>
+        <td>Inter Prime Black</td>
+        <td>W Lounge (se aplicável)</td>
+        <td>Consome 2 acessos da cota anual de 6 acessos via LoungeKey.</td>
+    </tr>
+    <tr>
+        <td><strong>GRU T3 (Intl)</strong></td>
+        <td>C6 Black (Titular e Adicional)</td>
+        <td>Mastercard Black Lounge</td>
+        <td><strong>Ilimitado.</strong> Zero consumo de cotas anuais. Ambos entram gratuitamente apresentando seus respectivos cartões.</td>
+    </tr>
+    <tr>
+        <td><strong>GRU T3 (Alternativa)</strong></td>
+        <td>Smiles Visa Infinite</td>
+        <td>Visa Infinite Lounge</td>
+        <td>Acesso via DragonPass. Consome 2 acessos da cota anual de 2 acessos (esgotará o inventário deste cartão). Ideal caso a sala Mastercard esteja superlotada.</td>
+    </tr>
+    <tr>
+        <td><strong>DOH / DXB (Conexão)</strong></td>
+        <td>Inter Prime Black</td>
+        <td>Al Maha (DOH) / Marhaba (DXB)</td>
+        <td>Acesso via LoungeKey. Consome 2 acessos da cota anual de 6 acessos (restarão 2 ou 4 acessos dependendo do uso em UDI).</td>
+    </tr>
+</table>
+
+<h2>[6. HOSPEDAGEM (ALL ACCOR vs MERCADO)]</h2>
+<table>
+    <tr>
+        <th>Métrica ALL Accor</th>
+        <th>Valoração e Comparativo de Mercado</th>
+    </tr>
+    <tr>
+        <td><strong>Saldo e Custo</strong></td>
+        <td>11.600 pontos. Custo de aquisição: R$ 1.013,95.</td>
+    </tr>
+    <tr>
+        <td><strong>Poder de Compra</strong></td>
+        <td>A cada 2.000 pontos = 40 EUR. 11.600 pontos = 232 EUR. Com o Euro a ~R$ 6,00, o valor de face gerado é de <strong>R$ 1.392,00</strong> (Lucro contábil de R$ 378,05).</td>
+    </tr>
+    <tr>
+        <td><strong>Aplicação Tática</strong></td>
+        <td>No Japão, hotéis da rede (ex: Mercure Tokyo Ginza) custam em média 150 EUR/noite. O saldo cobre ~1,5 noites. Recomendação: Utilizar os pontos para abater diárias em Tóquio e complementar o restante do roteiro em redes executivas locais pagantes em dinheiro (ex: APA Hotel, Sotetsu Fresa Inn), que custam em média 80 a 100 EUR/noite, reduzindo o custo médio da hospedagem.</td>
+    </tr>
+</table>
+
+<h2>[7. CONSOLIDAÇÃO FINANCEIRA E CÂMBIO]</h2>
+
+<h3>Custo Total Consolidado da Operação (Estimativa para 2 Passageiros)</h3>
+<table>
+    <tr>
+        <th>Componente Logístico</th>
+        <th>Cálculo Matemático</th>
+        <th>Custo Total (R$)</th>
+    </tr>
+    <tr>
+        <td><strong>Trecho Doméstico (UDI ↔ GRU)</strong></td>
+        <td>Emissão pagante (Cash) para 2 pax ida e volta. (A emissão em milhas Latam exigiria compra de 67.229 pontos a R$ 28,00/k, custando R$ 2.789,22 com taxas, tornando o cash mais eficiente).</td>
+        <td>R$ 1.500,00</td>
+    </tr>
+    <tr>
+        <td><strong>Geração de Milhas (GRU ↔ NRT)</strong></td>
+        <td>Custo dos saldos atuais (Smiles, Esfera, Livelo) + Compra do déficit de 69.408 milhas Smiles a R$ 14,00/k.</td>
+        <td>R$ 3.051,40</td>
+    </tr>
+    <tr>
+        <td><strong>Taxas de Embarque Internacionais</strong></td>
+        <td>Estimativa de R$ 800,00 por passageiro (Ida e Volta).</td>
+        <td>R$ 1.600,00</td>
+    </tr>
+    <tr>
+        <td><strong>Custo Total Porta-a-Porta (Aéreo)</strong></td>
+        <td>Soma do trecho doméstico + custo de geração de milhas + taxas de embarque.</td>
+        <td><strong>R$ 6.151,40</strong></td>
+    </tr>
+</table>
+
+<h3>Matriz de Spread e Câmbio Global (Conversão BRL para JPY)</h3>
+<table>
+    <tr>
+        <th>Plataforma</th>
+        <th>IOF</th>
+        <th>Spread / Tarifa</th>
+        <th>Custo Efetivo Total</th>
+        <th>Recomendação</th>
+    </tr>
+    <tr>
+        <td><strong>Revolut</strong></td>
+        <td>3,5%</td>
+        <td>0,0% (dentro da cota do plano)</td>
+        <td>~3,5%</td>
+        <td><strong>Primária.</strong> Spread zero até o limite mensal do plano (ex: R$ 1.000 no Standard). Acima da cota, adiciona-se 1,4%.</td>
+    </tr>
+    <tr>
+        <td><strong>Wise</strong></td>
+        <td>3,5%</td>
+        <td>~0,5%</td>
+        <td>~4,0%</td>
+        <td><strong>Secundária.</strong> Excelente transparência e taxa interbancária.</td>
+    </tr>
+    <tr>
+        <td><strong>C6 Global</strong></td>
+        <td>3,5%</td>
+        <td>0,85%</td>
+        <td>~4,35%</td>
+        <td>Terciária.</td>
+    </tr>
+    <tr>
+        <td><strong>Nomad</strong></td>
+        <td>3,5%</td>
+        <td>~1,0%</td>
+        <td>~4,5%</td>
+        <td>Quaternária.</td>
+    </tr>
+    <tr>
+        <td><strong>Banco Inter</strong></td>
+        <td>3,5%</td>
+        <td>~2,0%</td>
+        <td>~5,5%</td>
+        <td>Não recomendada para volume alto.</td>
+    </tr>
+    <tr>
+        <td><strong>Santander (Crédito)</strong></td>
+        <td>4,38%</td>
+        <td>~4,0% a 5,0%</td>
+        <td>~8,38% a 9,38%</td>
+        <td>Uso estrito para emergências.</td>
+    </tr>
+</table>
+
+<h2>[8. EXPANSÃO DE ROTEIRO TÁTICO E CIDADES PRÓXIMAS]</h2>
+<table>
+    <tr>
+        <th>Cidade Alternativa</th>
+        <th>Tempo de Trânsito (Saindo de Tóquio)</th>
+        <th>Análise de Custo-Benefício e Logística</th>
+    </tr>
+    <tr>
+        <td><strong>Osaka</strong></td>
+        <td>2h30m (Shinkansen)</td>
+        <td>Custo de hospedagem 15% a 20% menor que Kyoto. Funciona como o melhor hub logístico para bate-voltas na região de Kansai (Nara, Kobe, Kyoto).</td>
+    </tr>
+    <tr>
+        <td><strong>Kyoto</strong></td>
+        <td>2h15m (Shinkansen)</td>
+        <td>Hospedagem de alto custo e alta saturação turística. Essencial para o roteiro histórico, mas recomenda-se basear-se em Osaka e acessar Kyoto via malha ferroviária local (30 minutos de trem).</td>
+    </tr>
+    <tr>
+        <td><strong>Yokohama</strong></td>
+        <td>30m (Trem Local)</td>
+        <td>Excelente alternativa de hospedagem caso Tóquio apresente tarifas inflacionadas. Conexão rápida e barata com o centro de Tóquio.</td>
+    </tr>
+    <tr>
+        <td><strong>Hakone</strong></td>
+        <td>1h30m (Romancecar)</td>
+        <td>Foco em Ryokans (pousadas tradicionais com águas termais). Custo de hospedagem extremamente elevado. Recomendado alocar apenas 1 noite do roteiro para controle de budget.</td>
+    </tr>
+</table>
+
+</body>
+</html>
+
+      <div style="font-family: Arial, Helvetica, sans-serif; color: #333333; padding: 20px;">
+        <h2 style="color: #1B365D; border-bottom: 2px solid #1B365D; padding-bottom: 10px; page-break-before: always;">
+          [9. ROTEIRO TÁTICO E AGENDA CULTURAL DIA A DIA]
+        </h2>
+        <p style="font-size: 14px; color: #555;">Itinerário tático otimizado por proximidade geográfica e agenda cultural para <strong>Japão</strong> (12 dias).</p>
+    
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 1 — Tokyo: Chegada e Imersão Neon</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Shibuya</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Shibuya Crossing</strong> (1h)</li><li><strong>Hachiko Memorial</strong> (30m)</li><li><strong>Shibuya Sky</strong> (1h 30m)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Ramen no Ichiran Shibuya (cabines individuais focadas na experiência do sabor)</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Compre o ingresso do observatório Shibuya Sky com semanas de antecedência para garantir o cobiçado horário do pôr do sol.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 2 — Tokyo: Tradição e Cultura Pop</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Asakusa</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Templo Senso-ji</strong> (2h)</li><li><strong>Rua de Compras Nakamise</strong> (1h)</li><li><strong>Akihabara Electric Town</strong> (2h 30m)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Tempura tradicional no Daikokuya em Asakusa, famoso por seu molho escuro e rico.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Visite o Senso-ji bem cedo (antes das 9h) para evitar as multidões intensas e conseguir fotos limpas do Kaminarimon (Portão do Trovão).</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 3 — Tokyo: Santuários e Festivais de Outono</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Harajuku</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Santuário Meiji (Meiji Jingu)</strong> (2h)</li><li><strong>Parque Yoyogi</strong> (1h)</li><li><strong>Takeshita Street (Harajuku)</strong> (1h 30m)</li></ul>
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Great Festival of Meiji Shrine (Novembro 2027) - Celebração do aniversário do Imperador Meiji com cerimônias tradicionais e Yabusame (arco e flecha a cavalo).</p>
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Crepes doces super recheados na Marion Crepes, um clássico da cultura jovem de Harajuku.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> O Santuário Meiji é cercado por uma floresta de 100.000 árvores doadas de todo o Japão. Chegue cedo para garantir um bom lugar se for assistir ao Yabusame.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 4 — Tokyo: Arte Digital e Baía de Tóquio</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Toyosu</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Mercado Exterior de Tsukiji</strong> (2h)</li><li><strong>teamLab Planets TOKYO</strong> (2h)</li><li><strong>Odaiba Seaside Park</strong> (1h 30m)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Sushi fresco e tamagoyaki (omelete doce japonês) nas barracas de rua do Mercado de Tsukiji.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Vá com roupas que possam ser dobradas até o joelho para o teamLab Planets, pois a exposição imersiva inclui caminhar por salas com água.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 5 — Hakone: Fuga para a Natureza e Águas Termais</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Hakone-Yumoto</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Santuário de Hakone (Hakone Shrine)</strong> (1h)</li><li><strong>Cruzeiro Turístico no Lago Ashi</strong> (1h)</li><li><strong>Vale Vulcânico de Owakudani</strong> (1h 30m)</li></ul>
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Hakone Daimyo Parade (Novembro 2027) - Desfile histórico com trajes de samurais e carros alegóricos celebrando o período Edo.</p>
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Kuro Tamago em Owakudani: ovos cozidos nas águas vulcânicas. A lenda diz que comer um ovo prolonga a vida em 7 anos.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Adquira o Hakone Free Pass em Tóquio (Shinjuku) para economizar e ter acesso ilimitado a trens, teleféricos, barcos e ônibus na região.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 6 — Kyoto: O Coração Histórico do Japão</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Kyoto</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Kinkaku-ji (Pavilhão Dourado)</strong> (1h 30m)</li><li><strong>Jardim Zen de Ryoan-ji</strong> (1h)</li><li><strong>Floresta de Bambu de Arashiyama</strong> (2h)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Yudofu (tofu cozido em caldo leve) em Arashiyama, uma especialidade budista local perfeita para o clima de outono.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> A Floresta de Bambu fica intransitável de tão cheia após as 9h. Visite ao amanhecer para ter o local vazio, silencioso e perfeito para fotos.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 7 — Kyoto: Portões Vermelhos e Distrito das Gueixas</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Gion-Shijo</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Fushimi Inari Taisha</strong> (3h)</li><li><strong>Templo Kiyomizu-dera</strong> (2h)</li><li><strong>Distrito de Gion</strong> (1h 30m)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Kaiseki Ryori (jantar tradicional de múltiplos pratos) em um restaurante histórico de Gion.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> No Fushimi Inari, a maioria dos turistas para no cruzamento Yotsutsuji. Continue subindo a montanha para encontrar caminhos vazios e místicos.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 8 — Kyoto: Cultura do Chá e Caminhos Filosóficos</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Keage</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Ginkaku-ji (Pavilhão de Prata)</strong> (1h)</li><li><strong>Caminho do Filósofo (Tetsugaku no Michi)</strong> (1h 30m)</li><li><strong>Templo Nanzen-ji</strong> (1h 30m)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Matcha e doces tradicionais wagashi em uma casa de chá ao longo do Caminho do Filósofo.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> O Caminho do Filósofo é deslumbrante no outono. Caminhe no sentido norte-sul para terminar a rota explorando o imponente portão Sanmon de Nanzen-ji.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 9 — Osaka: A Cozinha do Japão e Castelos</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Namba</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Castelo de Osaka</strong> (2h)</li><li><strong>Dotonbori</strong> (2h)</li><li><strong>Shinsaibashi Shopping Arcade</strong> (1h 30m)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Takoyaki (bolinhos de polvo) e Okonomiyaki (panqueca salgada japonesa) nas vibrantes barracas de rua de Dotonbori.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> O Castelo de Osaka é uma reconstrução moderna por dentro (com elevador). Se o tempo for curto, foque nos belos jardins externos e na arquitetura.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 10 — Osaka: Retro e Futurismo</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Umeda</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Distrito de Shinsekai</strong> (1h 30m)</li><li><strong>Torre Tsutenkaku</strong> (1h)</li><li><strong>Umeda Sky Building</strong> (1h 30m)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Kushikatsu (espetinhos fritos variados) no bairro de Shinsekai, berço desta iguaria.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Suba no observatório do Umeda Sky Building pouco antes do pôr do sol para ver a transição da cidade do dia para a noite iluminada.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 11 — Nara: Veados Sagrados e Budas Gigantes</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Kintetsu-Nara</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Parque de Nara</strong> (2h)</li><li><strong>Templo Todai-ji</strong> (1h 30m)</li><li><strong>Santuário Kasuga Taisha</strong> (1h)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Kakinoha-zushi (sushi de cavala ou salmão prensado e enrolado em folha de caqui), uma especialidade histórica de Nara.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Os veados de Nara são considerados mensageiros dos deuses. Ao alimentá-los com 'shika senbei', faça uma reverência com a cabeça; muitos veados retribuem o gesto.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 12 — Tokyo: Despedida e Cores de Outono</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Shinjuku</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Shinjuku Gyoen National Garden</strong> (2h)</li><li><strong>Tokyo Metropolitan Government Building</strong> (1h)</li><li><strong>Omoide Yokocho</strong> (1h 30m)</li></ul>
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Hachioji Ginkgo Autumn Colors Festival (Novembro 2027) - Celebração das fantásticas cores amarelas de outono das árvores Ginkgo (Icho) em Hachioji.</p>
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Yakitori (espetinhos de frango grelhados) nas minúsculas e atmosféricas tabernas do Omoide Yokocho (Beco das Memórias).</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> O observatório do Tokyo Metropolitan Government Building é totalmente gratuito. Em dias claros de outono, é um dos melhores pontos para avistar o Monte Fuji.</p>
+        </div>
+      </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        // DADOS BRUTOS DOS PONTOS
+        const pontosData = [{"id":1,"nome":"Shibuya Crossing","lat":36.13793,"lng":138.441899,"dia":1,"cidade":"Tokyo","proximo_ponto":{"nome":"Hachiko Memorial","modo":"carro","tempo_minutos":228,"distancia_km":"264.28"}},{"id":2,"nome":"Hachiko Memorial","lat":35.137969,"lng":136.927162,"dia":1,"cidade":"Tokyo","proximo_ponto":{"nome":"Shibuya Sky","modo":"carro","tempo_minutos":205,"distancia_km":"330.12"}},{"id":3,"nome":"Shibuya Sky","lat":35.658286,"lng":139.702262,"dia":1,"cidade":"Tokyo","proximo_ponto":{"nome":"Templo Senso-ji","modo":"carro","tempo_minutos":12,"distancia_km":"12.48"}},{"id":4,"nome":"Templo Senso-ji","lat":35.71475,"lng":139.7968,"dia":2,"cidade":"Tokyo","proximo_ponto":{"nome":"Rua de Compras Nakamise","modo":"carro","tempo_minutos":158,"distancia_km":"196.89"}},{"id":5,"nome":"Rua de Compras Nakamise","lat":36.13793,"lng":138.441899,"dia":2,"cidade":"Tokyo","proximo_ponto":{"nome":"Parque Yoyogi","modo":"carro","tempo_minutos":155,"distancia_km":"189.22"}},{"id":6,"nome":"Parque Yoyogi","lat":35.668389,"lng":139.69707,"dia":3,"cidade":"Tokyo","proximo_ponto":{"nome":"Takeshita Street (Harajuku)","modo":"pe","tempo_minutos":11,"distancia_km":"0.91"}},{"id":7,"nome":"Takeshita Street (Harajuku)","lat":35.671137,"lng":139.704999,"dia":3,"cidade":"Tokyo","proximo_ponto":{"nome":"Mercado Exterior de Tsukiji","modo":"carro","tempo_minutos":17,"distancia_km":"9.86"}},{"id":8,"nome":"Mercado Exterior de Tsukiji","lat":35.736336,"lng":139.73416,"dia":4,"cidade":"Tokyo","proximo_ponto":{"nome":"teamLab Planets TOKYO","modo":"carro","tempo_minutos":19,"distancia_km":"12.50"}},{"id":9,"nome":"teamLab Planets TOKYO","lat":35.64926,"lng":139.78965,"dia":4,"cidade":"Tokyo","proximo_ponto":{"nome":"Odaiba Seaside Park","modo":"carro","tempo_minutos":160,"distancia_km":"197.74"}},{"id":10,"nome":"Odaiba Seaside Park","lat":36.13793,"lng":138.441899,"dia":4,"cidade":"Tokyo","proximo_ponto":{"nome":"Vale Vulcânico de Owakudani","modo":"carro","tempo_minutos":870,"distancia_km":"1081.24"}},{"id":11,"nome":"Vale Vulcânico de Owakudani","lat":42.858045,"lng":140.703482,"dia":5,"cidade":"Hakone","proximo_ponto":{"nome":"Kinkaku-ji (Pavilhão Dourado)","modo":"carro","tempo_minutos":1079,"distancia_km":"1361.30"}},{"id":12,"nome":"Kinkaku-ji (Pavilhão Dourado)","lat":35.03947,"lng":135.72852,"dia":6,"cidade":"Kyoto","proximo_ponto":{"nome":"Floresta de Bambu de Arashiyama","modo":"carro","tempo_minutos":326,"distancia_km":"450.27"}},{"id":13,"nome":"Floresta de Bambu de Arashiyama","lat":36.13793,"lng":138.441899,"dia":6,"cidade":"Kyoto","proximo_ponto":{"nome":"Fushimi Inari Taisha","modo":"carro","tempo_minutos":140,"distancia_km":"168.35"}},{"id":14,"nome":"Fushimi Inari Taisha","lat":35.11426,"lng":138.89742,"dia":7,"cidade":"Kyoto","proximo_ponto":{"nome":"Templo Kiyomizu-dera","modo":"carro","tempo_minutos":225,"distancia_km":"343.56"}},{"id":15,"nome":"Templo Kiyomizu-dera","lat":34.990231,"lng":135.788067,"dia":7,"cidade":"Kyoto","proximo_ponto":{"nome":"Distrito de Gion","modo":"carro","tempo_minutos":313,"distancia_km":"441.71"}},{"id":16,"nome":"Distrito de Gion","lat":36.13793,"lng":138.441899,"dia":7,"cidade":"Kyoto","proximo_ponto":{"nome":"Ginkaku-ji (Pavilhão de Prata)","modo":"carro","tempo_minutos":318,"distancia_km":"443.78"}},{"id":17,"nome":"Ginkaku-ji (Pavilhão de Prata)","lat":35.027043,"lng":135.798165,"dia":8,"cidade":"Kyoto","proximo_ponto":{"nome":"Caminho do Filósofo (Tetsugaku no Michi)","modo":"carro","tempo_minutos":317,"distancia_km":"444.22"}},{"id":18,"nome":"Caminho do Filósofo (Tetsugaku no Michi)","lat":36.13793,"lng":138.441899,"dia":8,"cidade":"Kyoto","proximo_ponto":{"nome":"Templo Nanzen-ji","modo":"carro","tempo_minutos":318,"distancia_km":"442.47"}},{"id":19,"nome":"Templo Nanzen-ji","lat":35.01142,"lng":135.79441,"dia":8,"cidade":"Kyoto","proximo_ponto":{"nome":"Castelo de Osaka","modo":"carro","tempo_minutos":112,"distancia_km":"131.19"}},{"id":20,"nome":"Castelo de Osaka","lat":34.834147,"lng":134.692724,"dia":9,"cidade":"Osaka","proximo_ponto":{"nome":"Dotonbori","modo":"carro","tempo_minutos":92,"distancia_km":"101.52"}},{"id":21,"nome":"Dotonbori","lat":34.66533,"lng":135.50623,"dia":9,"cidade":"Osaka","proximo_ponto":{"nome":"Shinsaibashi Shopping Arcade","modo":"pe","tempo_minutos":14,"distancia_km":"1.17"}},{"id":22,"nome":"Shinsaibashi Shopping Arcade","lat":34.672075,"lng":135.501351,"dia":9,"cidade":"Osaka","proximo_ponto":{"nome":"Distrito de Shinsekai","modo":"carro","tempo_minutos":359,"distancia_km":"486.60"}},{"id":23,"nome":"Distrito de Shinsekai","lat":36.13793,"lng":138.441899,"dia":10,"cidade":"Osaka","proximo_ponto":{"nome":"Torre Tsutenkaku","modo":"carro","tempo_minutos":318,"distancia_km":"445.59"}},{"id":24,"nome":"Torre Tsutenkaku","lat":34.98808,"lng":135.75656,"dia":10,"cidade":"Osaka","proximo_ponto":{"nome":"Umeda Sky Building","modo":"carro","tempo_minutos":54,"distancia_km":"47.88"}},{"id":25,"nome":"Umeda Sky Building","lat":34.70529,"lng":135.49053,"dia":10,"cidade":"Osaka","proximo_ponto":{"nome":"Parque de Nara","modo":"carro","tempo_minutos":42,"distancia_km":"39.30"}},{"id":26,"nome":"Parque de Nara","lat":34.615694,"lng":135.799106,"dia":11,"cidade":"Nara","proximo_ponto":{"nome":"Templo Todai-ji","modo":"carro","tempo_minutos":13,"distancia_km":"11.79"}},{"id":27,"nome":"Templo Todai-ji","lat":34.68917,"lng":135.83975,"dia":11,"cidade":"Nara","proximo_ponto":{"nome":"Tokyo Metropolitan Government Building","modo":"carro","tempo_minutos":311,"distancia_km":"470.67"}},{"id":28,"nome":"Tokyo Metropolitan Government Building","lat":35.68951,"lng":139.69168,"dia":12,"cidade":"Tokyo","proximo_ponto":{"nome":"Omoide Yokocho","modo":"pe","tempo_minutos":13,"distancia_km":"1.10"}},{"id":29,"nome":"Omoide Yokocho","lat":35.69325,"lng":139.699472,"dia":12,"cidade":"Tokyo","proximo_ponto":null}];
+
+        // SISTEMA DE ABAS VIA JS
+        let mapInitialized = false;
+        let map;
+        let mapMode = 'day'; // 'day' ou 'city'
+        let currentDay = 1;
+        let markersLayerGroup;
+        let polylineLayerGroup;
+
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            btnElement.classList.add('active');
+
+            if (tabId === 'tab-mapa') {
+                if (!mapInitialized) {
+                    initMap();
+                    mapInitialized = true;
+                } else {
+                    setTimeout(() => { map.invalidateSize(); }, 200);
+                }
+            }
+        }
+
+        // INICIALIZAÇÃO DO MAPA LEAFLET
+        function initMap() {
+            map = L.map('map').setView([35.6762, 139.6503], 6);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            markersLayerGroup = L.layerGroup().addTo(map);
+            polylineLayerGroup = L.layerGroup().addTo(map);
+
+            renderDaySelector();
+            renderMap();
+        }
+
+        function renderDaySelector() {
+            const container = document.getElementById('day-selector-container');
+            container.innerHTML = '';
+
+            const days = [...new Set(pontosData.map(p => p.dia))].sort((a,b) => a - b);
+            
+            days.forEach(day => {
+                const btn = document.createElement('button');
+                btn.className = `day-select-btn ${day === currentDay ? 'active' : ''}`;
+                btn.innerText = `Dia ${day}`;
+                btn.onclick = () => {
+                    currentDay = day;
+                    document.querySelectorAll('.day-select-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderMap();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function setMapMode(mode) {
+            mapMode = mode;
+            document.getElementById('btn-mode-day').classList.toggle('active', mode === 'day');
+            document.getElementById('btn-mode-city').classList.toggle('active', mode === 'city');
+            
+            const selectorContainer = document.getElementById('day-selector-container');
+            selectorContainer.style.display = (mode === 'day') ? 'flex' : 'none';
+
+            renderMap();
+        }
+
+        function renderMap() {
+            markersLayerGroup.clearLayers();
+            polylineLayerGroup.clearLayers();
+
+            if (mapMode === 'day') {
+                renderDayMode();
+            } else {
+                renderCityMode();
+            }
+        }
+
+        function renderDayMode() {
+            const dayPoints = pontosData.filter(p => p.dia === currentDay);
+            if (dayPoints.length === 0) return;
+
+            const latLngs = [];
+
+            dayPoints.forEach((ponto, index) => {
+                const pos = [ponto.lat, ponto.lng];
+                latLngs.push(pos);
+
+                let popupText = `<strong>${ponto.nome}</strong><br><em>Cidade: ${ponto.cidade}</em>`;
+                if (ponto.proximo_ponto) {
+                    popupText += `<hr style="margin:5px 0; border:0; border-top:1px dashed #ccc;">
+                        Próximo: ${ponto.proximo_ponto.nome}<br>
+                        Modo: ${ponto.proximo_ponto.modo} | ${ponto.proximo_ponto.tempo_minutos} min (${ponto.proximo_ponto.distancia_km} km)`;
+                }
+
+                const marker = L.marker(pos).bindPopup(popupText);
+                markersLayerGroup.addLayer(marker);
+            });
+
+            if (latLngs.length > 1) {
+                const polyline = L.polyline(latLngs, { color: '#B83227', weight: 4, opacity: 0.8, dashArray: '6, 8' });
+                polylineLayerGroup.addLayer(polyline);
+            }
+
+            if (latLngs.length > 0) {
+                map.fitBounds(L.latLngBounds(latLngs), { padding: [40, 40] });
+            }
+        }
+
+        function renderCityMode() {
+            // Agrupar por ordem de cidade
+            const cityOrder = [];
+            const cityMap = {};
+
+            pontosData.forEach(p => {
+                if (!cityMap[p.cidade]) {
+                    cityMap[p.cidade] = {
+                        cidade: p.cidade,
+                        firstPoint: p,
+                        count: 0,
+                        lastPoint: p
+                    };
+                    cityOrder.push(p.cidade);
+                }
+                cityMap[p.cidade].count++;
+                cityMap[p.cidade].lastPoint = p;
+            });
+
+            const latLngs = [];
+
+            cityOrder.forEach((cityName, idx) => {
+                const cityInfo = cityMap[cityName];
+                const pos = [cityInfo.firstPoint.lat, cityInfo.firstPoint.lng];
+                latLngs.push(pos);
+
+                const popupText = `<strong>🏙️ ${cityName}</strong><br>Total de Atrações: ${cityInfo.count}`;
+                const marker = L.marker(pos).bindPopup(popupText);
+                markersLayerGroup.addLayer(marker);
+
+                // Desenhar linha de transição para a próxima cidade
+                if (idx < cityOrder.length - 1) {
+                    const nextCityName = cityOrder[idx + 1];
+                    const nextCityInfo = cityMap[nextCityName];
+                    const nextPos = [nextCityInfo.firstPoint.lat, nextCityInfo.firstPoint.lng];
+
+                    const segmentLine = L.polyline([pos, nextPos], { color: '#1F2D3D', weight: 5, opacity: 0.8 });
+                    
+                    const lastPt = cityInfo.lastPoint;
+                    let linePopup = `<strong>Transição: ${cityName} ➔ ${nextCityName}</strong>`;
+                    if (lastPt && lastPt.proximo_ponto) {
+                        linePopup += `<br>Tempo: ~${lastPt.proximo_ponto.tempo_minutos} min<br>Distância: ${lastPt.proximo_ponto.distancia_km} km`;
+                    }
+
+                    segmentLine.bindPopup(linePopup);
+                    polylineLayerGroup.addLayer(segmentLine);
+                }
+            });
+
+            if (latLngs.length > 0) {
+                map.fitBounds(L.latLngBounds(latLngs), { padding: [50, 50] });
+            }
+        }
+    </script>
+</body>
+</html>
