@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paris - Caderno de Viagem & Dossiê Tático</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        :root {
+            --fundo-papel: #FDFBF7;
+            --cor-principal: #2C3E50;
+            --cor-secundaria: #C5A059;
+            --cor-destaque: #A93226;
+            --texto-handwritten: #1C2833;
+            --washi-tape: rgba(197, 160, 89, 0.3);
+            --font-handwriting: 'Caveat', cursive;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--fundo-papel);
+            background-image: radial-gradient(#e5e0d8 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--texto-handwritten);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        /* CONTAINER PRINCIPAL */
+        .wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* HERO HEADER SCRAPBOOK */
+        .hero {
+            position: relative;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            border: 1px solid #eae5d9;
+            overflow: hidden;
+        }
+
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(44, 62, 80, 0.85), transparent);
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-handwriting);
+            font-size: 1.8rem;
+            color: #f1c40f;
+        }
+
+        /* KIT VISUAL GERADO (IMAGEM DECORATIVA HERO) */
+        .kit-visual-hero {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            width: 110px;
+            height: auto;
+            transform: rotate(8deg);
+            z-index: 10;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
+            pointer-events: none;
+        }
+
+        /* CARIMBOS RETRÔ */
+        .stamps-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stamp {
+            display: inline-block;
+            padding: 6px 14px;
+            border: 2px dashed var(--cor-destaque);
+            color: var(--cor-destaque);
+            font-family: var(--font-handwriting);
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 6px;
+            background: rgba(169, 50, 38, 0.04);
+            transform: rotate(-2deg);
+            box-shadow: 0 0 0 3px rgba(169, 50, 38, 0.1);
+        }
+
+        .stamp:nth-child(2) {
+            transform: rotate(3deg);
+            border-color: var(--cor-secundaria);
+            color: var(--cor-secundaria);
+            box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1);
+        }
+
+        .stamp:nth-child(3) {
+            transform: rotate(-1deg);
+            border-color: var(--cor-principal);
+            color: var(--cor-principal);
+        }
+
+        /* TRILHA SONORA */
+        .soundtrack-box {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border: 1px solid #eae5d9;
+        }
+
+        .soundtrack-title {
+            font-family: var(--font-handwriting);
+            font-size: 1.5rem;
+            color: var(--cor-principal);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* NAVEGAÇÃO / ABAS FICHÁRIO */
+        .tabs-header {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid var(--cor-secundaria);
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: #e2dbc9;
+            border: none;
+            outline: none;
+            padding: 12px 24px;
+            font-family: var(--font-sans);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--cor-principal);
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--cor-secundaria);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* SCRAPBOOK CARDS (ABA 1) */
+        .day-card {
+            position: relative;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+            border: 1px solid #eae5d9;
+        }
+
+        .day-card:nth-child(odd) {
+            transform: rotate(-0.4deg);
+        }
+
+        .day-card:nth-child(even) {
+            transform: rotate(0.4deg);
+        }
+
+        .washi-tape {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-1deg);
+            width: 140px;
+            height: 26px;
+            background-color: var(--washi-tape);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            z-index: 5;
+        }
+
+        .day-title {
+            font-size: 1.5rem;
+            color: var(--cor-principal);
+            border-bottom: 2px dashed #eae5d9;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .day-body {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .day-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* POLAROID */
+        .polaroid {
+            background: #ffffff;
+            padding: 12px 12px 20px 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            transform: rotate(-2deg);
+            border: 1px solid #f0ede6;
+            margin-bottom: 15px;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        .polaroid figcaption {
+            font-family: var(--font-handwriting);
+            font-size: 1.3rem;
+            color: var(--texto-handwritten);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* CHECKLIST INTERATIVO */
+        .checklist {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 3px;
+            accent-color: var(--cor-destaque);
+            cursor: pointer;
+        }
+
+        .checklist-item.done span {
+            text-decoration: line-through;
+            color: #888888;
+        }
+
+        /* POST-IT DICAS & DICA TÁTICA */
+        .post-it {
+            background: #fffde7;
+            border-left: 4px solid var(--cor-secundaria);
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.04);
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .post-it-title {
+            font-family: var(--font-handwriting);
+            font-size: 1.4rem;
+            color: var(--cor-destaque);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .tactical-tip {
+            background: #eef6fc;
+            border-left: 4px solid #2980b9;
+            padding: 12px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #1a5276;
+        }
+
+        /* ABA 2: MAPA CONTROLES */
+        .map-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 15px;
+            align-items: center;
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #eae5d9;
+        }
+
+        .btn-mode {
+            padding: 8px 16px;
+            border: 1px solid var(--cor-secundaria);
+            background: #ffffff;
+            color: var(--cor-secundaria);
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-mode.active {
+            background: var(--cor-secundaria);
+            color: #ffffff;
+        }
+
+        .day-selector {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn-day {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            background: #f8f8f8;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-day.active {
+            background: var(--cor-principal);
+            color: #ffffff;
+            border-color: var(--cor-principal);
+        }
+
+        #map {
+            width: 100%;
+            height: 520px;
+            border-radius: 12px;
+            border: 1px solid #eae5d9;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            z-index: 1;
+        }
+
+        /* ABA 3: CSS GLOBAL APLICADO AO ROTEIRO BRUTO INJETADO */
+        #tab-3 h1, #tab-3 h2, #tab-3 h3 {
+            color: var(--cor-principal);
+            border-bottom: 2px solid var(--cor-secundaria);
+            padding-bottom: 6px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-family: var(--font-sans);
+        }
+
+        #tab-3 h1 { font-size: 1.8rem; }
+        #tab-3 h2 { font-size: 1.4rem; }
+        #tab-3 h3 { font-size: 1.15rem; }
+
+        #tab-3 table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        #tab-3 th, #tab-3 td {
+            border: 1px solid #eee;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        #tab-3 th {
+            background-color: var(--cor-principal);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        #tab-3 tr:nth-child(even) {
+            background-color: #fcfbfa;
+        }
+
+        #tab-3 div.destaque {
+            background-color: #f4f6f7;
+            border-left: 4px solid var(--cor-principal);
+            padding: 15px;
+            margin: 18px 0;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        #tab-3 .alerta {
+            color: var(--cor-destaque);
+            font-weight: 700;
+        }
+
+        /* POPUP CUSTOM LEAFLET */
+        .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            font-family: var(--font-sans);
+        }
+        .leaflet-popup-content h3 {
+            margin: 0 0 5px 0;
+            color: var(--cor-principal);
+            font-size: 1rem;
+        }
+        .leaflet-popup-content p {
+            margin: 3px 0;
+            font-size: 0.85rem;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- HERO HEADER -->
+    <header class="hero">
+        <!-- KIT VISUAL GERADO (SE EXISTIR) -->
+        <img src="data:image/jpeg;base64,filesystem-v2" alt="Kit Visual Decorativo" class="kit-visual-hero" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+
+        <div class="hero-banner">
+            <img src="https://images.unsplash.com/photo-1526821799652-2dc51675628e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8UGFyaXMlMjBGcmFuY2UlMjBza3lsaW5lJTIwRWlmZmVsJTIwdG93ZXIlMjB2aW50YWdlJTIwd2FybSUyMHN1bnNldCUyMGxpZ2h0fGVufDB8MHx8fDE3ODcxNTE2MDV8MA&ixlib=rb-4.1.0&q=80&w=1080" alt="Paris Header" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+            <div class="hero-overlay">
+                <h1 class="hero-title">Gere o roteiro</h1>
+                <div class="hero-subtitle">Paris, França — Scrapbook de Viagem & Guia Tático 2026</div>
+            </div>
+        </div>
+
+        <!-- CARIMBOS DE SCRAPBOOK -->
+        <div class="stamps-container">
+            <div class="stamp">PARIS PASSPORT STAMP 2026</div>
+            <div class="stamp">MONTMARTRE ARTIST METRO</div>
+            <div class="stamp">PARIS FESTIVAL SESSION</div>
+        </div>
+    </header>
+
+    <!-- TRILHA SONORA (SPOTIFY) -->
+    <section class="soundtrack-box">
+        <div class="soundtrack-title">🎵 Trilha da viagem</div>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/69krT7KIlASyLFn516AKPr" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </section>
+
+    <!-- NAVEGAÇÃO POR ABAS -->
+    <nav class="tabs-header">
+        <button class="tab-btn active" onclick="switchTab('tab-1', this)">📖 ROTEIRO & DIÁRIO DE VIAGEM</button>
+        <button class="tab-btn" onclick="switchTab('tab-2', this)">🗺️ MAPA INTERATIVO & ROTAS</button>
+        <button class="tab-btn" onclick="switchTab('tab-3', this)">📊 DOSSIÊ DE MILHAS, CÂMBIO & LOGÍSTICA</button>
+    </nav>
+
+    <!-- ABA 1: ROTEIRO & DIÁRIO DE VIAGEM -->
+    <main id="tab-1" class="tab-content active">
+        <!-- DIA 1 -->
+        <article class="day-card">
+            <div class="washi-tape"></div>
+            <div class="day-title">
+                <span>Dia 1 — Paris: Clássicos e Montmartre</span>
+                <small style="font-size:0.85rem; color:#666; font-weight:400;">Apoio Logístico: Estação Abbesses / Montmartre</small>
+            </div>
+            <div class="day-body">
+                <div>
+                    <h4 style="margin-bottom:10px; color:var(--cor-principal);">🏛️ Atrações & Checklist:</h4>
+                    <ul class="checklist">
+                        <li class="checklist-item">
+                            <input type="checkbox" onchange="toggleDone(this)">
+                            <span><strong>Basílica de Sacré-Cœur</strong> — Vista panorâmica e interior neoclássico (1h 30m)</span>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" onchange="toggleDone(this)">
+                            <span><strong>Place du Tertre</strong> — Praça dos artistas e pintores de Montmartre (45m)</span>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" onchange="toggleDone(this)">
+                            <span><strong>Museu de Montmartre</strong> — História boêmia e jardins de Renoir (1h)</span>
+                        </li>
+                    </ul>
+
+                    <div class="post-it">
+                        <div class="post-it-title">🎟️ Evento Especial / Data</div>
+                        <p><strong>Festival Les Arènes Lyriques:</strong> Concertos de música clássica nas históricas Arènes de Montmartre.</p>
+                    </div>
+
+                    <div class="post-it" style="background:#f0fdf4; border-left-color:#16a34a;">
+                        <div class="post-it-title" style="color:#15803d;">🍷 Dica Gastronômica</div>
+                        <p><strong>Le Moulin de la Galette:</strong> Experimente a clássica sopa de cebola francesa ou o boeuf bourguignon num moinho histórico.</p>
+                    </div>
+
+                    <div class="tactical-tip">
+                        💡 <strong>Dica Tática:</strong> Chegue cedo à Sacré-Cœur para evitar multidões e utilize o Funicular de Montmartre se quiser poupar as pernas na subida.
+                    </div>
+                </div>
+
+                <div>
+                    <figure class="polaroid">
+                        <img src="https://images.unsplash.com/photo-1702375308488-de52189a0ff3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8U2FjcmUlMjBDb2V1ciUyMEJhc2lsaWNhJTIwTW9udG1hcnRyZSUyMFBhcmlzJTIwRnJhbmNlJTIwc3VtbWVyfGVufDB8MHx8fDE3ODcxNTE2MDV8MA&ixlib=rb-4.1.0&q=80&w=1080" alt="Sacre Coeur Paris" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+                        <figcaption>Sacré-Cœur & Montmartre 🎨</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 2 -->
+        <article class="day-card">
+            <div class="washi-tape"></div>
+            <div class="day-title">
+                <span>Dia 2 — Paris: Arte, Rio e Praia Urbana</span>
+                <small style="font-size:0.85rem; color:#666; font-weight:400;">Apoio Logístico: Estação Hôtel de Ville / Le Marais</small>
+            </div>
+            <div class="day-body">
+                <div>
+                    <h4 style="margin-bottom:10px; color:var(--cor-principal);">🏛️ Atrações & Checklist:</h4>
+                    <ul class="checklist">
+                        <li class="checklist-item">
+                            <input type="checkbox" onchange="toggleDone(this)">
+                            <span><strong>Museu do Louvre</strong> — Acervo mundial e obras-primas como Monalisa (3h)</span>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" onchange="toggleDone(this)">
+                            <span><strong>Île de la Cité e exterior da Notre-Dame</strong> — Berço de Paris e arquitetura gótica (1h 30m)</span>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" onchange="toggleDone(this)">
+                            <span><strong>Caminhada pelas margens do Sena</strong> — Passeio fotográfico à beira rio (1h)</span>
+                        </li>
+                    </ul>
+
+                    <div class="post-it">
+                        <div class="post-it-title">🎟️ Evento Especial / Data</div>
+                        <p><strong>Paris Plages:</strong> Praia urbana montada nas margens do Rio Sena com espreguiçadeiras e atividades ao ar livre.</p>
+                    </div>
+
+                    <div class="post-it" style="background:#f0fdf4; border-left-color:#16a34a;">
+                        <div class="post-it-title" style="color:#15803d;">🍷 Dica Gastronômica</div>
+                        <p><strong>L'As du Fallafel:</strong> Localizado no coração do Marais, mundialmente famoso pelo melhor sanduíche de falafel.</p>
+                    </div>
+
+                    <div class="tactical-tip">
+                        💡 <strong>Dica Tática:</strong> Compre o ingresso do Louvre com horário marcado online e use a entrada subterrânea do Carrousel du Louvre para enfrentar filas menores.
+                    </div>
+                </div>
+
+                <div>
+                    <figure class="polaroid" style="transform: rotate(1.5deg);">
+                        <img src="https://images.unsplash.com/photo-1778975535299-8f3f425e496a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8TG91dnJlJTIwTXVzZXVtJTIwcHlyYW1pZCUyMGV4dGVyaW9yJTIwUGFyaXMlMjBGcmFuY2UlMjBkYXl0aW1lfGVufDB8MHx8fDE3ODcxNTE2MDV8MA&ixlib=rb-4.1.0&q=80&w=1080" alt="Louvre Museum Paris" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+                        <figcaption>Pirâmide do Louvre 🏛️</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 3 -->
+        <article class="day-card">
+            <div class="washi-tape"></div>
+            <div class="day-title">
+                <span>Dia 3 — Paris: Natureza e Música no Parque</span>
+                <small style="font-size:0.85rem; color:#666; font-weight:400;">Apoio Logístico: Estação Château de Vincennes</small>
+            </div>
+            <div class="day-body">
+                <div>
+                    <h4 style="margin-bottom:10px; color:var(--cor-principal);">🏛️ Atrações & Checklist:</h4>
+                    <ul class="checklist">
+                        <li class="checklist-item">
+                            <input type="checkbox" onchange="toggleDone(this)">
+                            <span><strong>Château de Vincennes</strong> — Fortaleza medieval e torre de menagem impressionante (2h)</span>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" onchange="toggleDone(this)">
+                            <span><strong>Parc Floral de Paris</strong> — Jardins botânicos e cenários relaxantes (2h)</span>
+                        </li>
+                    </ul>
+
+                    <div class="post-it">
+                        <div class="post-it-title">🎟️ Evento Especial / Data</div>
+                        <p><strong>Festival Classique au Vert:</strong> Concertos imperdíveis de música clássica ao ar livre no Parc Floral.</p>
+                    </div>
+
+                    <div class="post-it" style="background:#f0fdf4; border-left-color:#16a34a;">
+                        <div class="post-it-title" style="color:#15803d;">🍷 Dica Gastronômica</div>
+                        <p><strong>Piquenique no Parc Floral:</strong> Compre queijos, frios e uma baguete fresca em uma boulangerie antes de ir para o parque.</p>
+                    </div>
+
+                    <div class="tactical-tip">
+                        💡 <strong>Dica Tática:</strong> Os concertos no Parc Floral costumam ser gratuitos pagando apenas a taxa do parque. Leve uma canga para sentar no gramado.
+                    </div>
+                </div>
+
+                <div>
+                    <figure class="polaroid" style="transform: rotate(-2deg);">
+                        <img src="https://images.unsplash.com/photo-1560810118-031a5590b5de?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8Q2hhdGVhdSUyMGRlJTIwVmluY2VubmVzJTIwUGFyaXMlMjBGcmFuY2UlMjBoaXN0b3JpYyUyMGNhc3RsZXxlbnwwfDB8fHwxNzg3MTUxNjA1fDA&ixlib=rb-4.1.0&q=80&w=1080" alt="Chateau de Vincennes Paris" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+                        <figcaption>Château de Vincennes 🏰</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </article>
+
+        <!-- DIA 4 -->
+        <article class="day-card">
+            <div class="washi-tape"></div>
+            <div class="day-title">
+                <span>Dia 4 — Paris: Rock e Jardins Históricos</span>
+                <small style="font-size:0.85rem; color:#666; font-weight:400;">Apoio Logístico: Estação Boulogne - Pont de Saint-Cloud</small>
+            </div>
+            <div class="day-body">
+                <div>
+                    <h4 style="margin-bottom:10px; color:var(--cor-principal);">🏛️ Atrações & Checklist:</h4>
+                    <ul class="checklist">
+                        <li class="checklist-item">
+                            <input type="checkbox" onchange="toggleDone(this)">
+                            <span><strong>Domaine National de Saint-Cloud</strong> — Parque histórico vasto com vistas para Paris (2h)</span>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" onchange="toggleDone(this)">
+                            <span><strong>Musée e Jardins Albert-Kahn</strong> — Jardins do mundo e acervo fotográfico icônico (1h 30m)</span>
+                        </li>
+                    </ul>
+
+                    <div class="post-it">
+                        <div class="post-it-title">🎟️ Evento Especial / Data</div>
+                        <p><strong>Festival Rock en Seine:</strong> Festival de música de grande porte com atrações mundiais como The Cure.</p>
+                    </div>
+
+                    <div class="post-it" style="background:#f0fdf4; border-left-color:#16a34a;">
+                        <div class="post-it-title" style="color:#15803d;">🍷 Dica Gastronômica</div>
+                        <p><strong>Le Fer à Cheval:</strong> Restaurante charmoso com terraço localizado dentro do Domaine de Saint-Cloud.</p>
+                    </div>
+
+                    <div class="tactical-tip">
+                        💡 <strong>Dica Tática:</strong> Para o festival Rock en Seine, vá com calçados muito confortáveis pois o terreno é vasto. O parque foi desenhado por Le Nôtre.
+                    </div>
+                </div>
+
+                <div>
+                    <figure class="polaroid" style="transform: rotate(2deg);">
+                        <img src="https://images.unsplash.com/photo-1526821799652-2dc51675628e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8UGFyaXMlMjBGcmFuY2UlMjBza3lsaW5lJTIwRWlmZmVsJTIwdG93ZXIlMjB2aW50YWdlJTIwd2FybSUyMHN1bnNldCUyMGxpZ2h0fGVufDB8MHx8fDE3ODcxNTE2MDV8MA&ixlib=rb-4.1.0&q=80&w=1080" alt="Saint-Cloud Paris" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+                        <figcaption>Jardins de Saint-Cloud 🌳</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- ABA 2: MAPA INTERATIVO & ROTAS -->
+    <main id="tab-2" class="tab-content">
+        <div class="map-controls">
+            <span style="font-weight: 600; font-size: 0.9rem;">Modo de Visualização:</span>
+            <button id="btn-mode-day" class="btn-mode active" onclick="setMapMode('day')">Mapa do Dia</button>
+            <button id="btn-mode-city" class="btn-mode" onclick="setMapMode('city')">Rota Entre Cidades</button>
+
+            <div id="day-selector-container" class="day-selector" style="margin-left: auto;">
+                <span style="font-weight: 600; font-size: 0.85rem; align-self: center;">Selecione o Dia:</span>
+                <button class="btn-day active" onclick="selectDay(1)">Dia 1</button>
+                <button class="btn-day" onclick="selectDay(2)">Dia 2</button>
+                <button class="btn-day" onclick="selectDay(3)">Dia 3</button>
+                <button class="btn-day" onclick="selectDay(4)">Dia 4</button>
+            </div>
+        </div>
+
+        <div id="map"></div>
+    </main>
+
+    <!-- ABA 3: DOSSIÊ DE MILHAS, CÂMBIO & LOGÍSTICA (ROTEIRO_BRUTO) -->
+    <main id="tab-3" class="tab-content">
+        
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Laudo Técnico Executivo - Engenharia de Milhas</title>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #333333;
+        background-color: #F8F9FA;
+        margin: 0;
+        padding: 20px;
+        line-height: 1.6;
+    }
+    h1, h2, h3 {
+        color: #1B365D;
+        page-break-after: avoid;
+        break-after: avoid;
+        border-bottom: 2px solid #1B365D;
+        padding-bottom: 5px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        background-color: #FFFFFF;
+    }
+    th, td {
+        border: 1px solid #E5E7EB;
+        padding: 10px;
+        text-align: left;
+        font-size: 14px;
+    }
+    th {
+        background-color: #1B365D;
+        color: #FFFFFF;
+        font-weight: bold;
+    }
+    tr:nth-child(even) {
+        background-color: #F3F4F6;
+    }
+    tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    div.destaque {
+        background-color: #EBF5FF;
+        border-left: 4px solid #1B365D;
+        padding: 15px;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    .alerta {
+        color: #D97706;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<h1>[1. RESUMO EXECUTIVO]</h1>
+<div class="destaque">
+    <strong>Objetivo Tático:</strong> Estruturação de rota internacional (Europa/Madrid) para 2 passageiros, partindo de Uberlândia (UDI), maximizando o uso do saldo de 262.256 pontos C6 (CPM R$ 0,00) e 45.666 milhas Smiles (CPM R$ 9,87).<br>
+    <strong>Métricas Brutas de Saving:</strong> Custo logístico aéreo total estimado em R$ 1.894,80 (taxas de embarque + custo de geração das milhas domésticas). O trecho internacional operará a um custo de aquisição de milhas de R$ 0,00, gerando eficiência máxima no spread do ativo.
+</div>
+
+<h2>[2. MATRIZ DE DECISÃO SAZONAL]</h2>
+<table>
+    <tr>
+        <th>Destino Base</th>
+        <th>Clima (Projeção)</th>
+        <th>Nível de Temporada</th>
+        <th>Saturação Logística</th>
+        <th>Estimativa de Custos (Cash vs Milhas)</th>
+    </tr>
+    <tr>
+        <td>Madrid (MAD) via LIS</td>
+        <td>Transição (Outono/Inverno)</td>
+        <td>Baixa/Média</td>
+        <td>Média (Tráfego corporativo e conexões)</td>
+        <td>Cash: R$ 6.500+ / Milhas: 76.000 TAP Miles&Go (Ida e Volta)</td>
+    </tr>
+</table>
+
+<h2>[3. ENGENHARIA DE MILHAS E VALORAÇÃO FINANCEIRA (CPM)]</h2>
+
+<h3>Tabela de Rotas e Franquia de Bagagem</h3>
+<table>
+    <tr>
+        <th>Trecho</th>
+        <th>Cia Aérea / Programa</th>
+        <th>Custo em Milhas (por pax/trecho)</th>
+        <th>Franquia de Bagagem (Regra Rígida)</th>
+    </tr>
+    <tr>
+        <td>UDI ↔ GRU (Posicionamento)</td>
+        <td>GOL / Smiles</td>
+        <td>~10.000 milhas</td>
+        <td>1 item pessoal + 1 mala de cabine (10kg). Bagagem despachada tarifada à parte.</td>
+    </tr>
+    <tr>
+        <td>GRU ↔ MAD (via LIS)</td>
+        <td>TAP / Miles&Go</td>
+        <td>~38.000 milhas</td>
+        <td>1 item pessoal + 1 mala de cabine (10kg) + 1 mala despachada (23kg) inclusa na tarifa award padrão.</td>
+    </tr>
+</table>
+
+<h3>Diagnóstico do Banco de Milhas</h3>
+<table>
+    <tr>
+        <th>Programa</th>
+        <th>Saldo Atual</th>
+        <th>Custo Médio (CPM)</th>
+        <th>Parecer Técnico e Suficiência</th>
+    </tr>
+    <tr>
+        <td>Smiles</td>
+        <td>45.666</td>
+        <td>R$ 9,87</td>
+        <td>Saldo suficiente para cobrir o trecho de escoamento UDI ↔ GRU para 2 passageiros (aprox. 40.000 milhas). CPM altamente eficiente.</td>
+    </tr>
+    <tr>
+        <td>Latam</td>
+        <td>17.771</td>
+        <td>R$ 10,74</td>
+        <td>Saldo residual. Manter em hold para emissões domésticas futuras.</td>
+    </tr>
+    <tr>
+        <td>Esfera</td>
+        <td>80.981</td>
+        <td>R$ 16,52</td>
+        <td>Ativo estratégico para Iberia Plus. Aguardar janela de transferência (ver alerta abaixo).</td>
+    </tr>
+    <tr>
+        <td>Livelo</td>
+        <td>11.276</td>
+        <td>R$ 25,81</td>
+        <td>Saldo baixo e CPM elevado. Não utilizar nesta operação.</td>
+    </tr>
+    <tr>
+        <td>Iberia</td>
+        <td>0</td>
+        <td>R$ 0,00</td>
+        <td>Conta zerada. Depende de transferência do Esfera.</td>
+    </tr>
+    <tr>
+        <td>AllAcoor</td>
+        <td>11.600</td>
+        <td>R$ 87,41</td>
+        <td>Saldo suficiente para resgate de 232 EUR em hospedagem.</td>
+    </tr>
+    <tr>
+        <td>Caixa</td>
+        <td>3.624</td>
+        <td>R$ 0,00</td>
+        <td>Saldo irrelevante para emissão internacional.</td>
+    </tr>
+    <tr>
+        <td>C6</td>
+        <td>262.256</td>
+        <td>R$ 0,00</td>
+        <td>Ativo principal. Transferência 1:1 para TAP Miles&Go cobre integralmente a rota GRU-MAD (152.000 milhas necessárias para 2 pax ida e volta).</td>
+    </tr>
+    <tr>
+        <td>Azul</td>
+        <td>5.000</td>
+        <td>R$ 0,00</td>
+        <td>Saldo residual.</td>
+    </tr>
+    <tr>
+        <td>Revolut</td>
+        <td>0</td>
+        <td>R$ 0,00</td>
+        <td>Conta zerada.</td>
+    </tr>
+</table>
+
+<div class="destaque">
+    <span class="alerta">ALERTA DE INTELIGÊNCIA DE JANELAS (ESFERA → IBERIA):</span><br>
+    A última campanha de transferência bonificada do Esfera para o Iberia Plus ocorreu entre 15 e 17 de junho de 2026. Considerando a DATA ATUAL (19/08/2026), já se passaram 63 dias. Como o ciclo estatístico de repetição de mercado é de 60 a 90 dias, uma nova janela bonificada é iminente (esperada entre hoje e meados de setembro de 2026). <br><br>
+    <strong>Projeção Condicional:</strong> Se/quando a janela abrir com a condição exata de 25% de bônus (exclusivo para clientes com assinatura ativa do Clube Esfera), a projeção seria: 80.981 pontos Esfera = 40.490 Avios + 10.122 Avios de bônus = 50.612 Avios. Não transfira a seco na tabela padrão (2:1 sem bônus); aguarde o timing tático.
+</div>
+
+<h2>[4. ENGENHARIA LOGÍSTICA DE FRONTEIRA E TRANSBORDO]</h2>
+<table>
+    <tr>
+        <th>Aeroporto</th>
+        <th>Procedimento de Fronteira / Imigração</th>
+        <th>Tempo Mínimo de Conexão Recomendado</th>
+    </tr>
+    <tr>
+        <td>GRU (Guarulhos)</td>
+        <td>Transbordo do Terminal 2 (Doméstico GOL) para o Terminal 3 (Internacional). Necessário retirar bagagem e despachar novamente caso os bilhetes sejam emitidos separadamente.</td>
+        <td>240 minutos (4 horas) para mitigar atrasos do trecho UDI-GRU.</td>
+    </tr>
+    <tr>
+        <td>LIS (Lisboa)</td>
+        <td>Ponto de entrada no Espaço Schengen. <strong>Regra EES (Entry/Exit System):</strong> Totalmente operacional desde 10 de abril de 2026. Exigirá coleta de dados biométricos (imagem facial e impressões digitais) no primeiro cruzamento. Preveja gargalos e filas severas.</td>
+        <td>180 minutos (3 horas) devido ao gargalo biométrico do EES.</td>
+    </tr>
+    <tr>
+        <td>MAD (Madrid)</td>
+        <td>Voo intra-Schengen a partir de LIS. Desembarque direto sem nova imigração.</td>
+        <td>N/A (Destino final).</td>
+    </tr>
+</table>
+<p><em>Nota Técnica ETIAS:</em> O sistema ETIAS tem lançamento confirmado para o último trimestre de 2026. Caso a viagem ocorra após a implementação, será obrigatório o preenchimento online prévio e o pagamento da taxa de €20. O ETIAS não garante a entrada e atua em conjunto com o EES.</p>
+
+<h2>[5. LOGÍSTICA DE SALAS VIP (GROUND HANDLING) E INVENTÁRIO DE ACESSOS]</h2>
+<table>
+    <tr>
+        <th>Terminal / Aeroporto</th>
+        <th>Cartão Apresentado</th>
+        <th>Sala VIP Selecionada</th>
+        <th>Regra Matemática e Consumo de Cota (2 Passageiros)</th>
+    </tr>
+    <tr>
+        <td>GRU - Terminal 3 (Embarque Internacional)</td>
+        <td>C6 Black (Titular e Adicional)</td>
+        <td>Sala Mastercard Black (Pós-embarque)</td>
+        <td>Acesso ilimitado para portadores do cartão. Apresentando 1 cartão titular e 1 adicional, o consumo da cota anual LoungeKey/WAC é <strong>ZERO</strong>.</td>
+    </tr>
+    <tr>
+        <td>LIS - Terminal 1 (Conexão Schengen)</td>
+        <td>Inter Prime Black</td>
+        <td>ANA Lounge (Pós-imigração Schengen)</td>
+        <td>Acesso via LoungeKey. O titular acessa e insere 1 convidado. Consumo: <strong>2 acessos</strong> deduzidos da cota anual de 6 acessos. Restarão 4 acessos.</td>
+    </tr>
+    <tr>
+        <td>MAD - Terminal 4 (Retorno)</td>
+        <td>Santander Unique Visa Infinite (Titular e Adic.)</td>
+        <td>Sala VIP Plaza Mayor</td>
+        <td>Acesso via DragonPass. Apresentando os cartões titular e adicional separadamente. Consumo: <strong>1 acesso por cartão</strong>. Restará 1 acesso/ano em cada cartão.</td>
+    </tr>
+</table>
+
+<h2>[6. HOSPEDAGEM (ALL ACCOR vs MERCADO)]</h2>
+<table>
+    <tr>
+        <th>Ativo Utilizado</th>
+        <th>Conversão Matemática</th>
+        <th>Valor Gerado (EUR)</th>
+        <th>Valor Gerado (BRL)</th>
+        <th>Custo de Aquisição (BRL)</th>
+    </tr>
+    <tr>
+        <td>11.600 Pontos ALL Accor</td>
+        <td>Lotes de 2.000 pontos = € 40</td>
+        <td>€ 232,00 (5,8 lotes)</td>
+        <td>R$ 1.368,80</td>
+        <td>R$ 1.013,95 (CPM R$ 87,41)</td>
+    </tr>
+</table>
+<p><em>Diagnóstico:</em> O resgate dos pontos ALL Accor gera um saving real de R$ 354,85 frente ao custo de aquisição. Recomenda-se a utilização integral do saldo para abater diárias em propriedades Ibis/Mercure na zona central de Madrid (ex: Ibis Madrid Centro), onde tarifas pagantes giram em torno de € 90 a € 120/noite.</p>
+
+<h2>[7. CONSOLIDAÇÃO FINANCEIRA E CÂMBIO]</h2>
+
+<h3>Custo Total Consolidado da Operação Aérea (Porta-a-Porta)</h3>
+<table>
+    <tr>
+        <th>Vetor</th>
+        <th>Custo em Milhas</th>
+        <th>Custo de Geração (BRL)</th>
+        <th>Taxas de Embarque Estimadas (BRL)</th>
+        <th>Custo Total (BRL)</th>
+    </tr>
+    <tr>
+        <td>UDI ↔ GRU (2 Pax RT)</td>
+        <td>40.000 Smiles</td>
+        <td>R$ 394,80</td>
+        <td>R$ 300,00</td>
+        <td>R$ 694,80</td>
+    </tr>
+    <tr>
+        <td>GRU ↔ MAD (2 Pax RT)</td>
+        <td>152.000 TAP</td>
+        <td>R$ 0,00</td>
+        <td>R$ 1.200,00</td>
+        <td>R$ 1.200,00</td>
+    </tr>
+    <tr>
+        <th>TOTAL</th>
+        <th>192.000 Milhas</th>
+        <th>R$ 394,80</th>
+        <th>R$ 1.500,00</th>
+        <th>R$ 1.894,80</th>
+    </tr>
+</table>
+
+<h3>Matriz de Spread e Câmbio Global (Base Euro: R$ 5,90)</h3>
+<table>
+    <tr>
+        <th>Instituição</th>
+        <th>Spread Médio</th>
+        <th>IOF</th>
+        <th>Custo Efetivo Total (CET) Estimado</th>
+    </tr>
+    <tr>
+        <td>Revolut</td>
+        <td>0,15% a 0,50%</td>
+        <td>1,10%</td>
+        <td>Altamente Eficiente (Recomendado para zona Euro)</td>
+    </tr>
+    <tr>
+        <td>Wise</td>
+        <td>0,90% a 1,20%</td>
+        <td>1,10%</td>
+        <td>Eficiente</td>
+    </tr>
+    <tr>
+        <td>C6 Global</td>
+        <td>2,00%</td>
+        <td>1,10%</td>
+        <td>Moderado</td>
+    </tr>
+    <tr>
+        <td>Banco Inter</td>
+        <td>0,99%</td>
+        <td>1,10%</td>
+        <td>Eficiente</td>
+    </tr>
+    <tr>
+        <td>Nomad</td>
+        <td>1,00% a 2,00%</td>
+        <td>1,10%</td>
+        <td>Moderado (Foco primário em USD, conversão dupla para EUR)</td>
+    </tr>
+    <tr>
+        <td>Santander (Cartão de Crédito)</td>
+        <td>4,00% a 5,00%</td>
+        <td>4,38%</td>
+        <td>Ineficiente (Uso apenas em contingência)</td>
+    </tr>
+</table>
+
+<h2>[8. EXPANSÃO DE ROTEIRO TÁTICO E CIDADES PRÓXIMAS]</h2>
+<table>
+    <tr>
+        <th>Cidade Alternativa</th>
+        <th>Vetor de Deslocamento (a partir de MAD)</th>
+        <th>Tempo de Trânsito</th>
+        <th>Custo-Benefício Logístico</th>
+    </tr>
+    <tr>
+        <td>Toledo</td>
+        <td>Trem de Alta Velocidade (Renfe Avant) partindo de Madrid Puerta de Atocha.</td>
+        <td>33 minutos</td>
+        <td>Altíssima eficiência. Custo do bilhete em torno de € 14. Ideal para operação bate-volta (day trip) sem necessidade de troca de base hoteleira.</td>
+    </tr>
+    <tr>
+        <td>Valência</td>
+        <td>Trem de Alta Velocidade (AVE / Ouigo) partindo de Madrid Chamartín.</td>
+        <td>1h 50m</td>
+        <td>Alta eficiência. Custos de hospedagem 20% a 30% menores que Madrid. Bilhetes de trem low-cost (Ouigo/Iryo) a partir de € 9 se comprados com 45 dias de antecedência.</td>
+    </tr>
+    <tr>
+        <td>Zaragoza</td>
+        <td>Trem de Alta Velocidade (AVE) partindo de Madrid Puerta de Atocha.</td>
+        <td>1h 15m</td>
+        <td>Ponto de transbordo tático entre Madrid e Barcelona. Hospedagem de baixo custo e malha ferroviária de alta capilaridade.</td>
+    </tr>
+</table>
+
+</body>
+</html>
+
+      <div style="font-family: Arial, Helvetica, sans-serif; color: #333333; padding: 20px;">
+        <h2 style="color: #1B365D; border-bottom: 2px solid #1B365D; padding-bottom: 10px; page-break-before: always;">
+          [9. ROTEIRO TÁTICO E AGENDA CULTURAL DIA A DIA]
+        </h2>
+        <p style="font-size: 14px; color: #555;">Itinerário tático otimizado por proximidade geográfica e agenda cultural para <strong>Paris</strong> (4 dias).</p>
+    
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 1 — Paris: Clássicos e Montmartre</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Abbesses / Bairro Montmartre</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Basílica de Sacré-Cœur</strong> (1h 30m)</li><li><strong>Place du Tertre</strong> (45m)</li><li><strong>Museu de Montmartre</strong> (1h)</li></ul>
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Festival Les Arènes Lyriques (Música Clássica nas Arènes de Montmartre)</p>
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Le Moulin de la Galette - Experimente a clássica sopa de cebola francesa ou o boeuf bourguignon.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Chegue cedo à Sacré-Cœur para evitar multidões e utilize o Funicular de Montmartre se quiser poupar as pernas na subida.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 2 — Paris: Arte, Rio e Praia Urbana</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Hôtel de Ville / Le Marais</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Museu do Louvre</strong> (3h)</li><li><strong>Île de la Cité e exterior da Notre-Dame</strong> (1h 30m)</li><li><strong>Caminhada pelas margens do Sena</strong> (1h)</li></ul>
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Paris Plages (Praia urbana montada nas margens do Sena com espreguiçadeiras e atividades)</p>
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> L'As du Fallafel no coração do Marais - Famoso pelo melhor sanduíche de falafel da cidade.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Compre o ingresso do Louvre com horário marcado online e use a entrada subterrânea do Carrousel du Louvre para enfrentar filas significativamente menores.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 3 — Paris: Natureza e Música no Parque</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Château de Vincennes</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Château de Vincennes</strong> (2h)</li><li><strong>Parc Floral de Paris</strong> (2h)</li></ul>
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Festival Classique au Vert (Concertos de música clássica ao ar livre no Parc Floral)</p>
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Piquenique no Parc Floral - Compre queijos, frios e uma baguete fresca em uma boulangerie antes de ir para o parque.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Os concertos no Parc Floral costumam ser gratuitos pagando apenas a taxa de entrada do parque. Leve uma canga para sentar confortavelmente no gramado.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 4 — Paris: Rock e Jardins Históricos</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Boulogne - Pont de Saint-Cloud</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Domaine National de Saint-Cloud</strong> (2h)</li><li><strong>Musée e Jardins Albert-Kahn</strong> (1h 30m)</li></ul>
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Festival Rock en Seine (Festival de música com grandes atrações como The Cure)</p>
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Le Fer à Cheval - Restaurante com terraço localizado dentro do Domaine de Saint-Cloud.</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Para o festival Rock en Seine, vá com calçados muito confortáveis pois o terreno é vasto. O parque foi desenhado por Le Nôtre, o mesmo paisagista de Versalhes.</p>
+        </div>
+      </div>
+
+    </main>
+</div>
+
+<!-- LEAFLET JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // DATA DOS PONTOS DO ROTEIRO
+    const pontosData = [
+        {"id":1,"nome":"Basílica de Sacré-Cœur","lat":39.997117,"lng":-0.020037,"dia":1,"cidade":"Paris","proximo_ponto":{"nome":"Place du Tertre","modo":"carro","tempo_minutos":225,"distancia_km":"372.61"}},
+        {"id":2,"nome":"Place du Tertre","lat":41.951673,"lng":2.686564,"dia":1,"cidade":"Paris","proximo_ponto":{"nome":"Museu de Montmartre","modo":"carro","tempo_minutos":61,"distancia_km":"76.59"}},
+        {"id":3,"nome":"Museu de Montmartre","lat":41.606952,"lng":2.288562,"dia":1,"cidade":"Paris","proximo_ponto":{"nome":"Museu do Louvre","modo":"carro","tempo_minutos":173,"distancia_km":"279.25"}},
+        {"id":4,"nome":"Museu do Louvre","lat":40.092232,"lng":0.134288,"dia":2,"cidade":"Paris","proximo_ponto":{"nome":"Île de la Cité e exterior da Notre-Dame","modo":"carro","tempo_minutos":499,"distancia_km":"836.13"}},
+        {"id":5,"nome":"Île de la Cité e exterior da Notre-Dame","lat":43.385208,"lng":-4.921072,"dia":2,"cidade":"Paris","proximo_ponto":{"nome":"Château de Vincennes","modo":"carro","tempo_minutos":338,"distancia_km":"563.79"}},
+        {"id":6,"nome":"Château de Vincennes","lat":40.014041,"lng":-6.400187,"dia":3,"cidade":"Paris","proximo_ponto":{"nome":"Domaine National de Saint-Cloud","modo":"carro","tempo_minutos":982,"distancia_km":"1044.34"}},
+        {"id":7,"nome":"Domaine National de Saint-Cloud","lat":39.602113,"lng":3.370027,"dia":4,"cidade":"Paris","proximo_ponto":{"nome":"Musée e Jardins Albert-Kahn","modo":"carro","tempo_minutos":959,"distancia_km":"944.81"}},
+        {"id":8,"nome":"Musée e Jardins Albert-Kahn","lat":42.292899,"lng":3.285961,"dia":4,"cidade":"Paris","proximo_ponto":null}
+    ];
+
+    // LÓGICA DE ABAS INTERATIVAS
+    let mapInitialized = false;
+    let map = null;
+    let currentMapMode = 'day';
+    let currentSelectedDay = 1;
+    let mapLayerGroup = null;
+
+    function switchTab(tabId, btnElement) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        btnElement.classList.add('active');
+
+        if (tabId === 'tab-2') {
+            if (!mapInitialized) {
+                initMap();
+                mapInitialized = true;
+            } else {
+                setTimeout(() => { map.invalidateSize(); }, 200);
+            }
+        }
+    }
+
+    // CHECKLIST TOGGLE
+    function toggleDone(checkbox) {
+        const item = checkbox.closest('.checklist-item');
+        if (checkbox.checked) {
+            item.classList.add('done');
+        } else {
+            item.classList.remove('done');
+        }
+    }
+
+    // MAPA LEAFLET LOGIC
+    function initMap() {
+        map = L.map('map').setView([40.5, 0], 5);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        mapLayerGroup = L.layerGroup().addTo(map);
+
+        renderMap();
+    }
+
+    function setMapMode(mode) {
+        currentMapMode = mode;
+        document.getElementById('btn-mode-day').classList.toggle('active', mode === 'day');
+        document.getElementById('btn-mode-city').classList.toggle('active', mode === 'city');
+
+        const daySelector = document.getElementById('day-selector-container');
+        daySelector.style.display = mode === 'day' ? 'flex' : 'none';
+
+        renderMap();
+    }
+
+    function selectDay(day) {
+        currentSelectedDay = day;
+        document.querySelectorAll('.btn-day').forEach((btn, index) => {
+            btn.classList.toggle('active', index + 1 === day);
+        });
+        renderMap();
+    }
+
+    function renderMap() {
+        if (!mapLayerGroup) return;
+        mapLayerGroup.clearLayers();
+
+        if (currentMapMode === 'day') {
+            const filteredPoints = pontosData.filter(p => p.dia === currentSelectedDay);
+            if (filteredPoints.length === 0) return;
+
+            const latLngs = [];
+
+            filteredPoints.forEach(p => {
+                const coord = [p.lat, p.lng];
+                latLngs.push(coord);
+
+                let popupContent = `<h3>${p.nome}</h3><p><b>Dia:</b> ${p.dia}</p><p><b>Cidade:</b> ${p.cidade}</p>`;
+                if (p.proximo_ponto) {
+                    popupContent += `<hr style="margin:5px 0; border:0; border-top:1px solid #eee;">
+                        <p style="color:#a93226;"><b>Próximo Ponto:</b> ${p.proximo_ponto.nome}</p>
+                        <p>🚘 Mode: ${p.proximo_ponto.modo} | ⏱️ ${p.proximo_ponto.tempo_minutos} min | 📍 ${p.proximo_ponto.distancia_km} km</p>`;
+                }
+
+                L.marker(coord).addTo(mapLayerGroup).bindPopup(popupContent);
+            });
+
+            if (latLngs.length > 1) {
+                const polyline = L.polyline(latLngs, {color: '#A93226', weight: 4, opacity: 0.8, dashArray: '8, 8'}).addTo(mapLayerGroup);
+                map.fitBounds(polyline.getBounds(), {padding: [50, 50]});
+            } else if (latLngs.length === 1) {
+                map.setView(latLngs[0], 10);
+            }
+
+        } else if (currentMapMode === 'city') {
+            // MODO ROTA ENTRE CIDADES
+            const citiesMap = new Map();
+            pontosData.forEach(p => {
+                if (!citiesMap.has(p.cidade)) {
+                    citiesMap.set(p.cidade, []);
+                }
+                citiesMap.get(p.cidade).push(p);
+            });
+
+            const cityAnchors = [];
+            citiesMap.forEach((points, cidade) => {
+                const anchorPoint = points[0];
+                const coord = [anchorPoint.lat, anchorPoint.lng];
+                cityAnchors.push({cidade, coord, count: points.length});
+
+                L.marker(coord).addTo(mapLayerGroup).bindPopup(`<h3>${cidade}</h3><p>Total de Atrações: ${points.length}</p>`);
+            });
+
+            if (cityAnchors.length > 1) {
+                const coords = cityAnchors.map(c => c.coord);
+                const polyline = L.polyline(coords, {color: '#2C3E50', weight: 4}).addTo(mapLayerGroup);
+                map.fitBounds(polyline.getBounds(), {padding: [50, 50]});
+            } else if (cityAnchors.length === 1) {
+                map.setView(cityAnchors[0].coord, 8);
+            }
+        }
+
+        setTimeout(() => { map.invalidateSize(); }, 100);
+    }
+</script>
+</body>
+</html>
