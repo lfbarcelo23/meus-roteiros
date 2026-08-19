@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caderno de Viagem — Grécia 2027</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root {
+      --fundo-papel: #F7F5F0;
+      --cor-principal: #0C4A60;
+      --cor-secundaria: #EF8354;
+      --cor-destaque: #E2B857;
+      --texto-handwritten: #2B2D42;
+      --washi-tape: rgba(12, 74, 96, 0.25);
+      --sombra-soft: 0 8px 20px rgba(0,0,0,0.06);
+      --sombra-card: 2px 4px 15px rgba(0,0,0,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--fundo-papel);
+      background-image: radial-gradient(#0c4a6015 1px, transparent 1px);
+      background-size: 20px 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--texto-handwritten);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    /* Typography helpers */
+    .font-handwriting {
+      font-family: 'Caveat', cursive;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Binder Nav / Aba de Fichário Header */
+    header.fichario-header {
+      background: #FFFFFF;
+      border-bottom: 3px solid var(--cor-principal);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding-top: 15px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: #EAE6DF;
+      border: 2px solid #D5CFC5;
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      padding: 12px 24px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--cor-principal);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      top: 2px;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: #F0EDE6;
+      color: var(--cor-secundaria);
+    }
+
+    .tab-btn.active {
+      background: var(--fundo-papel);
+      border-color: var(--cor-principal);
+      border-bottom: 3px solid var(--fundo-papel);
+      color: var(--cor-principal);
+      top: 0;
+      z-index: 2;
+    }
+
+    .tab-content {
+      display: none;
+      padding-top: 30px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scrapbook Elements */
+    .washi-tape {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 130px;
+      height: 26px;
+      background: var(--washi-tape);
+      border-left: 2px dashed rgba(255,255,255,0.6);
+      border-right: 2px dashed rgba(255,255,255,0.6);
+      backdrop-filter: blur(1px);
+      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .carimbo {
+      display: inline-block;
+      border: 3px dashed var(--cor-secundaria);
+      color: var(--cor-secundaria);
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 4px 12px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      transform: rotate(-4deg);
+      letter-spacing: 1px;
+      opacity: 0.88;
+      box-shadow: 0 0 0 2px rgba(239, 131, 84, 0.1);
+      user-select: none;
+    }
+
+    .carimbo.alt {
+      border-color: var(--cor-principal);
+      color: var(--cor-principal);
+      transform: rotate(3deg);
+    }
+
+    /* Hero Banner */
+    .hero-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 30px;
+      position: relative;
+      box-shadow: var(--sombra-card);
+      margin-bottom: 30px;
+      border: 1px solid #EAE6DF;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 30px;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-title-box h1 {
+      font-family: 'Caveat', cursive;
+      font-size: 3.8rem;
+      color: var(--cor-principal);
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .hero-title-box p {
+      font-size: 1.1rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .stamps-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .hero-polaroid-container {
+      position: relative;
+    }
+
+    .polaroid-frame {
+      background: #FFFFFF;
+      padding: 14px 14px 45px 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+      transform: rotate(1.5deg);
+      border: 1px solid #EEEEEE;
+      position: relative;
+      border-radius: 2px;
+    }
+
+    .polaroid-frame img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      display: block;
+      border-radius: 2px;
+    }
+
+    .polaroid-caption {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: var(--texto-handwritten);
+    }
+
+    .kit-visual-decor {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 100px;
+      height: auto;
+      transform: rotate(-12deg);
+      z-index: 15;
+      pointer-events: none;
+      filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
+    }
+
+    /* Soundtrack Box */
+    .soundtrack-card {
+      background: #FFFDF8;
+      border: 2px dashed var(--cor-destaque);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 35px;
+      position: relative;
+      box-shadow: var(--sombra-soft);
+    }
+
+    .soundtrack-header {
+      font-family: 'Caveat', cursive;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--cor-principal);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Roteiro Cards */
+    .day-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 30px;
+      position: relative;
+      box-shadow: var(--sombra-card);
+      border: 1px solid #ECE8E1;
+      transition: transform 0.2s ease;
+    }
+
+    .day-card:nth-child(even) {
+      transform: rotate(-0.4deg);
+    }
+    .day-card:nth-child(odd) {
+      transform: rotate(0.4deg);
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--fundo-papel);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .day-header h2 {
+      font-family: 'Caveat', cursive;
+      font-size: 2.2rem;
+      color: var(--cor-principal);
+    }
+
+    .day-badge {
+      background: var(--cor-principal);
+      color: #FFF;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .day-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 25px;
+    }
+
+    @media (max-width: 850px) {
+      .day-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Checklist */
+    .checklist-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--cor-principal);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #FBF9F5;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #EFECE6;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s ease;
+    }
+
+    .check-item:hover {
+      background: #F3EFE6;
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--cor-secundaria);
+      cursor: pointer;
+      margin-top: 3px;
+    }
+
+    .check-item.completed span {
+      text-decoration: line-through;
+      color: #888888;
+    }
+
+    /* Post-it / Dicas */
+    .postit-container {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .postit {
+      background: #FFFDE7;
+      border-radius: 4px;
+      padding: 16px;
+      box-shadow: 2px 4px 10px rgba(0,0,0,0.06);
+      border-left: 4px solid var(--cor-destaque);
+      position: relative;
+    }
+
+    .postit.gastronomia {
+      background: #FFF3EC;
+      border-left-color: var(--cor-secundaria);
+    }
+
+    .postit-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--texto-handwritten);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .postit p {
+      font-size: 0.95rem;
+      color: #444;
+      line-height: 1.4;
+    }
+
+    .evento-alerta {
+      background: #FFF1F0;
+      border: 1px dashed #F5222D;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #CF1322;
+      font-weight: 600;
+    }
+
+    /* Aba 2: Mapa */
+    .map-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FFFFFF;
+      padding: 16px 20px;
+      border-radius: 12px;
+      box-shadow: var(--sombra-soft);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+      border: 1px solid #EAE6DF;
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 8px;
+      background: #EAE6DF;
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    .mode-btn {
+      border: none;
+      background: transparent;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-btn.active {
+      background: var(--cor-principal);
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .day-selector {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .day-selector-btn {
+      border: 1px solid #D5CFC5;
+      background: #FFFFFF;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .day-selector-btn:hover, .day-selector-btn.active {
+      background: var(--cor-secundaria);
+      color: #FFFFFF;
+      border-color: var(--cor-secundaria);
+    }
+
+    #map-container {
+      width: 100%;
+      height: 520px;
+      border-radius: 14px;
+      border: 2px solid #EAE6DF;
+      box-shadow: var(--sombra-card);
+      z-index: 1;
+    }
+
+    /* Aba 3: Dossiê / Roteiro Bruto retro styling */
+    #aba-dossie {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 35px;
+      box-shadow: var(--sombra-card);
+      border: 1px solid #EAE6DF;
+      position: relative;
+    }
+
+    #aba-dossie h1, #aba-dossie h2, #aba-dossie h3 {
+      font-family: 'Caveat', cursive;
+      color: var(--cor-principal);
+      border-bottom: 2px dashed var(--cor-secundaria);
+      padding-bottom: 6px;
+      margin-top: 28px;
+      margin-bottom: 14px;
+    }
+
+    #aba-dossie h1 { font-size: 2.5rem; }
+    #aba-dossie h2 { font-size: 2rem; }
+    #aba-dossie h3 { font-size: 1.6rem; }
+
+    #aba-dossie table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #E5E7EB;
+    }
+
+    #aba-dossie th {
+      background-color: var(--cor-principal);
+      color: #FFFFFF;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      padding: 12px 14px;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    #aba-dossie td {
+      border: 1px solid #E5E7EB;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      color: var(--texto-handwritten);
+    }
+
+    #aba-dossie tr:nth-child(even) {
+      background-color: #F8F9FA;
+    }
+
+    #aba-dossie div.destaque {
+      background-color: #FFFDF5;
+      border-left: 5px solid var(--cor-destaque);
+      padding: 18px 20px;
+      margin: 22px 0;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      position: relative;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    #aba-dossie .alerta {
+      color: var(--cor-secundaria);
+      font-weight: 700;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Binder Tabs -->
+  <header class="fichario-header">
+    <div class="container">
+      <nav class="nav-tabs" role="tablist">
+        <button class="tab-btn active" onclick="switchTab('aba-roteiro', this)" role="tab">
+          📖 Roteiro & Diário
+        </button>
+        <button class="tab-btn" onclick="switchTab('aba-mapa', this)" role="tab">
+          🗺️ Mapa & Rotas
+        </button>
+        <button class="tab-btn" onclick="switchTab('aba-dossie', this)" role="tab">
+          📊 Dossiê & Milhas
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="margin-top: 25px;">
+
+    <!-- ABA 1: ROTEIRO & DIÁRIO DE VIAGEM -->
+    <section id="aba-roteiro" class="tab-content active">
+      
+      <!-- Hero Banner -->
+      <div class="hero-card">
+        <div class="washi-tape"></div>
+        <img src="data:image/jpeg;base64,filesystem-v2" alt="Kit Visual Decorativo" class="kit-visual-decor" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+        
+        <div class="hero-grid">
+          <div class="hero-title-box">
+            <h1>Grécia 2027</h1>
+            <p class="font-handwriting" style="font-size: 1.8rem; color: var(--cor-secundaria); margin-bottom: 10px;">
+              Caderno de Viagem & Diário Tático
+            </p>
+            <p>
+              Exploração completa por Atenas, o Teatro de Epidauro e o pôr do sol inesquecível de Santorini.
+            </p>
+            <div class="stamps-group">
+              <span class="carimbo">PASSPORT STAMP ATHENS GREECE</span>
+              <span class="carimbo alt">SANTORINI CALDERA 2027</span>
+              <span class="carimbo">EPIDAURUS THEATRE APPROVED</span>
+            </div>
+          </div>
+
+          <div class="hero-polaroid-container">
+            <div class="polaroid-frame">
+              <img src="https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDIxMjM0fDB8MXxzZWFyY2h8MXx8QWNyb3BvbGlzJTIwUGFydGhlbm9uJTIwc3Vuc2V0JTIwdmlldyUyMEF0aGVucyUyMEdyZWVjZXxlbnwwfDB8fHwxNzg3MTUyMzU0fDA&ixlib=rb-4.1.0&q=80&w=1080" alt="Acrópole ao Pôr do Sol" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80';" />
+              <div class="polaroid-caption">Acrópole de Atenas — Grécia</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trilha Sonora -->
+      <div class="soundtrack-card">
+        <div class="soundtrack-header">
+          🎵 Trilha da viagem
+        </div>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/5btcUqCoTpMT7zMPEPQEhN" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+
+      <!-- DIA 1 -->
+      <div class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2>Dia 1 — Atenas: Berço da Civilização</h2>
+          <span class="day-badge">📍 Apoio: Estação Acropoli / Plaka</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <div class="checklist-title">🏛️ Check-in de Atrações do Dia</div>
+            <ul class="checklist">
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Acrópole de Atenas</strong> (Tempo est.: 2h)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Museu da Acrópole</strong> (Tempo est.: 1h 30m)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Templo de Zeus Olímpico</strong> (Tempo est.: 45m)</span>
+              </li>
+            </ul>
+            <div class="evento-alerta">
+              🎟️ <strong>Evento Especial:</strong> Athens & Epidaurus Festival (Odeão de Herodes Ático) - Agosto 2027
+            </div>
+          </div>
+          <div class="postit-container">
+            <div class="postit gastronomia">
+              <div class="postit-title">🍷 Dica Gastronômica</div>
+              <p>Moussaka tradicional em uma taverna familiar no charmoso bairro de Plaka.</p>
+            </div>
+            <div class="postit">
+              <div class="postit-title">💡 Dica Tática</div>
+              <p>Compre o ingresso combinado online para evitar a longa fila da bilheteria e visite a Acrópole às 8h da manhã.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIA 2 -->
+      <div class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2>Dia 2 — Atenas: História e Cultura Viva</h2>
+          <span class="day-badge">📍 Apoio: Estação Monastiraki</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <div class="checklist-title">🏛️ Check-in de Atrações do Dia</div>
+            <ul class="checklist">
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Ágora Antiga</strong> (Tempo est.: 1h 30m)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Praça Syntagma e Troca da Guarda</strong> (Tempo est.: 45m)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Bairro Monastiraki</strong> (Tempo est.: 2h)</span>
+              </li>
+            </ul>
+          </div>
+          <div class="postit-container">
+            <div class="postit gastronomia">
+              <div class="postit-title">🍷 Dica Gastronômica</div>
+              <p>Souvlaki autêntico no Kostas, pertinho da movimentada Praça Agias Irinis.</p>
+            </div>
+            <div class="postit">
+              <div class="postit-title">💡 Dica Tática</div>
+              <p>A troca da guarda (Evzones) acontece a cada hora, mas fique atento aos horários para pegar o início exato da cerimônia.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIA 3 -->
+      <div class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2>Dia 3 — Atenas: Vistas Panorâmicas e Riviera</h2>
+          <span class="day-badge">📍 Apoio: Estação Syntagma / Kolonaki</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <div class="checklist-title">🏛️ Check-in de Atrações do Dia</div>
+            <ul class="checklist">
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Monte Licabeto</strong> (Tempo est.: 1h 30m)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Estádio Panatenaico</strong> (Tempo est.: 1h)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Templo de Poseidon em Cabo Sounion</strong> (Tempo est.: 2h)</span>
+              </li>
+            </ul>
+          </div>
+          <div class="postit-container">
+            <div class="postit gastronomia">
+              <div class="postit-title">🍷 Dica Gastronômica</div>
+              <p>Jantar memorável com frutos do mar frescos à beira-mar em Mikrolimano.</p>
+            </div>
+            <div class="postit">
+              <div class="postit-title">💡 Dica Tática</div>
+              <p>O pôr do sol no Cabo Sounion é espetacular; chegue pelo menos 1 hora antes do sol se pôr para garantir um bom lugar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIA 4 -->
+      <div class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2>Dia 4 — Epidauro: O Grande Teatro da Antiguidade</h2>
+          <span class="day-badge">📍 Apoio: Bairro Antigo de Náuplia</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <div class="checklist-title">🏛️ Check-in de Atrações do Dia</div>
+            <ul class="checklist">
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Teatro Antigo de Epidauro</strong> (Tempo est.: 1h 30m)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Santuário de Asclépio</strong> (Tempo est.: 1h)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Museu Arqueológico de Epidauro</strong> (Tempo est.: 45m)</span>
+              </li>
+            </ul>
+            <div class="evento-alerta">
+              🎟️ <strong>Evento Especial:</strong> Apresentação de Teatro Clássico no Athens & Epidaurus Festival - Agosto 2027
+            </div>
+          </div>
+          <div class="postit-container">
+            <div class="postit gastronomia">
+              <div class="postit-title">🍷 Dica Gastronômica</div>
+              <p>Peixe fresco grelhado em uma taverna tradicional na orla de Náuplia.</p>
+            </div>
+            <div class="postit">
+              <div class="postit-title">💡 Dica Tática</div>
+              <p>A acústica do Teatro de Epidauro é perfeita; teste deixando cair uma moeda no centro do palco, o som chega até a última arquibancada.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIA 5 -->
+      <div class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2>Dia 5 — Santorini: O Charme das Cíclades</h2>
+          <span class="day-badge">📍 Apoio: Centro de Fira</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <div class="checklist-title">🏛️ Check-in de Atrações do Dia</div>
+            <ul class="checklist">
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Exploração de Fira</strong> (Tempo est.: 2h)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Museu Arqueológico de Thera</strong> (Tempo est.: 1h)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Caminhada de Fira a Oia</strong> (Tempo est.: 3h)</span>
+              </li>
+            </ul>
+          </div>
+          <div class="postit-container">
+            <div class="postit gastronomia">
+              <div class="postit-title">🍷 Dica Gastronômica</div>
+              <p>Salada grega autêntica com tomate cereja local e queijo chloro tradicional.</p>
+            </div>
+            <div class="postit">
+              <div class="postit-title">💡 Dica Tática</div>
+              <p>A caminhada de Fira a Oia tem cerca de 10km; inicie de manhã cedo para evitar o sol forte do meio-dia.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIA 6 -->
+      <div class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2>Dia 6 — Santorini: Pôr do Sol em Oia</h2>
+          <span class="day-badge">📍 Apoio: Vila de Oia</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <div class="checklist-title">🏛️ Check-in de Atrações do Dia</div>
+            <ul class="checklist">
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Ruas e Cúpulas Azuis de Oia</strong> (Tempo est.: 2h)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Castelo de Oia</strong> (Tempo est.: 1h)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Baía de Ammoudi</strong> (Tempo est.: 1h 30m)</span>
+              </li>
+            </ul>
+          </div>
+          <div class="postit-container">
+            <div class="postit gastronomia">
+              <div class="postit-title">🍷 Dica Gastronômica</div>
+              <p>Polvo grelhado delicioso em uma taverna tradicional na Baía de Ammoudi.</p>
+            </div>
+            <div class="postit">
+              <div class="postit-title">💡 Dica Tática</div>
+              <p>Para garantir um bom lugar para ver o famoso pôr do sol no Castelo de Oia, chegue com pelo menos 2 horas de antecedência.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIA 7 -->
+      <div class="day-card">
+        <div class="washi-tape"></div>
+        <div class="day-header">
+          <h2>Dia 7 — Santorini: Praias Vulcânicas e História</h2>
+          <span class="day-badge">📍 Apoio: Akrotiri / Perissa</span>
+        </div>
+        <div class="day-grid">
+          <div>
+            <div class="checklist-title">🏛️ Check-in de Atrações do Dia</div>
+            <ul class="checklist">
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Sítio Arqueológico de Akrotiri</strong> (Tempo est.: 1h 30m)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Red Beach (Praia Vermelha)</strong> (Tempo est.: 2h)</span>
+              </li>
+              <li class="check-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>Perissa Black Sand Beach</strong> (Tempo est.: 2h)</span>
+              </li>
+            </ul>
+          </div>
+          <div class="postit-container">
+            <div class="postit gastronomia">
+              <div class="postit-title">🍷 Dica Gastronômica</div>
+              <p>Gyros rápido e saboroso em uma lanchonete pertinho da praia de Perissa.</p>
+            </div>
+            <div class="postit">
+              <div class="postit-title">💡 Dica Tática</div>
+              <p>O sítio de Akrotiri é coberto e climatizado, sendo uma ótima opção de passeio para as horas mais quentes do dia.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ABA 2: MAPA INTERATIVO & ROTAS ESTRATÉGICAS -->
+    <section id="aba-mapa" class="tab-content">
+      <div class="map-controls">
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="btn-modo-dia" onclick="setMapMode('dia')">🗺️ Mapa do Dia</button>
+          <button class="mode-btn" id="btn-modo-cidades" onclick="setMapMode('cidades')">🚢 Rota Entre Cidades</button>
+        </div>
+
+        <div class="day-selector" id="day-selector-container">
+          <button class="day-selector-btn active" onclick="selectDay(1, this)">Dia 1</button>
+          <button class="day-selector-btn" onclick="selectDay(2, this)">Dia 2</button>
+          <button class="day-selector-btn" onclick="selectDay(3, this)">Dia 3</button>
+          <button class="day-selector-btn" onclick="selectDay(4, this)">Dia 4</button>
+          <button class="day-selector-btn" onclick="selectDay(5, this)">Dia 5</button>
+          <button class="day-selector-btn" onclick="selectDay(6, this)">Dia 6</button>
+          <button class="day-selector-btn" onclick="selectDay(7, this)">Dia 7</button>
+        </div>
+      </div>
+
+      <div id="map-container"></div>
+    </section>
+
+
+    <!-- ABA 3: DOSSIÊ DE MILHAS, CÂMBIO & LOGÍSTICA -->
+    <section id="aba-dossie" class="tab-content">
+      
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Laudo Técnico Executivo - Engenharia de Milhas</title>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #333333;
+        background-color: #F8F9FA;
+        margin: 0;
+        padding: 20px;
+        line-height: 1.6;
+    }
+    h1, h2, h3 {
+        color: #1B365D;
+        page-break-after: avoid;
+        break-after: avoid;
+        border-bottom: 2px solid #1B365D;
+        padding-bottom: 5px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        background-color: #FFFFFF;
+    }
+    th, td {
+        border: 1px solid #E5E7EB;
+        padding: 10px;
+        text-align: left;
+        font-size: 14px;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    th {
+        background-color: #1B365D;
+        color: #FFFFFF;
+        font-weight: bold;
+    }
+    tr:nth-child(even) {
+        background-color: #F3F4F6;
+    }
+    tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    div.destaque {
+        background-color: #EBF5FF;
+        border-left: 4px solid #1B365D;
+        padding: 15px;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    .alerta {
+        color: #D97706;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<h1>[1. RESUMO EXECUTIVO]</h1>
+<div class="destaque">
+    <strong>Objetivo Tático:</strong> Estruturação de rota internacional (Europa/Atenas) para 2 passageiros, partindo de Uberlândia (UDI), maximizando o uso do saldo de 262.256 pontos C6 (CPM R$ 0,00) e 45.666 milhas Smiles (CPM R$ 9,87).<br>
+    <strong>Métricas Brutas de Saving:</strong> Custo logístico aéreo total estimado em R$ 1.894,80 (taxas de embarque + custo de geração das milhas domésticas). O trecho internacional operará a um custo de aquisição de milhas de R$ 0,00, gerando eficiência máxima no spread do ativo.
+</div>
+
+<h2>[2. MATRIZ DE DECISÃO SAZONAL]</h2>
+<table>
+    <tr>
+        <th>Destino Base</th>
+        <th>Clima (Projeção)</th>
+        <th>Nível de Temporada</th>
+        <th>Saturação Logística</th>
+        <th>Estimativa de Custos (Cash vs Milhas)</th>
+    </tr>
+    <tr>
+        <td>Atenas (ATH) via LIS</td>
+        <td>Verão/Primavera (Quente e Seco)</td>
+        <td>Alta/Média</td>
+        <td>Alta (Tráfego turístico intenso e conexões insulares)</td>
+        <td>Cash: R$ 7.500+ / Milhas: 76.000 TAP Miles&Go (Ida e Volta)</td>
+    </tr>
+</table>
+
+<h2>[3. ENGENHARIA DE MILHAS E VALORAÇÃO FINANCEIRA (CPM)]</h2>
+
+<h3>Tabela de Rotas e Franquia de Bagagem</h3>
+<table>
+    <tr>
+        <th>Trecho</th>
+        <th>Cia Aérea / Programa</th>
+        <th>Custo em Milhas (por pax/trecho)</th>
+        <th>Franquia de Bagagem (Regra Rígida)</th>
+    </tr>
+    <tr>
+        <td>UDI ↔ GRU (Posicionamento)</td>
+        <td>GOL / Smiles</td>
+        <td>~10.000 milhas</td>
+        <td>1 item pessoal + 1 mala de cabine (10kg). Bagagem despachada tarifada à parte.</td>
+    </tr>
+    <tr>
+        <td>GRU ↔ ATH (via LIS)</td>
+        <td>TAP / Miles&Go</td>
+        <td>~38.000 milhas</td>
+        <td>1 item pessoal + 1 mala de cabine (10kg) + 1 mala despachada (23kg) inclusa na tarifa award padrão.</td>
+    </tr>
+</table>
+
+<h3>Diagnóstico do Banco de Milhas</h3>
+<table>
+    <tr>
+        <th>Programa</th>
+        <th>Saldo Atual</th>
+        <th>Custo Médio (CPM)</th>
+        <th>Parecer Técnico e Suficiência</th>
+    </tr>
+    <tr>
+        <td>Smiles</td>
+        <td>45.666</td>
+        <td>R$ 9,87</td>
+        <td>Saldo suficiente para cobrir o trecho de escoamento UDI ↔ GRU para 2 passageiros (aprox. 40.000 milhas). CPM altamente eficiente.</td>
+    </tr>
+    <tr>
+        <td>Latam</td>
+        <td>17.771</td>
+        <td>R$ 10,74</td>
+        <td>Saldo residual. Manter em hold para emissões domésticas futuras.</td>
+    </tr>
+    <tr>
+        <td>Esfera</td>
+        <td>80.981</td>
+        <td>R$ 16,52</td>
+        <td>Ativo estratégico para Iberia Plus. Aguardar janela de transferência (ver alerta abaixo).</td>
+    </tr>
+    <tr>
+        <td>Livelo</td>
+        <td>11.276</td>
+        <td>R$ 25,81</td>
+        <td>Saldo baixo e CPM elevado. Não utilizar nesta operação.</td>
+    </tr>
+    <tr>
+        <td>Iberia</td>
+        <td>0</td>
+        <td>R$ 0,00</td>
+        <td>Conta zerada. Depende de transferência do Esfera.</td>
+    </tr>
+    <tr>
+        <td>AllAcoor</td>
+        <td>11.600</td>
+        <td>R$ 87,41</td>
+        <td>Saldo suficiente para resgate de 232 EUR em hospedagem.</td>
+    </tr>
+    <tr>
+        <td>Caixa</td>
+        <td>3.624</td>
+        <td>R$ 0,00</td>
+        <td>Saldo irrelevante para emissão internacional.</td>
+    </tr>
+    <tr>
+        <td>C6</td>
+        <td>262.256</td>
+        <td>R$ 0,00</td>
+        <td>Ativo principal. Transferência 1:1 para TAP Miles&Go cobre integralmente a rota GRU-ATH (152.000 milhas necessárias para 2 pax ida e volta).</td>
+    </tr>
+    <tr>
+        <td>Azul</td>
+        <td>5.000</td>
+        <td>R$ 0,00</td>
+        <td>Saldo residual.</td>
+    </tr>
+    <tr>
+        <td>Revolut</td>
+        <td>0</td>
+        <td>R$ 0,00</td>
+        <td>Conta zerada.</td>
+    </tr>
+</table>
+
+<div class="destaque">
+    <span class="alerta">ALERTA DE INTELIGÊNCIA DE JANELAS (ESFERA → IBERIA):</span><br>
+    A última campanha de transferência bonificada do Esfera para o Iberia Plus ocorreu entre 15 e 17 de junho de 2026. Considerando a DATA ATUAL (19/08/2026), já se passaram 63 dias. Como o ciclo estatístico de repetição de mercado é de 60 a 90 dias, uma nova janela bonificada é iminente (esperada entre hoje e meados de setembro de 2026). <br><br>
+    <strong>Projeção Condicional:</strong> Se/quando a janela abrir com a condição exata de 25% de bônus (exclusivo para clientes com assinatura ativa do Clube Esfera), a projeção seria: 80.981 pontos Esfera = 40.490 Avios + 10.122 Avios de bônus = 50.612 Avios. Não transfira a seco na tabela padrão (2:1 sem bônus); aguarde o timing tático.
+</div>
+
+<h2>[4. ENGENHARIA LOGÍSTICA DE FRONTEIRA E TRANSBORDO]</h2>
+<table>
+    <tr>
+        <th>Aeroporto</th>
+        <th>Procedimento de Fronteira / Imigração</th>
+        <th>Tempo Mínimo de Conexão Recomendado</th>
+    </tr>
+    <tr>
+        <td>GRU (Guarulhos)</td>
+        <td>Transbordo do Terminal 2 (Doméstico GOL) para o Terminal 3 (Internacional). Necessário retirar bagagem e despachar novamente caso os bilhetes sejam emitidos separadamente.</td>
+        <td>240 minutos (4 horas) para mitigar atrasos do trecho UDI-GRU.</td>
+    </tr>
+    <tr>
+        <td>LIS (Lisboa)</td>
+        <td>Ponto de entrada no Espaço Schengen. <strong>Regra EES (Entry/Exit System):</strong> Totalmente operacional desde 10 de abril de 2026. Exigirá coleta de dados biométricos (imagem facial e impressões digitais) no primeiro cruzamento. Preveja gargalos e filas severas.</td>
+        <td>180 minutos (3 horas) devido ao gargalo biométrico do EES.</td>
+    </tr>
+    <tr>
+        <td>ATH (Atenas)</td>
+        <td>Voo intra-Schengen a partir de LIS. Desembarque direto sem nova imigração.</td>
+        <td>N/A (Destino final).</td>
+    </tr>
+</table>
+<div class="destaque">
+    <span class="alerta">NOTA TÉCNICA ETIAS (VIGÊNCIA 2027):</span><br>
+    O sistema ETIAS tem lançamento confirmado para 2027. Como a viagem ocorrerá em 2027, será OBRIGATÓRIO o preenchimento online prévio e o pagamento da taxa de € 20 (isento para menores de 18 e maiores de 70 anos, embora a solicitação ainda seja exigida). O ETIAS não garante a entrada e atua em conjunto com o EES.
+</div>
+
+<h2>[5. LOGÍSTICA DE SALAS VIP (GROUND HANDLING) E INVENTÁRIO DE ACESSOS]</h2>
+<table>
+    <tr>
+        <th>Terminal / Aeroporto</th>
+        <th>Cartão Apresentado</th>
+        <th>Sala VIP Selecionada</th>
+        <th>Regra Matemática e Consumo de Cota (2 Passageiros)</th>
+    </tr>
+    <tr>
+        <td>GRU - Terminal 3 (Embarque Internacional)</td>
+        <td>C6 Black (Titular e Adicional)</td>
+        <td>Sala Mastercard Black (Pós-embarque)</td>
+        <td>Acesso ilimitado para portadores do cartão. Apresentando 1 cartão titular e 1 adicional, o consumo da cota anual LoungeKey/WAC é <strong>ZERO</strong>.</td>
+    </tr>
+    <tr>
+        <td>LIS - Terminal 1 (Conexão Schengen)</td>
+        <td>Inter Prime Black</td>
+        <td>ANA Lounge (Pós-imigração Schengen)</td>
+        <td>Acesso via LoungeKey/WAC. O titular acessa e insere 1 convidado. Consumo: <strong>2 acessos</strong> deduzidos da cota anual de 6 acessos. Restarão 4 acessos.</td>
+    </tr>
+    <tr>
+        <td>ATH - Terminal de Partidas (Retorno)</td>
+        <td>Santander Unique Visa Infinite (Titular e Adic.)</td>
+        <td>Goldair Handling Lounge</td>
+        <td>Acesso via DragonPass. Apresentando os cartões titular e adicional separadamente. Consumo: <strong>1 acesso por cartão</strong>. Restará 1 acesso/ano em cada cartão.</td>
+    </tr>
+</table>
+
+<h2>[6. HOSPEDAGEM (ALL ACCOR vs MERCADO)]</h2>
+<table>
+    <tr>
+        <th>Ativo Utilizado</th>
+        <th>Conversão Matemática</th>
+        <th>Valor Gerado (EUR)</th>
+        <th>Valor Gerado (BRL)</th>
+        <th>Custo de Aquisição (BRL)</th>
+    </tr>
+    <tr>
+        <td>11.600 Pontos ALL Accor</td>
+        <td>Lotes de 2.000 pontos = € 40</td>
+        <td>€ 232,00 (5,8 lotes)</td>
+        <td>R$ 1.382,72</td>
+        <td>R$ 1.013,95 (CPM R$ 87,41)</td>
+    </tr>
+</table>
+<p><em>Diagnóstico:</em> O resgate dos pontos ALL Accor gera um saving real de R$ 368,77 frente ao custo de aquisição (considerando o Euro a R$ 5,96). Recomenda-se a utilização integral do saldo para abater diárias em propriedades Ibis/Mercure/Novotel em Atenas (ex: Novotel Athens), onde tarifas pagantes giram em torno de € 100 a € 150/noite.</p>
+
+<h2>[7. CONSOLIDAÇÃO FINANCEIRA E CÂMBIO]</h2>
+
+<h3>Custo Total Consolidado da Operação Aérea (Porta-a-Porta)</h3>
+<table>
+    <tr>
+        <th>Vetor</th>
+        <th>Custo em Milhas</th>
+        <th>Custo de Geração (BRL)</th>
+        <th>Taxas de Embarque Estimadas (BRL)</th>
+        <th>Custo Total (BRL)</th>
+    </tr>
+    <tr>
+        <td>UDI ↔ GRU (2 Pax RT)</td>
+        <td>40.000 Smiles</td>
+        <td>R$ 394,80</td>
+        <td>R$ 300,00</td>
+        <td>R$ 694,80</td>
+    </tr>
+    <tr>
+        <td>GRU ↔ ATH (2 Pax RT)</td>
+        <td>152.000 TAP</td>
+        <td>R$ 0,00</td>
+        <td>R$ 1.200,00</td>
+        <td>R$ 1.200,00</td>
+    </tr>
+    <tr>
+        <th>TOTAL</th>
+        <th>192.000 Milhas</th>
+        <th>R$ 394,80</th>
+        <th>R$ 1.500,00</th>
+        <th>R$ 1.894,80</th>
+    </tr>
+</table>
+
+<h3>Matriz de Spread e Câmbio Global (Base Euro: R$ 5,96 - Agosto 2026)</h3>
+<table>
+    <tr>
+        <th>Instituição</th>
+        <th>Spread Médio</th>
+        <th>IOF</th>
+        <th>Custo Efetivo Total (CET) Estimado</th>
+    </tr>
+    <tr>
+        <td>Revolut</td>
+        <td>0,15% a 0,50%</td>
+        <td>1,10%</td>
+        <td>Altamente Eficiente (Recomendado para zona Euro)</td>
+    </tr>
+    <tr>
+        <td>Wise</td>
+        <td>0,90% a 1,20%</td>
+        <td>1,10%</td>
+        <td>Eficiente</td>
+    </tr>
+    <tr>
+        <td>C6 Global</td>
+        <td>2,00%</td>
+        <td>1,10%</td>
+        <td>Moderado</td>
+    </tr>
+    <tr>
+        <td>Banco Inter</td>
+        <td>0,99%</td>
+        <td>1,10%</td>
+        <td>Eficiente</td>
+    </tr>
+    <tr>
+        <td>Nomad</td>
+        <td>1,00% a 2,00%</td>
+        <td>1,10%</td>
+        <td>Moderado (Foco primário em USD, conversão dupla para EUR)</td>
+    </tr>
+    <tr>
+        <td>Santander (Cartão de Crédito)</td>
+        <td>4,00% a 5,00%</td>
+        <td>4,38%</td>
+        <td>Ineficiente (Uso apenas em contingência)</td>
+    </tr>
+</table>
+
+<h2>[8. EXPANSÃO DE ROTEIRO TÁTICO E CIDADES PRÓXIMAS]</h2>
+<table>
+    <tr>
+        <th>Cidade Alternativa</th>
+        <th>Vetor de Deslocamento (a partir de ATH)</th>
+        <th>Tempo de Trânsito</th>
+        <th>Custo-Benefício Logístico</th>
+    </tr>
+    <tr>
+        <td>Mykonos</td>
+        <td>Ferry (Blue Star Ferries / Seajets) partindo do Porto de Pireu.</td>
+        <td>2h 30m (Highspeed)</td>
+        <td>Alta eficiência logística. Custo do bilhete em torno de € 40 a € 70. Requer planejamento antecipado na alta temporada.</td>
+    </tr>
+    <tr>
+        <td>Santorini</td>
+        <td>Ferry partindo do Porto de Pireu ou voo interno (Aegean/Olympic).</td>
+        <td>4h 30m (Ferry) ou 45m (Voo)</td>
+        <td>Moderada eficiência. Voos internos podem ser emitidos com milhas Star Alliance (TAP Miles&Go) por custo marginal se emitidos junto com o bilhete principal, ou comprados em cash.</td>
+    </tr>
+    <tr>
+        <td>Delfos</td>
+        <td>Ônibus (KTEL) partindo de Atenas.</td>
+        <td>2h 30m</td>
+        <td>Altíssima eficiência. Custo do bilhete em torno de € 15. Ideal para operação bate-volta (day trip) com foco histórico sem necessidade de troca de base hoteleira.</td>
+    </tr>
+</table>
+
+</body>
+</html>
+
+      <div style="font-family: Arial, Helvetica, sans-serif; color: #333333; padding: 20px;">
+        <h2 style="color: #1B365D; border-bottom: 2px solid #1B365D; padding-bottom: 10px; page-break-before: always;">
+          [9. ROTEIRO TÁTICO E AGENDA CULTURAL DIA A DIA]
+        </h2>
+        <p style="font-size: 14px; color: #555;">Itinerário tático otimizado por proximidade geográfica e agenda cultural para <strong>Grécia</strong> (7 dias).</p>
+    
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 1 — Atenas: Berço da Civilização</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Acropoli / Bairro Plaka</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Acrópole de Atenas</strong> (2h)</li><li><strong>Museu da Acrópole</strong> (1h 30m)</li><li><strong>Templo de Zeus Olímpico</strong> (45m)</li></ul>
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Athens & Epidaurus Festival (Odeão de Herodes Ático) - Agosto 2027</p>
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Moussaka tradicional em uma taverna familiar em Plaka</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Compre o ingresso combinado online para evitar a longa fila da bilheteria e visite a Acrópole às 8h da manhã.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 2 — Atenas: História e Cultura Viva</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Monastiraki</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Ágora Antiga</strong> (1h 30m)</li><li><strong>Praça Syntagma e Troca da Guarda</strong> (45m)</li><li><strong>Bairro Monastiraki</strong> (2h)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Souvlaki autêntico no Kostas, perto da Praça Agias Irinis</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> A troca da guarda (Evzones) acontece a cada hora, mas fique atento aos horários para pegar o início exato da cerimônia.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 3 — Atenas: Vistas Panorâmicas e Riviera</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Estação Syntagma / Bairro Kolonaki</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Monte Licabeto</strong> (1h 30m)</li><li><strong>Estádio Panatenaico</strong> (1h)</li><li><strong>Templo de Poseidon em Cabo Sounion</strong> (2h)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Jantar com frutos do mar frescos em Mikrolimano</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> O pôr do sol no Cabo Sounion é espetacular; chegue pelo menos 1 hora antes do sol se pôr para garantir um bom lugar.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 4 — Epidauro: O Grande Teatro da Antiguidade</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Bairro Antigo de Náuplia (Base próxima)</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Teatro Antigo de Epidauro</strong> (1h 30m)</li><li><strong>Santuário de Asclépio</strong> (1h)</li><li><strong>Museu Arqueológico de Epidauro</strong> (45m)</li></ul>
+          <p style="margin: 10px 0 5px 0; color: #B91C1C;"><strong>🎟️ Evento Especial / Data:</strong> Apresentação de Teatro Clássico no Athens & Epidaurus Festival (Teatro de Epidauro) - Agosto 2027</p>
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Peixe fresco grelhado na orla de Náuplia</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> A acústica do Teatro de Epidauro é perfeita; teste deixando cair uma moeda no centro do palco, o som chega até a última arquibancada.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 5 — Santorini: O Charme das Cíclades</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Centro de Fira</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Exploração de Fira</strong> (2h)</li><li><strong>Museu Arqueológico de Thera</strong> (1h)</li><li><strong>Caminhada de Fira a Oia</strong> (3h)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Salada grega autêntica com tomate cereja local e queijo chloro</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> A caminhada de Fira a Oia tem cerca de 10km; inicie de manhã cedo para evitar o sol forte do meio-dia.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 6 — Santorini: Pôr do Sol em Oia</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Vila de Oia</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Ruas e Cúpulas Azuis de Oia</strong> (2h)</li><li><strong>Castelo de Oia</strong> (1h)</li><li><strong>Baía de Ammoudi</strong> (1h 30m)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Polvo grelhado em uma taverna tradicional na Baía de Ammoudi</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> Para garantir um bom lugar para ver o famoso pôr do sol no Castelo de Oia, chegue com pelo menos 2 horas de antecedência.</p>
+        </div>
+      
+        <div class="destaque" style="background-color: #F8F9FA; border-left: 4px solid #1B365D; padding: 15px; margin-bottom: 20px; border-radius: 4px; break-inside: avoid; page-break-inside: avoid;">
+          <h3 style="color: #1B365D; margin-top: 0;">Dia 7 — Santorini: Praias Vulcânicas e História</h3>
+          <p style="margin: 5px 0;"><strong>📍 Apoio Logístico:</strong> Akrotiri / Perissa</p>
+          <p style="margin: 10px 0 5px 0;"><strong>🏛️ Principais Atrações:</strong></p>
+          <ul style="margin: 0; padding-left: 20px;"><li><strong>Sítio Arqueológico de Akrotiri</strong> (1h 30m)</li><li><strong>Red Beach (Praia Vermelha)</strong> (2h)</li><li><strong>Perissa Black Sand Beach</strong> (2h)</li></ul>
+          
+          <p style="margin: 8px 0 4px 0;"><strong>🍷 Dica Gastronômica:</strong> Gyros rápido e saboroso em uma lanchonete perto da praia de Perissa</p>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;"><strong>💡 Dica Tática:</strong> O sítio de Akrotiri é coberto e climatizado, sendo uma ótima opção de passeio para as horas mais quentes do dia.</p>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    <p>✈️ Caderno de Viagem Tático & Executivo — Grécia 2027</p>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // Data Array from JSON
+    const pontosData = [
+      {"id":1,"nome":"Acrópole de Atenas","lat":38.4778,"lng":22.4976,"dia":1,"cidade":"Atenas","proximo_ponto":{"nome":"Museu da Acrópole","modo":"carro","tempo_minutos":166,"distancia_km":"185.19"}},
+      {"id":2,"nome":"Museu da Acrópole","lat":37.991273,"lng":23.730573,"dia":1,"cidade":"Atenas","proximo_ponto":{"nome":"Ágora Antiga","modo":"carro","tempo_minutos":733,"distancia_km":"387.03"}},
+      {"id":3,"nome":"Ágora Antiga","lat":35.062613,"lng":24.946852,"dia":2,"cidade":"Atenas","proximo_ponto":{"nome":"Praça Syntagma e Troca da Guarda","modo":"carro","tempo_minutos":949,"distancia_km":"706.23"}},
+      {"id":4,"nome":"Praça Syntagma e Troca da Guarda","lat":39.637437,"lng":21.780339,"dia":2,"cidade":"Atenas","proximo_ponto":{"nome":"Bairro Monastiraki","modo":"carro","tempo_minutos":226,"distancia_km":"325.57"}},
+      {"id":5,"nome":"Bairro Monastiraki","lat":37.975841,"lng":23.725899,"dia":2,"cidade":"Atenas","proximo_ponto":{"nome":"Monte Licabeto","modo":"carro","tempo_minutos":230,"distancia_km":"325.14"}},
+      {"id":6,"nome":"Monte Licabeto","lat":39.637437,"lng":21.780339,"dia":3,"cidade":"Atenas","proximo_ponto":{"nome":"Templo de Poseidon em Cabo Sounion","modo":"carro","tempo_minutos":228,"distancia_km":"343.09"}},
+      {"id":7,"nome":"Templo de Poseidon em Cabo Sounion","lat":41.05346,"lng":23.68147,"dia":3,"cidade":"Atenas","proximo_ponto":{"nome":"Teatro Antigo de Epidauro","modo":"carro","tempo_minutos":368,"distancia_km":"563.53"}},
+      {"id":8,"nome":"Teatro Antigo de Epidauro","lat":38.237562,"lng":21.725993,"dia":4,"cidade":"Epidauro","proximo_ponto":{"nome":"Exploração de Fira","modo":"carro","tempo_minutos":842,"distancia_km":"503.81"}},
+      {"id":9,"nome":"Exploração de Fira","lat":36.432194,"lng":25.422964,"dia":5,"cidade":"Santorini","proximo_ponto":{"nome":"Museu Arqueológico de Thera","modo":"pe","tempo_minutos":21,"distancia_km":"1.73"}},
+      {"id":10,"nome":"Museu Arqueológico de Thera","lat":36.420014,"lng":25.431097,"dia":5,"cidade":"Santorini","proximo_ponto":{"nome":"Ruas e Cúpulas Azuis de Oia","modo":"carro","tempo_minutos":922,"distancia_km":"622.28"}},
+      {"id":11,"nome":"Ruas e Cúpulas Azuis de Oia","lat":39.637437,"lng":21.780339,"dia":6,"cidade":"Santorini","proximo_ponto":{"nome":"Castelo de Oia","modo":"carro","tempo_minutos":963,"distancia_km":"729.89"}},
+      {"id":12,"nome":"Castelo de Oia","lat":35.370093,"lng":24.473787,"dia":6,"cidade":"Santorini","proximo_ponto":{"nome":"Baía de Ammoudi","modo":"carro","tempo_minutos":1004,"distancia_km":"787.36"}},
+      {"id":13,"nome":"Baía de Ammoudi","lat":39.23889,"lng":20.48278,"dia":6,"cidade":"Santorini","proximo_ponto":{"nome":"Red Beach (Praia Vermelha)","modo":"carro","tempo_minutos":182,"distancia_km":"231.34"}},
+      {"id":14,"nome":"Red Beach (Praia Vermelha)","lat":39.637437,"lng":21.780339,"dia":7,"cidade":"Santorini","proximo_ponto":{"nome":"Perissa Black Sand Beach","modo":"carro","tempo_minutos":917,"distancia_km":"621.98"}},
+      {"id":15,"nome":"Perissa Black Sand Beach","lat":36.35776,"lng":25.47432,"dia":7,"cidade":"Santorini","proximo_ponto":null}
+    ];
+
+    // Checkbox toggle logic
+    function toggleCheck(el) {
+      const checkbox = el.querySelector('input[type="checkbox"]');
+      if (event.target !== checkbox) {
+        checkbox.checked = !checkbox.checked;
+      }
+      if (checkbox.checked) {
+        el.classList.add('completed');
+      } else {
+        el.classList.remove('completed');
+      }
+    }
+
+    // Navigation Tabs logic
+    let mapInitialized = false;
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+
+      if (tabId === 'aba-mapa') {
+        if (!mapInitialized) {
+          initMap();
+          mapInitialized = true;
+        } else {
+          setTimeout(() => { map.invalidateSize(); }, 200);
+        }
+      }
+    }
+
+    // Leaflet Map Implementation
+    let map;
+    let currentMode = 'dia';
+    let currentDay = 1;
+    let mapLayerGroup;
+
+    function initMap() {
+      map = L.map('map-container').setView([37.9758, 23.7258], 7);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      mapLayerGroup = L.layerGroup().addTo(map);
+      renderMap();
+    }
+
+    function setMapMode(mode) {
+      currentMode = mode;
+      document.getElementById('btn-modo-dia').classList.toggle('active', mode === 'dia');
+      document.getElementById('btn-modo-cidades').classList.toggle('active', mode === 'cidades');
+      
+      const daySelector = document.getElementById('day-selector-container');
+      if (mode === 'cidades') {
+        daySelector.style.display = 'none';
+      } else {
+        daySelector.style.display = 'flex';
+      }
+
+      renderMap();
+    }
+
+    function selectDay(dayNum, btn) {
+      currentDay = dayNum;
+      document.querySelectorAll('.day-selector-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderMap();
+    }
+
+    function renderMap() {
+      if (!mapLayerGroup) return;
+      mapLayerGroup.clearLayers();
+
+      if (currentMode === 'dia') {
+        renderDayMap();
+      } else {
+        renderCitiesMap();
+      }
+    }
+
+    function renderDayMap() {
+      const dayPoints = pontosData.filter(p => p.dia === currentDay);
+      if (dayPoints.length === 0) return;
+
+      const latLngs = [];
+
+      dayPoints.forEach(ponto => {
+        const coord = [ponto.lat, ponto.lng];
+        latLngs.push(coord);
+
+        let popupContent = `
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif;">
+            <strong style="color: #0C4A60; font-size: 1.05rem;">${ponto.nome}</strong><br>
+            <span style="font-size: 0.85rem; color: #666;">Cidade: ${ponto.cidade} | Dia ${ponto.dia}</span>
+        `;
+
+        if (ponto.proximo_ponto) {
+          popupContent += `
+            <hr style="margin: 8px 0; border: 0; border-top: 1px solid #eee;">
+            <div style="font-size: 0.85rem; color: #2B2D42;">
+              <strong>Próximo destino:</strong> ${ponto.proximo_ponto.nome}<br>
+              <strong>Transporte:</strong> ${ponto.proximo_ponto.modo} (${ponto.proximo_ponto.tempo_minutos} min - ${ponto.proximo_ponto.distancia_km} km)
+            </div>
+          `;
+        }
+
+        popupContent += `</div>`;
+
+        L.marker(coord).addTo(mapLayerGroup).bindPopup(popupContent);
+      });
+
+      if (latLngs.length > 1) {
+        L.polyline(latLngs, { color: '#EF8354', weight: 4, opacity: 0.85, dashArray: '8, 8' }).addTo(mapLayerGroup);
+      }
+
+      const bounds = L.latLngBounds(latLngs);
+      map.fitBounds(bounds, { padding: [50, 50] });
+    }
+
+    function renderCitiesMap() {
+      // Group points by city respecting first appearance order
+      const cityGroups = [];
+      const cityMap = new Map();
+
+      pontosData.forEach(p => {
+        if (!cityMap.has(p.cidade)) {
+          const group = { cidade: p.cidade, anchor: [p.lat, p.lng], count: 1, firstPoint: p };
+          cityMap.set(p.cidade, group);
+          cityGroups.push(group);
+        } else {
+          cityMap.get(p.cidade).count++;
+        }
+      });
+
+      const cityCoords = [];
+
+      cityGroups.forEach((cg, idx) => {
+        cityCoords.push(cg.anchor);
+
+        let popupContent = `
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif;">
+            <strong style="color: #0C4A60; font-size: 1.1rem;">${cg.cidade}</strong><br>
+            <span style="font-size: 0.9rem;">${cg.count} atrações no roteiro</span>
+          </div>
+        `;
+
+        L.marker(cg.anchor).addTo(mapLayerGroup).bindPopup(popupContent);
+      });
+
+      // Inter-city polylines and transition popups
+      if (cityCoords.length > 1) {
+        const polyline = L.polyline(cityCoords, { color: '#0C4A60', weight: 4, opacity: 0.9 }).addTo(mapLayerGroup);
+
+        // Highlight transitions
+        // Atenas -> Epidauro (ponto 7 -> ponto 8)
+        // Epidauro -> Santorini (ponto 8 -> ponto 9)
+        const p7 = pontosData.find(p => p.id === 7);
+        const p8 = pontosData.find(p => p.id === 8);
+
+        if (p7 && p7.proximo_ponto) {
+          const midLat = (cityGroups[0].anchor[0] + cityGroups[1].anchor[0]) / 2;
+          const midLng = (cityGroups[0].anchor[1] + cityGroups[1].anchor[1]) / 2;
+          L.popup()
+            .setLatLng([midLat, midLng])
+            .setContent(`<b>Transição Atenas ➔ Epidauro:</b><br>${p7.proximo_ponto.tempo_minutos} min (${p7.proximo_ponto.distancia_km} km)`)
+            .addTo(mapLayerGroup);
+        }
+
+        const bounds = L.latLngBounds(cityCoords);
+        map.fitBounds(bounds, { padding: [60, 60] });
+      }
+    }
+  </script>
+</body>
+</html>
